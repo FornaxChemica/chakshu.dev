@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Chakshu Jain — Software Engineer & Data Scientist at ASU. Building AI automation systems that actually ship.">
+<meta property="og:title" content="Chakshu Jain">
+<meta property="og:description" content="Software Engineer & Data Scientist. Building AI automation systems that actually ship.">
+<meta property="og:url" content="https://chakshu.dev">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="chakshu.dev">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chakshu Jain">
+<meta name="twitter:description" content="Software Engineer & Data Scientist. Building AI automation systems that actually ship.">
 <title>Chakshu Jain — Software Engineer & Data Scientist</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
@@ -63,6 +72,30 @@
     cursor: pointer;
   }
   .nav-logo span { color: var(--accent); }
+  .nav-toggle {
+    display: none;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .nav-toggle-lines {
+    width: 15px;
+    height: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .nav-toggle-lines span {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: var(--text);
+  }
   .nav-links { display: flex; gap: 32px; list-style: none; }
   .nav-links a {
     color: var(--muted);
@@ -74,6 +107,26 @@
     cursor: pointer;
   }
   .nav-links a:hover { color: var(--accent); }
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 90;
+  }
+  .nav-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
 
   section { padding: 120px 0; }
   .container { max-width: 900px; margin: 0 auto; padding: 0 48px; }
@@ -157,6 +210,19 @@
   .stat-row:first-child { padding-top: 0; }
   .stat-key { color: var(--muted); font-size: 11px; }
   .stat-val { font-family: var(--display); font-size: 20px; font-weight: 700; color: var(--accent); }
+  .stat-val-text {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.01em;
+    display: inline-block;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
   .stat-unit { font-size: 10px; color: var(--muted); margin-left: 4px; }
   .status-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
@@ -232,6 +298,198 @@
   .spotify-blurb { color: var(--muted); font-size: 12px; line-height: 1.85; margin-bottom: 16px; }
   .spotify-embed { border: 1px solid var(--border); overflow: hidden; }
 
+  .stat-artist-link {
+    font-size: 13px;
+    color: var(--accent);
+    font-family: var(--mono);
+    text-align: right;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .stat-artist-link:hover { color: #33eeff; }
+
+  .music-teaser {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 36px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .music-teaser:hover {
+    border-color: rgba(0,229,255,0.3);
+    background: #111;
+  }
+  .music-teaser::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .music-teaser:hover::after { transform: scaleX(1); }
+  .music-teaser-label {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .music-teaser-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .music-teaser-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+    min-height: 14px;
+  }
+  .signal-inline {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 10px;
+    flex-shrink: 0;
+  }
+  .signal-inline i,
+  .signal-bar {
+    display: block;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 1px;
+    height: 4px;
+    animation: eqb .8s ease-in-out infinite;
+  }
+  .signal-inline i:nth-child(2),
+  .signal-bar:nth-child(2) { animation-delay: 0.12s; }
+  .signal-inline i:nth-child(3),
+  .signal-bar:nth-child(3) { animation-delay: 0.24s; }
+  .music-teaser-artists {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .music-artist-pill {
+    font-size: 10px;
+    padding: 4px 10px;
+    border: 1px solid rgba(0,229,255,0.2);
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  .music-teaser-arrow {
+    font-size: 28px;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-left: 32px;
+    transition: transform 0.2s;
+  }
+  .music-teaser:hover .music-teaser-arrow {
+    transform: translateX(6px);
+  }
+
+  .now-playing-bar {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 14px 48px;
+    background: #0a0a0a;
+    align-items: center;
+    gap: 16px;
+  }
+  .np-pulse {
+    width: 2px;
+    height: 32px;
+    background: var(--accent);
+    animation: npulse 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .np-art {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .np-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .np-main { flex: 1; min-width: 0; }
+  .np-label {
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .np-meta { display: flex; align-items: baseline; gap: 8px; }
+  .np-track {
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+  }
+  .np-sep { font-size: 10px; color: var(--muted); }
+  .np-artist {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .np-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  .np-eq-bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 1px;
+    animation: eqb .8s ease-in-out infinite;
+  }
+  .np-spotify-link {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: color .2s;
+  }
+  .np-spotify-link:hover { color: var(--accent); }
+  .np-note {
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    min-height: 14px;
+  }
+
   .cal-card { border: 1px solid var(--border); padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 32px; background: var(--surface); position: relative; overflow: hidden; }
   .cal-card::before { content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(0,229,255,0.04) 0%, transparent 70%); pointer-events: none; }
   .cal-tag { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
@@ -258,6 +516,8 @@
   .fade-in:nth-child(2) { animation-delay: 0.2s; }
   .fade-in:nth-child(3) { animation-delay: 0.35s; }
   .fade-in:nth-child(4) { animation-delay: 0.5s; }
+  @keyframes npulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  @keyframes eqb { 0%,100%{height:4px} 50%{height:14px} }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -265,12 +525,47 @@
 
   @media (max-width: 700px) {
     nav { padding: 16px 24px; }
-    .nav-links { display: none; }
+    .nav-toggle { display: inline-flex; }
+    .nav-links {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      background: rgba(13, 13, 13, 0.98);
+      backdrop-filter: blur(16px);
+      transform: translateY(-8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 100;
+    }
+    .nav-links.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .nav-links li { border-bottom: 1px solid var(--border); }
+    .nav-links li:last-child { border-bottom: none; }
+    .nav-links a {
+      display: block;
+      padding: 14px 16px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+    }
     .container { padding: 0 24px; }
     .hero-grid, .contact-grid, .exp-item, .spotify-grid { grid-template-columns: 1fr; gap: 32px; }
     .projects-grid, .skills-grid { grid-template-columns: 1fr; }
     section { padding: 80px 0; }
     .cal-card { flex-direction: column; gap: 24px; }
+    .music-teaser { padding: 24px; align-items: flex-start; }
+    .music-teaser-arrow { margin-left: 20px; font-size: 24px; }
+    .now-playing-bar { padding: 14px 24px; }
+    .np-track { max-width: 170px; }
+    .np-artist { max-width: 120px; }
     footer { flex-direction: column; gap: 8px; text-align: center; }
     #orbital-header { left: 24px; }
     #orbital-meta { right: 24px; }
@@ -279,15 +574,20 @@
 </head>
 <body>
 
+<div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+
 <nav>
-  <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">CJ<span>.</span></div>
-  <ul class="nav-links">
-    <li><a onclick="document.getElementById('experience').scrollIntoView({behavior:'smooth'})">Experience</a></li>
-    <li><a onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">Projects</a></li>
-    <li><a onclick="document.getElementById('stack').scrollIntoView({behavior:'smooth'})">Stack</a></li>
-    <li><a onclick="document.getElementById('orbital').scrollIntoView({behavior:'smooth'})">Orbital</a></li>
-    <li><a onclick="document.getElementById('terminal').scrollIntoView({behavior:'smooth'})">Terminal</a></li>
-    <li><a href="https://cal.com/chakshujain" target="_blank">Book a call</a></li>
+  <a class="nav-logo" href="#hero" aria-label="Go to top">CJ<span>.</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
+    <span class="nav-toggle-lines"><span></span><span></span><span></span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#orbital">Orbital</a></li>
+    <li><a href="#terminal">Terminal</a></li>
+    <li><a href="https://cal.com/chakshujain" target="_blank" rel="noopener noreferrer">Book a call</a></li>
   </ul>
 </nav>
 
@@ -305,15 +605,16 @@
           I don't just write code — I build <strong>automation systems</strong> that eliminate operational drag, blending CS + Data Science + AI into solutions that actually ship.
         </p>
         <div class="hero-cta fade-in">
-          <a class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">View Work →</a>
-          <a class="btn btn-ghost" href="https://cal.com/chakshujain" target="_blank">Book a Call</a>
+          <a class="btn btn-primary" href="#projects">View Work →</a>
+          <a class="btn btn-ghost" href="https://cal.com/chakshujain" target="_blank" rel="noopener noreferrer">Book a Call</a>
         </div>
       </div>
       <div class="hero-stats fade-in">
         <div class="stat-row"><span class="stat-key">gpa</span><div><span class="stat-val">4.00</span><span class="stat-unit">/ 4.00</span></div></div>
         <div class="stat-row"><span class="stat-key">hours_saved_weekly</span><div><span class="stat-val">15+</span><span class="stat-unit">hrs</span></div></div>
         <div class="stat-row"><span class="stat-key">budget_managed</span><div><span class="stat-val">$50K</span></div></div>
-        <div class="stat-row"><span class="stat-key">degrees</span><div><span class="stat-val">2</span><span class="stat-unit">B.S.</span></div></div>
+        <div class="stat-row"><span class="stat-key">degree_focus</span><div><span class="stat-val-text">CS + Data Science</span></div></div>
+        <div class="stat-row"><span class="stat-key">listening_to</span><a id="stat-artist" class="stat-artist-link" href="https://open.spotify.com/search/chakshu%20jain" target="_blank" rel="noopener noreferrer">—</a></div>
         <div class="stat-row"><span class="stat-key">status</span><div class="status-dot"><span class="dot"></span>building</div></div>
       </div>
     </div>
@@ -483,22 +784,18 @@
 <section id="listening">
   <div class="container">
     <div class="section-header"><span class="section-num">06</span><h2 class="section-title">Listening</h2><div class="section-line"></div></div>
-    <div class="spotify-grid">
-      <div>
-        <div class="spotify-label">Now spinning</div>
-        <p class="spotify-blurb">Code goes in, music goes on. Here's what's been in rotation.</p>
-        <p class="spotify-blurb" style="font-size:11px;color:#888;">
-          To update: Spotify → right-click playlist → Share → Copy link.<br>
-          Swap the ID after <span style="color:var(--accent)">spotify.com/playlist/</span>
-        </p>
+    <a href="/music" class="music-teaser">
+      <div class="music-teaser-left">
+        <div class="music-teaser-label">Current rotation.</div>
+        <div class="music-teaser-sub">weekly rotation pulled live from last.fm/user/chakshujain</div>
+        <div class="music-teaser-note" id="teaser-note">
+          <span class="signal-inline" aria-hidden="true"><i></i><i></i><i></i></span>
+          syncing weekly artists...
+        </div>
+        <div class="music-teaser-artists" id="teaser-artists"></div>
       </div>
-      <div class="spotify-embed">
-        <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DX5trt9i14X7j?utm_source=generator&theme=0"
-          width="100%" height="352" frameBorder="0" allowfullscreen=""
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy" style="display:block;"></iframe>
-      </div>
-    </div>
+      <div class="music-teaser-arrow">→</div>
+    </a>
   </div>
 </section>
 
@@ -512,7 +809,7 @@
         <div class="cal-title">Let's talk.<br>Pick a time.</div>
         <p class="cal-subtitle">Whether it's a project, collab, or just a technical conversation — my calendar is open.</p>
       </div>
-      <a class="btn-cal" href="https://cal.com/chakshujain" target="_blank">Open calendar →</a>
+      <a class="btn-cal" href="https://cal.com/chakshujain" target="_blank" rel="noopener noreferrer">Open calendar →</a>
     </div>
   </div>
 </section>
@@ -528,13 +825,29 @@
       </div>
       <div class="contact-links">
         <a class="contact-link-item" href="mailto:chakshuvinayjain@gmail.com"><span>chakshuvinayjain@gmail.com</span><span>↗</span></a>
-        <a class="contact-link-item" href="https://linkedin.com/in/chakshu-jain-281307243" target="_blank"><span>linkedin.com/in/chakshu-jain-281307243</span><span>↗</span></a>
-        <a class="contact-link-item" href="https://github.com/FornaxChemica" target="_blank"><span>github.com/FornaxChemica</span><span>↗</span></a>
+        <a class="contact-link-item" href="https://linkedin.com/in/chakshu-jain-281307243" target="_blank" rel="noopener noreferrer"><span>linkedin.com/in/chakshu-jain-281307243</span><span>↗</span></a>
+        <a class="contact-link-item" href="https://github.com/FornaxChemica" target="_blank" rel="noopener noreferrer"><span>github.com/FornaxChemica</span><span>↗</span></a>
         <a class="contact-link-item" href="tel:6025021090"><span>(602) 502-1090</span><span>↗</span></a>
       </div>
     </div>
   </div>
 </section>
+
+<div id="now-playing-bar" class="now-playing-bar">
+  <div class="np-pulse"></div>
+  <div id="np-art" class="np-art"></div>
+  <div class="np-main">
+    <div id="np-label" class="np-label">now playing</div>
+    <div class="np-meta">
+      <span id="np-track" class="np-track">—</span>
+      <span class="np-sep">·</span>
+      <span id="np-artist" class="np-artist">—</span>
+    </div>
+    <div id="np-note" class="np-note"></div>
+  </div>
+  <div class="np-eq" id="np-eq"></div>
+  <a id="np-spotify-link" class="np-spotify-link" href="#" target="_blank" rel="noopener noreferrer">open in spotify ↗</a>
+</div>
 
 <footer>
   <p>© 2025 Chakshu Jain — chakshu.dev</p>
@@ -549,6 +862,13 @@
   const wrap = document.getElementById('orbital');
   const idEl = document.getElementById('orbital-id');
   const countEl = document.getElementById('orbital-count');
+  const hintEl = document.getElementById('orb-hint');
+  const sharedStorage = !!(
+    window.storage &&
+    typeof window.storage.get === 'function' &&
+    typeof window.storage.set === 'function' &&
+    typeof window.storage.list === 'function'
+  );
 
   const G = 850, TRAIL_LEN = 140, MAX_LOCAL = 14, SYNC_MS = 400, EXPIRE_MS = 9000;
   let W, H, starX, starY;
@@ -681,6 +1001,12 @@
 
   // Multiplayer via shared storage
   async function initSession() {
+    if (!sharedStorage) {
+      myId = 'obj_'+String(Math.floor(Math.random()*900)+100);
+      idEl.textContent = `you are: ${myId} (local)`;
+      hintEl.textContent = 'click + drag to launch · local mode';
+      return;
+    }
     try {
       let rec = await window.storage.get('orb_visitor_count', true).catch(()=>null);
       let n = rec ? (parseInt(rec.value)||0)+1 : 1;
@@ -693,6 +1019,7 @@
   }
 
   async function pushState() {
+    if (!sharedStorage) return;
     if(!myId) return;
     const alive = localShips.filter(s=>s.alive);
     if(!alive.length) return;
@@ -705,6 +1032,7 @@
   }
 
   async function pullState() {
+    if (!sharedStorage) return;
     try {
       const keys = await window.storage.list('orb_ships_', true);
       if(!keys||!keys.keys) return;
@@ -729,6 +1057,7 @@
   }
 
   async function syncLoop() {
+    if (!sharedStorage) return;
     await pushState(); await pullState();
     setTimeout(syncLoop, SYNC_MS);
   }
@@ -757,11 +1086,189 @@ Rules: 2-4 lines max. No markdown. No bullet lists. Be a little witty on persona
 
 const termBody=document.getElementById('termBody'), termInput=document.getElementById('termInput');
 let isLoading=false;
+const LASTFM_USER = 'chakshujain';
+const LASTFM_KEY = 'da674b2d8f3e39ba0cdfb7ae5e8a4629';
+const LASTFM_BASE = 'https://ws.audioscrobbler.com/2.0/';
+
+const terminalFallbacks = [
+  {
+    match: /(skill|stack|tech|language)/i,
+    reply: "Core stack is Python, TypeScript, Java, SQL, React, Node, Docker, and AWS. I spend most of my time building AI workflows that actually survive contact with production."
+  },
+  {
+    match: /(project|build|working on|made)/i,
+    reply: "Sage is my AI analytics platform, AeroDocs is my Java backend project, and AZNext was the agentic workflow engine that cut 15+ hours of manual work each week."
+  },
+  {
+    match: /(automate|automation|ai)/i,
+    reply: "I automate high-friction operations: prospect research, personalization, routing, and human-in-the-loop review. The goal is less busywork, better decisions."
+  },
+  {
+    match: /(where|from|location|based)/i,
+    reply: "Based in Tempe, Arizona. Originally from India. I like building systems, watching stars, and over-optimizing workflows for fun."
+  },
+  {
+    match: /(contact|email|reach|hire)/i,
+    reply: "Best route is email: chakshuvinayjain@gmail.com. If you want to talk live, book me through the calendar link and I will show up prepared."
+  }
+];
 
 function appendUserLine(t){const d=document.createElement('div');d.className='term-line';d.innerHTML=`<span class="term-prompt">$</span><span class="term-user">${t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`;termBody.appendChild(d);}
 function appendTypingLine(){const d=document.createElement('div');d.className='term-ai-line';d.innerHTML='<span class="typing-cursor"></span>';termBody.appendChild(d);return d;}
 function appendAiLines(t){t.trim().split('\n').filter(l=>l.trim()).forEach(l=>{const d=document.createElement('div');d.className='term-ai-line';d.textContent=l;termBody.appendChild(d);});}
 function scrollBottom(){termBody.scrollTop=termBody.scrollHeight;}
+
+function localTerminalReply(query) {
+  const hit = terminalFallbacks.find(entry => entry.match.test(query));
+  if (hit) return hit.reply;
+  return "I can answer that, but this demo is currently running in local fallback mode. Ask me about skills, projects, automation, location, or contact and I will give you a crisp answer.";
+}
+
+function lastFmUrl(method, params = {}) {
+  const p = new URLSearchParams({
+    method,
+    user: LASTFM_USER,
+    api_key: LASTFM_KEY,
+    format: 'json',
+    ...params
+  });
+  return `${LASTFM_BASE}?${p.toString()}`;
+}
+
+function spotifySearch(term) {
+  return `https://open.spotify.com/search/${encodeURIComponent(term)}`;
+}
+
+function statusMessage(kind) {
+  if (kind === 'timeout') return 'Last.fm took too long. Music feed will retry in 30s.';
+  if (kind === 'rate') return 'Last.fm rate limit tapped. Giving it a minute.';
+  if (kind === 'empty') return 'No scrobbles returned right now. Probably API nap time.';
+  return 'Music service unreachable. Retrying quietly in the background.';
+}
+
+async function fetchLastFm(method, params = {}, timeoutMs = 9000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(lastFmUrl(method, params), { signal: controller.signal });
+    if (!res.ok) {
+      const err = new Error(`http_${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function classifyMusicError(err) {
+  if (err?.name === 'AbortError') return 'timeout';
+  if (err?.status === 429) return 'rate';
+  return 'offline';
+}
+
+async function initHeroMusicStat() {
+  const artistEl = document.getElementById('stat-artist');
+  if (!artistEl) return;
+  try {
+    const data = await fetchLastFm('user.gettopartists', { limit: '1', period: '7day' });
+    const topArtist = data?.topartists?.artist?.[0]?.name;
+    if (!topArtist) throw new Error('empty');
+    artistEl.textContent = topArtist;
+    artistEl.href = spotifySearch(topArtist);
+  } catch (err) {
+    const kind = err?.message === 'empty' ? 'empty' : classifyMusicError(err);
+    artistEl.textContent = kind === 'rate' ? 'rate-limited' : 'api nap';
+    artistEl.removeAttribute('href');
+  }
+}
+
+async function initMusicTeaserPills() {
+  const container = document.getElementById('teaser-artists');
+  const note = document.getElementById('teaser-note');
+  if (!container) return;
+  try {
+    const data = await fetchLastFm('user.gettopartists', { limit: '3', period: '7day' });
+    const artists = data?.topartists?.artist || [];
+    if (!artists.length) throw new Error('empty');
+    container.innerHTML = '';
+    artists.slice(0, 3).forEach((artist) => {
+      const pill = document.createElement('div');
+      pill.className = 'music-artist-pill';
+      pill.textContent = artist?.name || '—';
+      container.appendChild(pill);
+    });
+    if (note) note.textContent = 'updated from this week\'s scrobbles.';
+  } catch (err) {
+    const kind = err?.message === 'empty' ? 'empty' : classifyMusicError(err);
+    if (note) note.textContent = statusMessage(kind);
+  }
+}
+
+async function initNowPlaying() {
+  const bar = document.getElementById('now-playing-bar');
+  const eq = document.getElementById('np-eq');
+  if (!bar || !eq) return;
+
+  [0, 0.15, 0.3, 0.1].forEach((delay) => {
+    const b = document.createElement('div');
+    b.className = 'np-eq-bar';
+    b.style.animationDelay = `${delay}s`;
+    eq.appendChild(b);
+  });
+
+  const trackEl = document.getElementById('np-track');
+  const artistEl = document.getElementById('np-artist');
+  const labelEl = document.getElementById('np-label');
+  const linkEl = document.getElementById('np-spotify-link');
+  const artEl = document.getElementById('np-art');
+  const noteEl = document.getElementById('np-note');
+  labelEl.textContent = 'syncing';
+  if (noteEl) noteEl.textContent = 'waiting for last.fm signal...';
+  eq.style.display = 'flex';
+
+  async function poll() {
+    try {
+      const data = await fetchLastFm('user.getrecenttracks', { limit: '1' });
+      const track = data?.recenttracks?.track?.[0];
+      if (!track) throw new Error('empty');
+
+      const name = track?.name || 'Unknown track';
+      const artist = track?.artist?.['#text'] || 'Unknown artist';
+      const isLive = track?.['@attr']?.nowplaying === 'true';
+
+      trackEl.textContent = name;
+      artistEl.textContent = artist;
+      labelEl.textContent = isLive ? 'now playing' : 'last played';
+      linkEl.href = spotifySearch(`${name} ${artist}`);
+
+      const imgSrc = track?.image?.find((img) => img?.size === 'medium')?.['#text'];
+      const hasImg = imgSrc && !imgSrc.includes('2a96cbd8b46e442fc41c2b86b821562f');
+      if (hasImg) {
+        artEl.innerHTML = `<img src="${imgSrc}" alt="Album art for ${name}">`;
+      } else {
+        artEl.innerHTML = '';
+      }
+
+      eq.style.display = isLive ? 'flex' : 'none';
+      if (noteEl) {
+        noteEl.textContent = isLive ? 'live signal locked.' : 'Nothing live right now. Showing last played.';
+      }
+      bar.style.display = 'flex';
+    } catch (err) {
+      const kind = err?.message === 'empty' ? 'empty' : classifyMusicError(err);
+      labelEl.textContent = 'signal retry';
+      eq.style.display = 'flex';
+      if (noteEl) noteEl.textContent = statusMessage(kind);
+      bar.style.display = 'flex';
+    }
+
+    setTimeout(poll, 30000);
+  }
+
+  poll();
+}
 
 async function runQuery(query) {
   if(isLoading||!query.trim()) return;
@@ -769,17 +1276,56 @@ async function runQuery(query) {
   appendUserLine(query);
   const typer=appendTypingLine(); scrollBottom();
   try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:SYSTEM_PROMPT,messages:[{role:'user',content:query}]})});
-    const data=await res.json();
-    typer.remove(); appendAiLines(data?.content?.[0]?.text||'hmm, that one stumped me.');
+    const res = await fetch('/api/terminal', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ query })
+    });
+    if (!res.ok) throw new Error('api_unavailable');
+    const data = await res.json();
+    const text = data?.reply || data?.text || data?.message;
+    typer.remove();
+    appendAiLines(text || localTerminalReply(query));
   } catch(e) {
     typer.remove();
-    const err=document.createElement('div');err.className='term-ai-line';err.style.color='#ff5f57';err.textContent='connection error. try again.';termBody.appendChild(err);
+    appendAiLines(localTerminalReply(query));
   }
   scrollBottom(); isLoading=false; termInput.disabled=false; termInput.focus();
 }
 
 termInput.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=termInput.value.trim();termInput.value='';runQuery(v);}});
+
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+const navOverlay = document.getElementById('navOverlay');
+
+function setNavOpen(isOpen) {
+  navToggle.setAttribute('aria-expanded', String(isOpen));
+  navLinks.classList.toggle('open', isOpen);
+  navOverlay.classList.toggle('open', isOpen);
+}
+
+navToggle.addEventListener('click', () => {
+  const next = navToggle.getAttribute('aria-expanded') !== 'true';
+  setNavOpen(next);
+});
+
+navOverlay.addEventListener('click', () => setNavOpen(false));
+navLinks.addEventListener('click', (e) => {
+  if (e.target.closest('a')) setNavOpen(false);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') setNavOpen(false);
+});
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 700) setNavOpen(false);
+});
+
+initHeroMusicStat();
+initMusicTeaserPills();
+initNowPlaying();
 </script>
 </body>
 </html>
