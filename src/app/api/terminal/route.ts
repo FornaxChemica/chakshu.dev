@@ -5,6 +5,8 @@ type FallbackRule = {
   reply: string;
 };
 
+type ProviderName = "anthropic" | "openai" | "groq" | "gemini";
+
 const SYSTEM_PROMPT = `You are Chakshu Jain's portfolio terminal assistant.
 Keep responses concise, practical, and in first person as Chakshu.
 Focus on experience, projects, stack, automation work, and contact.
@@ -38,11 +40,223 @@ const FALLBACKS: FallbackRule[] = [
   },
 ];
 
+const AI_PROVIDER = process.env.AI_PROVIDER?.toLowerCase() as ProviderName | undefined;
+
+function hasProviderKey(provider: ProviderName): boolean {
+  switch (provider) {
+    case "anthropic":
+      return Boolean(process.env.ANTHROPIC_API_KEY);
+    case "openai":
+      return Boolean(process.env.OPENAI_API_KEY);
+    case "groq":
+      return Boolean(process.env.GROQ_API_KEY);
+    case "gemini":
+      return Boolean(process.env.GEMINI_API_KEY);
+  }
+}
+
+function getProviderOrder(): ProviderName[] {
+  const configured = AI_PROVIDER && ["anthropic", "openai", "groq", "gemini"].includes(AI_PROVIDER)
+    ? [AI_PROVIDER]
+    : [];
+
+  const fallbackOrder: ProviderName[] = ["anthropic", "openai", "groq", "gemini"];
+  return [...configured, ...fallbackOrder.filter((provider) => provider !== configured[0])];
+}
+
 function localFallback(query: string): string {
   return (
     FALLBACKS.find((entry) => entry.match.test(query))?.reply ||
-    "Ask me about skills, projects, automation, location, or contact."
+    "I'm running in local fallback mode right now. Ask me about skills, projects, automation, location, or contact."
   );
+}
+
+function extractFirstText(value: unknown): string | null {
+  if (typeof value === "string") {
+    const text = value.trim();
+    return text || null;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (item && typeof item === "object" && "text" in item) {
+        const text = extractFirstText((item as { text?: unknown }).text);
+        if (text) {
+          return text;
+        }
+      }
+    }
+  }
+
+  if (value && typeof value === "object") {
+    if ("content" in value) {
+      const text = extractFirstText((value as { content?: unknown }).content);
+      if (text) return text;
+    }
+    if ("parts" in value) {
+      const text = extractFirstText((value as { parts?: unknown }).parts);
+      if (text) return text;
+    }
+    if ("message" in value) {
+      const text = extractFirstText((value as { message?: unknown }).message);
+      if (text) return text;
+    }
+  }
+
+  return null;
+}
+
+async function tryAnthropic(query: string): Promise<string | null> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return null;
+
+  const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514";
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 200,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: query }],
+    }),
+  });
+
+  if (!response.ok) return null;
+
+  const data = (await response.json()) as unknown;
+  return extractFirstText(data) || null;
+}
+
+async function tryOpenAI(query: string): Promise<string | null> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 200,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: query },
+      ],
+    }),
+  });
+
+  if (!response.ok) return null;
+
+  const data = (await response.json()) as {
+    choices?: Array<{ message?: { content?: unknown } }>;
+  };
+
+  return extractFirstText(data.choices?.[0]?.message?.content) || null;
+}
+
+async function tryGroq(query: string): Promise<string | null> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  const model = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 200,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: query },
+      ],
+    }),
+  });
+
+  if (response.status === 429 && process.env.GROQ_FALLBACK_TO_GEMINI === "true") {
+    const geminiReply = await tryGemini(query);
+    if (geminiReply) return geminiReply;
+  }
+
+  if (!response.ok) return null;
+
+  const data = (await response.json()) as {
+    choices?: Array<{ message?: { content?: unknown } }>;
+  };
+
+  return extractFirstText(data.choices?.[0]?.message?.content) || null;
+}
+
+async function tryGemini(query: string): Promise<string | null> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+
+  const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nUser: ${query}` }] }],
+        generationConfig: { maxOutputTokens: 200 },
+      }),
+    }
+  );
+
+  if (!response.ok) return null;
+
+  const data = (await response.json()) as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: unknown }> } }>;
+  };
+
+  return extractFirstText(data.candidates?.[0]?.content?.parts) || null;
+}
+
+async function getModelReply(query: string): Promise<string | null> {
+  const providers = getProviderOrder();
+
+  for (const provider of providers) {
+    if (!hasProviderKey(provider)) {
+      continue;
+    }
+
+    try {
+      if (provider === "anthropic") {
+        const reply = await tryAnthropic(query);
+        if (reply) return reply;
+      }
+
+      if (provider === "openai") {
+        const reply = await tryOpenAI(query);
+        if (reply) return reply;
+      }
+
+      if (provider === "groq") {
+        const reply = await tryGroq(query);
+        if (reply) return reply;
+      }
+
+      if (provider === "gemini") {
+        const reply = await tryGemini(query);
+        if (reply) return reply;
+      }
+    } catch {
+      // Try the next configured provider.
+    }
+  }
+
+  return null;
 }
 
 export async function POST(req: NextRequest) {
@@ -53,64 +267,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: localFallback("") });
   }
 
-  if (process.env.GROQ_API_KEY) {
-    try {
-      const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "llama3-8b-8192",
-          max_tokens: 200,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: query },
-          ],
-        }),
-      });
-
-      if (groqRes.ok) {
-        const data = (await groqRes.json()) as {
-          choices?: Array<{ message?: { content?: string } }>;
-        };
-        const reply = data.choices?.[0]?.message?.content?.trim();
-        if (reply) {
-          return NextResponse.json({ reply });
-        }
-      }
-    } catch {
-      // Fall through to secondary provider and local fallback.
-    }
-  }
-
-  if (process.env.GEMINI_API_KEY) {
-    try {
-      const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nUser: ${query}` }] }],
-            generationConfig: { maxOutputTokens: 200 },
-          }),
-        }
-      );
-
-      if (geminiRes.ok) {
-        const data = (await geminiRes.json()) as {
-          candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-        };
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (reply) {
-          return NextResponse.json({ reply });
-        }
-      }
-    } catch {
-      // Fall through to local fallback.
-    }
+  const aiReply = await getModelReply(query);
+  if (aiReply) {
+    return NextResponse.json({ reply: aiReply });
   }
 
   return NextResponse.json({ reply: localFallback(query) });
