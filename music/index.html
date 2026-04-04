@@ -74,6 +74,9 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     transition: color .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
   }
 
   .nav-link:hover { color: var(--accent); }
@@ -178,6 +181,9 @@
     letter-spacing: .08em;
     text-transform: uppercase;
     transition: color .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
   }
 
   .spotify-link:hover { color: var(--accent); }
@@ -223,8 +229,19 @@
     margin-bottom: 16px;
   }
 
+  .section-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: var(--accent);
+    opacity: 0.9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .section-num {
-    font-size: 10px;
+    font-size: 20px;
     color: var(--accent);
     letter-spacing: .15em;
   }
@@ -389,11 +406,12 @@
     .artist-count { text-align: left; }
   }
 </style>
+<script defer src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
 <body>
 <nav>
-  <div class="nav-title">/music</div>
-  <a class="nav-link" href="/">back to chakshu.dev</a>
+  <div class="nav-title"><i class="ph ph-music-notes" aria-hidden="true"></i> /music</div>
+  <a class="nav-link" href="/"><i class="ph ph-arrow-left" aria-hidden="true"></i> back to chakshu.dev</a>
 </nav>
 
 <main class="container">
@@ -408,7 +426,7 @@
           <div class="now-meta">
             <span class="live-pill" id="nowState">syncing</span>
             <div class="eq" id="nowEq"></div>
-            <a class="spotify-link" id="nowLink" href="#" target="_blank" rel="noopener noreferrer">open in spotify ↗</a>
+            <a class="spotify-link" id="nowLink" href="#" target="_blank" rel="noopener noreferrer">open in spotify <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
           </div>
           <div class="status-line" id="nowStatus"><span class="signal-bars" aria-hidden="true"><i class="signal-bar"></i><i class="signal-bar"></i><i class="signal-bar"></i></span>syncing recent track...</div>
         </div>
@@ -437,7 +455,8 @@
   <section class="section">
     <div class="section-head">
       <span class="section-num">01</span>
-      <h2 class="section-title">Recent Tracks</h2>
+      <span class="section-icon"><i class="ph ph-vinyl-record" aria-hidden="true"></i></span>
+      <h2 class="section-title" id="recentTracksTitle">Recent Tracks</h2>
       <div class="section-line"></div>
     </div>
     <div class="tracks-grid" id="tracksGrid">
@@ -449,6 +468,7 @@
   <section class="section">
     <div class="section-head">
       <span class="section-num">02</span>
+      <span class="section-icon"><i class="ph ph-waveform" aria-hidden="true"></i></span>
       <h2 class="section-title">Top Artists</h2>
       <div class="section-line"></div>
     </div>
@@ -477,6 +497,10 @@ function lastFmUrl(method, params = {}) {
 
 function spotifySearch(term) {
   return `https://open.spotify.com/search/${encodeURIComponent(term)}`;
+}
+
+function getTrackLimit() {
+  return window.matchMedia('(max-width: 640px)').matches ? 20 : 25;
 }
 
 function statusMessage(kind) {
@@ -566,13 +590,16 @@ async function loadNowPlaying() {
 async function loadRecentTracks() {
   const grid = document.getElementById('tracksGrid');
   const tracksStatus = document.getElementById('tracksStatus');
+  const recentTracksTitle = document.getElementById('recentTracksTitle');
+  const limit = getTrackLimit();
+  if (recentTracksTitle) recentTracksTitle.textContent = `Recent Tracks (${limit})`;
   try {
-    const data = await fetchLastFm('user.getrecenttracks', { limit: '25' });
+    const data = await fetchLastFm('user.getrecenttracks', { limit: String(limit) });
     const tracks = data?.recenttracks?.track || [];
     if (!tracks.length) throw new Error('empty');
     grid.innerHTML = '';
 
-    tracks.slice(0, 25).forEach((track) => {
+    tracks.slice(0, limit).forEach((track) => {
       const name = track?.name || 'Unknown track';
       const artist = track?.artist?.['#text'] || 'Unknown artist';
       const imgSrc = track?.image?.find((img) => img?.size === 'large')?.['#text']
@@ -595,7 +622,7 @@ async function loadRecentTracks() {
       grid.appendChild(card);
     });
 
-    if (tracksStatus) tracksStatus.textContent = 'recent tracks synced.';
+    if (tracksStatus) tracksStatus.textContent = `showing ${limit} recent tracks.`;
   } catch (err) {
     const kind = err?.message === 'empty' ? 'empty' : classifyMusicError(err);
     if (!grid.children.length) {
@@ -659,6 +686,15 @@ async function loadScrobbles() {
 renderEqBars();
 setClock();
 setInterval(setClock, 30000);
+
+let isPhoneTrackLayout = window.matchMedia('(max-width: 640px)').matches;
+window.addEventListener('resize', () => {
+  const next = window.matchMedia('(max-width: 640px)').matches;
+  if (next !== isPhoneTrackLayout) {
+    isPhoneTrackLayout = next;
+    loadRecentTracks();
+  }
+});
 
 loadNowPlaying();
 setInterval(loadNowPlaying, 30000);
