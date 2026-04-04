@@ -1,11 +1,28 @@
 # chakshu.dev
 My personal portfolio. Live at https://chakshu.dev
 
+## Next.js Migration Status
+
+This repository is now running on Next.js 14 App Router with TypeScript and Tailwind.
+
+- New app routes: `/` and `/music`
+- New terminal API route: `app/api/terminal/route.ts`
+- Legacy static snapshots are still present (`index.html`, `music/index.html`) during migration
+
+### Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
 ## Terminal API Setup
 
-The portfolio terminal in `index.html` calls `POST /api/terminal`.
+The portfolio terminal calls `POST /api/terminal`.
 
-This repo now includes a serverless endpoint at `api/terminal.js` compatible with Vercel Functions.
+The primary implementation is now the Next.js Route Handler in `app/api/terminal/route.ts`.
 
 ### 1. Configure environment variables
 
@@ -55,15 +72,11 @@ Behavior:
 - If Upstash vars are set, the API uses Redis-backed shared rate limiting.
 - If Upstash is unavailable at runtime, the API falls back to in-memory limiting so protection still remains.
 
-### 2. Run locally (recommended)
-
-Use Vercel dev so static `index.html` and `/api/terminal` run together:
+### 2. Run locally
 
 ```bash
-npx vercel dev
+npm run dev
 ```
-
-Then open the local URL shown by Vercel.
 
 ### 3. Deploy
 

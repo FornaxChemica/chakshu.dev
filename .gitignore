@@ -6,6 +6,13 @@
 # Vercel
 .vercel/
 
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
 # Logs
 *.log
 npm-debug.log*
