@@ -20,7 +20,7 @@ Configure `.env` and fill keys:
 	- Optional: `OPENAI_MODEL` (default: `gpt-4o-mini`)
 - If using Groq:
 	- `GROQ_API_KEY`
-	- Optional: `GROQ_MODEL` (default: `llama3-8b-8192`)
+	- Optional: `GROQ_MODEL` (default: `llama-3.1-8b-instant`)
 	- Optional: `GROQ_FALLBACK_TO_GEMINI=true`
 - If using Gemini:
 	- `GEMINI_API_KEY`

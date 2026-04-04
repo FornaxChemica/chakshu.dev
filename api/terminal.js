@@ -223,7 +223,7 @@ async function callGroq(query) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) throw new Error("missing_groq_key");
 
-  const model = process.env.GROQ_MODEL || "llama3-8b-8192";
+  const model = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
 
   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
