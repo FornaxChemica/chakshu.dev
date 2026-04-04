@@ -208,26 +208,7 @@
     color: var(--text);
     cursor: default;
   }
-  .hero-name:hover { animation: glitch 0.4s steps(2) infinite; }
   .hero-name .accent { color: var(--accent); }
-  @keyframes glitch {
-    0% {
-      clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%);
-      transform: translate(-2px, 0);
-    }
-    33% {
-      clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%);
-      transform: translate(2px, 0);
-    }
-    66% {
-      clip-path: polygon(0 20%, 100% 20%, 100% 60%, 0 60%);
-      transform: translate(-1px, 0);
-    }
-    100% {
-      clip-path: none;
-      transform: translate(0);
-    }
-  }
   .hero-bio { color: var(--muted); font-size: 13px; line-height: 1.85; max-width: 380px; margin-bottom: 40px; }
   .hero-bio strong { color: var(--text); font-weight: 500; }
   .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
