@@ -37,6 +37,7 @@ type MapInstance = {
     bounds: [[number, number], [number, number]],
     options: { padding: { top: number; bottom: number; left: number; right: number }; duration: number }
   ) => void;
+  resize: () => void;
   remove: () => void;
 };
 
@@ -134,6 +135,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   const [mapReady, setMapReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [statsOpen, setStatsOpen] = useState(false);
   const [scrollThumbTop, setScrollThumbTop] = useState(8);
   const [scrollThumbHeight, setScrollThumbHeight] = useState(40);
   const [mobileThumbLeft, setMobileThumbLeft] = useState(0);
@@ -219,6 +221,8 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+    let resizeObserver: ResizeObserver | null = null;
+
     const waitForMapbox = () => {
       if (!window.mapboxgl) return;
       if (pollTimerRef.current) {
@@ -236,6 +240,15 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
         attributionControl: false,
         logoPosition: "bottom-left",
       });
+      setTimeout(() => {
+        map.resize();
+      }, 100);
+      resizeObserver = new ResizeObserver(() => {
+        map.resize();
+      });
+      if (mapContainerRef.current) {
+        resizeObserver.observe(mapContainerRef.current);
+      }
       map.addControl(new window.mapboxgl.AttributionControl({ compact: true }), "bottom-left");
       map.addControl(new window.mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
       mapRef.current = map;
@@ -267,6 +280,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
       }
       markerRef.current.forEach((meta) => meta.marker.remove());
       markerRef.current = [];
+      resizeObserver?.disconnect();
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -660,14 +674,11 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   return (
     <>
       <Script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" strategy="afterInteractive" />
+      <nav className={styles.trailsNav}>
+        <div className={styles.trailsNavTitle}>/trails</div>
+        <Link href="/" className={styles.trailsNavBack}>← back to chakshu.dev</Link>
+      </nav>
       <div className={styles.root}>
-        <div className={styles.topBar}>
-          <div className={styles.navTitle}>/trails</div>
-          <Link href="/" className={styles.backLink}>
-            <i className="ph ph-arrow-left" aria-hidden="true" /> back to chakshu.dev
-          </Link>
-        </div>
-
         <div className={styles.mainRow}>
           <div className={styles.scrollTrack} aria-hidden="true">
             <div
@@ -718,11 +729,35 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
               <span className={styles.trailNameText}>{activeHike.name}</span>
             </div>
             {!isMobile && <div className={styles.mapCanvas} ref={mapContainerRef} />}
-            <div className={styles.statsOverlay}>
-              <div className={styles.statRow}><span className={styles.statKey}>distance</span><span className={styles.statValue}>{activeHike.distance}</span></div>
-              <div className={styles.statRow}><span className={styles.statKey}>elevation gain</span><span className={styles.statValue}>{activeHike.elevation_gain}</span></div>
-              <div className={styles.statRow}><span className={styles.statKey}>high point</span><span className={styles.statValue}>{activeHike.high_point}</span></div>
-              <div className={styles.statRow}><span className={styles.statKey}>difficulty</span><span className={styles.statValue}>{activeHike.difficulty}</span></div>
+            <div className={styles.statsToggleWrap}>
+              <button
+                type="button"
+                className={styles.statsToggleBtn}
+                onClick={() => setStatsOpen(prev => !prev)}
+                aria-label="Toggle trail stats"
+              >
+                <span className={`${styles.hamLine} ${statsOpen ? styles.hamLine1Open : ""}`} />
+                <span className={`${styles.hamLine} ${statsOpen ? styles.hamLine2Open : ""}`} />
+                <span className={`${styles.hamLine} ${statsOpen ? styles.hamLine3Open : ""}`} />
+              </button>
+              <div className={`${styles.statsPanel} ${statsOpen ? styles.statsPanelOpen : ""}`}>
+                <div className={styles.statRow}>
+                  <span className={styles.statKey}>distance</span>
+                  <span className={styles.statValue}>{activeHike.distance}</span>
+                </div>
+                <div className={styles.statRow}>
+                  <span className={styles.statKey}>elevation_gain</span>
+                  <span className={styles.statValue}>{activeHike.elevation_gain}</span>
+                </div>
+                <div className={styles.statRow}>
+                  <span className={styles.statKey}>high_point</span>
+                  <span className={styles.statValue}>{activeHike.high_point}</span>
+                </div>
+                <div className={styles.statRow}>
+                  <span className={styles.statKey}>difficulty</span>
+                  <span className={styles.statValue}>{activeHike.difficulty}</span>
+                </div>
+              </div>
             </div>
 
             <aside className={`${styles.photoPanel} ${openSnapshot ? styles.photoPanelOpen : ""}`}>
@@ -778,12 +813,6 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
       </div>
 
       <div className={styles.mobileRoot}>
-        <div className={styles.mobileTopBar}>
-          <Link href="/" className={styles.logo}>CJ<span>.</span></Link>
-          <div className={styles.mobileTopTitle}>/trails</div>
-          <Link href="/" className={styles.mobileBackLink}>← back</Link>
-        </div>
-
         <div className={styles.mobileScrollTrack}>
           <div
             className={styles.mobileScrollThumb}
@@ -835,15 +864,35 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
         <div className={styles.mobileMapWrap}>
           {isMobile && <div className={styles.mobileMapCanvas} ref={mapContainerRef} />}
-          <div className={styles.statsOverlay}>
-            <div className={styles.statRow}><span className={styles.statKey}>distance</span><span className={styles.statValue}>{activeHike.distance}</span></div>
-            <div className={styles.statRow}><span className={styles.statKey}>elevation gain</span><span className={styles.statValue}>{activeHike.elevation_gain}</span></div>
-            <div className={styles.statRow}><span className={styles.statKey}>high point</span><span className={styles.statValue}>{activeHike.high_point}</span></div>
-            <div className={styles.statRow}><span className={styles.statKey}>difficulty</span><span className={styles.statValue}>{activeHike.difficulty}</span></div>
-          </div>
-          <div className={styles.trailNameBadge}>
-            <div className={styles.trailNameDot} />
-            <span className={styles.trailNameText}>{activeHike.name}</span>
+          <div className={styles.statsToggleWrap}>
+            <button
+              type="button"
+              className={styles.statsToggleBtn}
+              onClick={() => setStatsOpen(prev => !prev)}
+              aria-label="Toggle trail stats"
+            >
+              <span className={`${styles.hamLine} ${statsOpen ? styles.hamLine1Open : ""}`} />
+              <span className={`${styles.hamLine} ${statsOpen ? styles.hamLine2Open : ""}`} />
+              <span className={`${styles.hamLine} ${statsOpen ? styles.hamLine3Open : ""}`} />
+            </button>
+            <div className={`${styles.statsPanel} ${statsOpen ? styles.statsPanelOpen : ""}`}>
+              <div className={styles.statRow}>
+                <span className={styles.statKey}>distance</span>
+                <span className={styles.statValue}>{activeHike.distance}</span>
+              </div>
+              <div className={styles.statRow}>
+                <span className={styles.statKey}>elevation_gain</span>
+                <span className={styles.statValue}>{activeHike.elevation_gain}</span>
+              </div>
+              <div className={styles.statRow}>
+                <span className={styles.statKey}>high_point</span>
+                <span className={styles.statValue}>{activeHike.high_point}</span>
+              </div>
+              <div className={styles.statRow}>
+                <span className={styles.statKey}>difficulty</span>
+                <span className={styles.statValue}>{activeHike.difficulty}</span>
+              </div>
+            </div>
           </div>
           {openSnapshot ? (
             <aside className={`${styles.photoPanel} ${styles.photoPanelOpen}`}>

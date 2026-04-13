@@ -9,39 +9,40 @@
   overflow: hidden;
 }
 
-.topBar {
-  height: 56px;
-  min-height: 56px;
-  border-bottom: 1px solid #1e1e1e;
-  background: rgba(8, 8, 8, 0.93);
+.trailsNav {
+  height: 48px;
+  min-height: 48px;
+  background: rgba(8,8,8,0.93);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid #1e1e1e;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 16px 48px;
+  justify-content: space-between;
+  padding: 0 48px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.navTitle {
-  color: #f0f0f0;
-  font-family: "Space Mono", monospace;
+.trailsNavTitle {
+  font-family: 'Space Mono', monospace;
   font-size: 18px;
   font-weight: 700;
+  color: rgba(255,255,255,0.85);
   letter-spacing: 0.03em;
 }
 
-.backLink {
-  text-decoration: none;
-  color: #aaa;
+.trailsNavBack {
   font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   transition: color 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
 }
 
-.backLink:hover {
+.trailsNavBack:hover {
   color: #00e5ff;
 }
 
@@ -250,40 +251,119 @@
   background: #161b26;
 }
 
-.statsOverlay {
+.statsToggleWrap {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 220px;
-  background: rgba(13, 15, 18, 0.88);
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.statsToggleBtn {
+  width: 29px;
+  height: 29px;
+  background: rgba(10,12,15,0.86);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 7px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  transition: border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.statsToggleBtn:hover {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.hamLine {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  width: 13px;
+  height: 1.5px;
+  background: rgba(255,255,255,0.38);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+.statsToggleBtn .hamLine:nth-of-type(1) {
+  transform: translate(-50%, -50%) translateY(-4px);
+}
+
+.statsToggleBtn .hamLine:nth-of-type(2) {
+  transform: translate(-50%, -50%);
+}
+
+.statsToggleBtn .hamLine:nth-of-type(3) {
+  transform: translate(-50%, -50%) translateY(4px);
+}
+
+.hamLine1Open {
+  transform: translate(-50%, -50%) rotate(45deg) !important;
+  background: #00e5ff;
+}
+
+.hamLine2Open {
+  opacity: 0;
+  transform: translate(-50%, -50%) scaleX(0) !important;
+}
+
+.hamLine3Open {
+  transform: translate(-50%, -50%) rotate(-45deg) !important;
+  background: #00e5ff;
+}
+
+.statsPanel {
+  background: rgba(10,12,15,0.82);
+  border: 0.5px solid rgba(255,255,255,0.064);
   border-radius: 10px;
-  padding: 12px 14px;
+  overflow: hidden;
+  min-width: 204px;
+  pointer-events: none;
+  transform-origin: top right;
+  transform: scale(0.85) translate(8px, -8px);
+  opacity: 0;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1),
+    opacity 0.2s ease;
+}
+
+.statsPanelOpen {
+  transform: scale(1) translate(0, 0);
+  opacity: 1;
+  pointer-events: all;
 }
 
 .statRow {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 6px 0;
-  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+  align-items: baseline;
+  padding: 11px 14px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.048);
 }
 
 .statRow:first-child {
   border-top: none;
-  padding-top: 0;
+  padding-top: 12px;
 }
 
 .statKey {
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255,255,255,0.16);
   letter-spacing: 0.08em;
 }
 
 .statValue {
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.64);
 }
 
 .photoPanel {
@@ -426,48 +506,7 @@
 }
 
 /* ---- MOBILE TOP BAR ---- */
-.mobileTopBar {
-  height: 48px;
-  min-height: 48px;
-  background: rgba(8,8,8,0.95);
-  border-bottom: 1px solid #1e1e1e;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-}
-
-.logo {
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.logo span {
-  color: #00e5ff;
-}
-
-.mobileTopTitle {
-  font-size: 11px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.mobileBackLink {
-  font-size: 10px;
-  color: rgba(255,255,255,0.25);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-}
-
-.mobileBackLink:hover {
-  color: rgba(255,255,255,0.7);
-}
+/* ---- MOBILE TOP BAR ---- */
 
 /* ---- HORIZONTAL SCROLL TRACK ---- */
 .mobileScrollTrack {
@@ -642,7 +681,7 @@
 .mobileProfileCanvas {
   display: block;
   width: 100%;
-  height: 52px;
+  height: 56px;
   touch-action: none;
 }
 
@@ -655,10 +694,6 @@
 }
 
 @media (max-width: 980px) {
-  .topBar {
-    padding: 16px 24px;
-  }
-
   .mainRow {
     grid-template-columns: 1fr;
   }
@@ -673,5 +708,37 @@
 
   .statsOverlay {
     width: 190px;
+  }
+}
+
+@media (max-width: 768px) {
+  .trailsNav {
+    padding: 0 18px;
+  }
+  .trailsNavTitle {
+    font-size: 15px;
+  }
+
+  .statsToggleBtn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    gap: 3px;
+  }
+
+  .hamLine {
+    width: 11px;
+  }
+
+  .hamLine1Open {
+    transform: translate(-50%, -50%) rotate(45deg) !important;
+  }
+
+  .hamLine3Open {
+    transform: translate(-50%, -50%) rotate(-45deg) !important;
+  }
+
+  .statsPanel {
+    min-width: 192px;
   }
 }

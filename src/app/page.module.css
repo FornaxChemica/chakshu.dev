@@ -963,52 +963,98 @@
   border-color: rgba(0, 229, 255, 0.3);
 }
 
-.page :global(.trails-teaser) {
-  display: block;
-  text-decoration: none;
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  background: #111418;
-  overflow: hidden;
-  transition: border-color 0.3s ease;
-}
-
-.page :global(.trails-teaser:hover) {
-  border-color: rgba(29, 158, 117, 0.35);
-}
-
 .page :global(.trails-empty-state) {
   padding: 20px;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.35);
 }
 
-.page :global(.trails-top) {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 260px;
+
+.page :global(.trails-card) {
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.3s;
 }
 
-.page :global(.trails-map-wrap) {
-  position: relative;
+.page :global(.trails-card:hover) {
+  border-color: rgba(29,158,117,0.35);
+}
+
+.page :global(.trails-card .term-bar) {
+  background: #0d0f12;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+}
+
+.page :global(.trails-card .term-dot) {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.page :global(.trails-card .term-dot.red) { background: #ff5f57; }
+.page :global(.trails-card .term-dot.yellow) { background: #febc2e; }
+.page :global(.trails-card .term-dot.green) { background: #28c840; }
+
+.page :global(.trails-card .term-title) {
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  margin-left: 8px;
+  letter-spacing: 0.06em;
+  text-align: left;
+  flex: initial;
+}
+
+.page :global(.trails-body) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.page :global(.trails-log) {
+  padding: 22px 24px;
+  border-right: 0.5px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 280px;
+  background: #111418;
+}
+
+.page :global(.trails-map-side) {
+  display: flex;
+  flex-direction: column;
+  background: #111418;
+}
+
+.page :global(.trails-map-canvas-wrap) {
+  flex: 1;
   background: #161b26;
-  border-right: 0.5px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
 }
 
 .page :global(.trails-map-canvas) {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 260px;
 }
 
-.page :global(.trails-map-location) {
-  position: absolute;
-  left: 12px;
-  bottom: 10px;
+.page :global(.trails-map-meta) {
+  padding: 10px 14px;
+  border-top: 0.5px solid rgba(255,255,255,0.06);
   font-size: 9px;
-  letter-spacing: 0.04em;
   color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.06em;
+  background: #0d0f12;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   text-transform: lowercase;
 }
 
@@ -1023,106 +1069,62 @@
   animation: trailsPulse 2s infinite;
 }
 
-.page :global(.trails-stats) {
-  padding: 18px 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.page :global(.trails-most-recent) {
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.2);
-  margin-bottom: 12px;
-}
-
-.page :global(.trails-name) {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 24px;
-  line-height: 1.2;
-  font-weight: 500;
-}
-
-.page :global(.trails-sub) {
-  margin-top: 8px;
-  margin-bottom: 16px;
+.page :global(.log-line) {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.9;
+  color: rgba(255,255,255,0.4);
+  white-space: pre;
+  min-height: 1.9em;
 }
 
-.page :global(.trails-stat-row) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-  padding: 9px 0;
+.page :global(.log-divider) {
+  height: 0.5px;
+  background: rgba(255,255,255,0.06);
+  margin: 10px 0;
 }
 
-.page :global(.trails-stat-key) {
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: lowercase;
-  color: rgba(255, 255, 255, 0.2);
+.page :global(.log-cursor) {
+  display: inline-block;
+  width: 7px;
+  height: 13px;
+  background: rgba(0,229,255,0.6);
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
 }
 
-.page :global(.trails-stat-val) {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+.page :global(.log-promptDollar) {
+  color: rgba(0,229,255,0.5);
 }
 
-.page :global(.trails-snapshot-count) {
-  color: #5dcaa5;
+.page :global(.log-promptArrow) {
+  color: rgba(0,229,255,0.4);
 }
 
-.page :global(.trails-bottom) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-  padding: 14px 16px;
+.page :global(.log-comment) {
+  color: rgba(255,255,255,0.18);
 }
 
-.page :global(.trails-chip-row) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+.page :global(.log-key) {
+  color: rgba(255,255,255,0.4);
 }
 
-.page :global(.trails-chip-label) {
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.35);
+.page :global(.log-value) {
+  color: rgba(255,255,255,0.85);
 }
 
-.page :global(.trails-chip) {
-  font-size: 10px;
-  border-radius: 20px;
-  border: 0.5px solid rgba(29, 158, 117, 0.55);
-  background: rgba(29, 158, 117, 0.08);
-  color: rgba(93, 202, 165, 0.7);
-  padding: 4px 10px;
-  letter-spacing: 0.02em;
-  transition: background 0.2s ease, color 0.2s ease;
+.page :global(.log-valueAccent) {
+  color: #5DCAA5;
 }
 
-.page :global(.trails-teaser:hover .trails-chip) {
-  background: rgba(29, 158, 117, 0.16);
-  color: #5dcaa5;
+.page :global(.trails-cta-row) {
+  margin-top: auto;
+  padding-top: 16px;
 }
 
-.page :global(.trails-walk-btn) {
-  margin-left: 0;
-}
-
-.page :global(.trails-teaser:hover .trails-walk-btn) {
-  transform: translateX(6px);
-  color: var(--accent);
-  border-color: rgba(0, 229, 255, 0.3);
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 .page :global(.now-playing-bar) {
@@ -1543,11 +1545,10 @@
   .page :global(.cal-card) { flex-direction: column; gap: 24px; }
   .page :global(.music-teaser) { padding: 24px; align-items: flex-start; }
   .page :global(.music-teaser-arrow) { margin-left: 20px; font-size: 10px; }
-  .page :global(.trails-top) { grid-template-columns: 1fr; }
-  .page :global(.trails-map-wrap) { min-height: 220px; border-right: none; border-bottom: 0.5px solid rgba(255, 255, 255, 0.08); }
-  .page :global(.trails-stats) { padding: 16px; }
-  .page :global(.trails-bottom) { padding: 12px 14px; align-items: flex-start; flex-direction: column; }
-  .page :global(.trails-walk-link) { font-size: 10px; }
+  .page :global(.trails-body) { grid-template-columns: 1fr; }
+  .page :global(.trails-log) { padding: 16px; border-right: none; border-bottom: 0.5px solid rgba(255, 255, 255, 0.08); }
+  .page :global(.trails-map-canvas-wrap) { min-height: 220px; }
+  .page :global(.trails-card .btn-cal) { width: 100%; justify-content: center; }
   .page :global(.now-playing-bar) { padding: 14px 24px; }
   .page :global(.np-track) { max-width: 170px; }
   .page :global(.np-artist) { max-width: 120px; }

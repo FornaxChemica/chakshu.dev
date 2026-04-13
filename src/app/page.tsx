@@ -20,6 +20,23 @@ export default async function Home() {
   const snapshotPositions = featuredHike ? featuredHike.snapshots.map((snapshot) => snapshot.at) : [];
   const milesHiked = hikeList.reduce((total, hike) => total + parseMiles(hike.distance), 0);
 
+  const totalMiles = hikeList.reduce((sum, hike) => {
+    const miles = parseFloat(hike.distance.replace(/[^0-9.]/g, ""));
+    return sum + (Number.isNaN(miles) ? 0 : miles);
+  }, 0);
+
+  const totalElevation = hikeList.reduce((sum, hike) => {
+    const ft = parseFloat(hike.elevation_gain.replace(/[^0-9.]/g, ""));
+    return sum + (Number.isNaN(ft) ? 0 : ft);
+  }, 0);
+
+  const statesVisited = new Set(
+    hikeList.map((hike) => hike.location.split(",").pop()?.trim()).filter(Boolean)
+  ).size;
+
+  const trailsLogged = hikeList.length;
+  const mostRecent = featuredHike;
+
   return (
     <main className={styles.page}>
       <div className="nav-overlay" id="navOverlay" aria-hidden="true" />
@@ -237,12 +254,16 @@ export default async function Home() {
       <section id="trails">
         <div className="container">
           <div className="section-header"><span className="section-num">07</span><span className="section-icon"><i className="ph ph-mountains" aria-hidden="true" /></span><h2 className="section-title">Trails</h2><div className="section-line" /></div>
-          {featuredHike && featuredGpxData ? (
+          {mostRecent && featuredGpxData ? (
             <TrailsTeaserClient
-              hike={featuredHike}
+              hike={mostRecent}
               trail={featuredGpxData.trail}
-              allHikes={allHikes}
               snapshotPositions={snapshotPositions}
+              trailsLogged={trailsLogged}
+              totalMiles={Math.round(totalMiles * 10) / 10}
+              totalElevation={Math.round(totalElevation / 1000) * 1000}
+              statesVisited={statesVisited}
+              allHikes={allHikes}
             />
           ) : (
             <div className="trails-teaser trails-empty-state">Trails data unavailable right now.</div>

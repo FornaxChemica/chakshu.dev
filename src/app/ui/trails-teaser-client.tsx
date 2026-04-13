@@ -1,19 +1,28 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { Hike } from "../../../types/hikes";
 
-type TrailsTeaserClientProps = {
+type Props = {
   hike: Hike;
   trail: [number, number][];
-  allHikes: { id: string; name: string }[];
   snapshotPositions: number[];
+  trailsLogged: number;
+  totalMiles: number;
+  totalElevation: number;
+  statesVisited: number;
+  allHikes: { id: string; name: string }[];
 };
+
+type Tone = "promptDollar" | "promptArrow" | "comment" | "key" | "value" | "valueAccent";
+type Segment = { text: string; tone: Tone };
+type LogEntry = { kind: "line"; segments: Segment[] } | { kind: "spacer" } | { kind: "divider" };
 
 const DRAW_DURATION_MS = 1500;
 const DOT_POP_MS = 300;
+const TYPE_SPEED_MS = 18;
+const LINE_PAUSE_MS = 120;
 
 function easeInOut(value: number): number {
   return 0.5 * (1 - Math.cos(Math.PI * value));
@@ -25,17 +34,144 @@ function clamp01(value: number): number {
   return value;
 }
 
-export default function TrailsTeaserClient({ hike, trail, allHikes, snapshotPositions }: TrailsTeaserClientProps) {
-  const cardRef = useRef<HTMLAnchorElement | null>(null);
+function lineLength(entry: LogEntry): number {
+  if (entry.kind !== "line") return 0;
+  return entry.segments.reduce((sum, segment) => sum + segment.text.length, 0);
+}
+
+function renderSegments(entry: Extract<LogEntry, { kind: "line" }>, charCount: number) {
+  let remaining = charCount;
+  return entry.segments.map((segment, idx) => {
+    if (remaining <= 0) return null;
+    const piece = segment.text.slice(0, remaining);
+    remaining -= piece.length;
+    return (
+      <span key={`${segment.tone}-${idx}`} className={`log-${segment.tone}`}>
+        {piece}
+      </span>
+    );
+  });
+}
+
+export default function TrailsTeaserClient({
+  hike,
+  trail,
+  snapshotPositions,
+  trailsLogged,
+  totalMiles,
+  totalElevation,
+  statesVisited,
+  allHikes,
+}: Props) {
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const locationRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const dotAppearedAtRef = useRef<Map<number, number>>(new Map());
   const [snapshotsSeen, setSnapshotsSeen] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [pulsePosition, setPulsePosition] = useState<{ x: number; y: number } | null>(null);
+  const [inView, setInView] = useState(false);
+  const [typedLineIndex, setTypedLineIndex] = useState(0);
+  const [typedCharCount, setTypedCharCount] = useState(0);
+  const [typingDone, setTypingDone] = useState(false);
 
-  const otherHikes = useMemo(() => allHikes.filter((entry) => entry.id !== hike.id), [allHikes, hike.id]);
+  const loggedCount = trailsLogged || allHikes.length;
+
+  const logEntries = useMemo<LogEntry[]>(
+    () => [
+      {
+        kind: "line",
+        segments: [
+          { text: "$ ", tone: "promptDollar" },
+          { text: "cat stats.json", tone: "value" },
+        ],
+      },
+      { kind: "line", segments: [{ text: "// lifetime · all trails", tone: "comment" }] },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "trails_logged:     ", tone: "key" },
+          { text: String(loggedCount), tone: "value" },
+        ],
+      },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "total_miles:       ", tone: "key" },
+          { text: `${totalMiles} mi`, tone: "value" },
+        ],
+      },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "elevation_gained:  ", tone: "key" },
+          { text: `${totalElevation.toLocaleString()} ft`, tone: "value" },
+        ],
+      },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "states_visited:    ", tone: "key" },
+          { text: String(statesVisited), tone: "value" },
+        ],
+      },
+      { kind: "divider" },
+      {
+        kind: "line",
+        segments: [
+          { text: "$ ", tone: "promptDollar" },
+          { text: "cat last_expedition.json", tone: "value" },
+        ],
+      },
+      { kind: "line", segments: [{ text: `// ${hike.date} · ${hike.location}`, tone: "comment" }] },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "trail:             ", tone: "key" },
+          { text: `"${hike.name}"`, tone: "value" },
+        ],
+      },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "distance:          ", tone: "key" },
+          { text: hike.distance, tone: "value" },
+        ],
+      },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "elevation_gain:    ", tone: "key" },
+          { text: hike.elevation_gain, tone: "value" },
+        ],
+      },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "high_point:        ", tone: "key" },
+          { text: hike.high_point, tone: "value" },
+        ],
+      },
+      {
+        kind: "line",
+        segments: [
+          { text: "> ", tone: "promptArrow" },
+          { text: "snapshots:         ", tone: "key" },
+          { text: `${hike.snapshots.length} along this route`, tone: "valueAccent" },
+        ],
+      },
+      { kind: "spacer" },
+    ],
+    [hike, loggedCount, statesVisited, totalElevation, totalMiles]
+  );
 
   const drawFrame = useCallback(
     (ctx: CanvasRenderingContext2D, width: number, height: number, progress: number, now: number) => {
@@ -208,8 +344,27 @@ export default function TrailsTeaserClient({ hike, trail, allHikes, snapshotPosi
   }, [drawFrame, snapshotPositions, trail]);
 
   useEffect(() => {
-    const onResize = () => restartAnimation();
+    const node = cardRef.current;
+    if (!node) return;
 
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (!first?.isIntersecting) return;
+        setInView(true);
+        observer.disconnect();
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    const onResize = () => restartAnimation();
     restartAnimation();
     window.addEventListener("resize", onResize);
 
@@ -219,47 +374,120 @@ export default function TrailsTeaserClient({ hike, trail, allHikes, snapshotPosi
         window.cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [restartAnimation]);
+  }, [inView, restartAnimation]);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    let cancelled = false;
+    let timer: number | null = null;
+    let lineIdx = 0;
+    let charIdx = 0;
+
+    setTypedLineIndex(0);
+    setTypedCharCount(0);
+    setTypingDone(false);
+
+    const schedule = (delay: number, fn: () => void) => {
+      timer = window.setTimeout(fn, delay);
+    };
+
+    const step = () => {
+      if (cancelled) return;
+
+      if (lineIdx >= logEntries.length) {
+        setTypingDone(true);
+        return;
+      }
+
+      const current = logEntries[lineIdx];
+      if (current.kind !== "line") {
+        lineIdx += 1;
+        setTypedLineIndex(lineIdx);
+        setTypedCharCount(0);
+        schedule(LINE_PAUSE_MS, step);
+        return;
+      }
+
+      const total = lineLength(current);
+      if (charIdx < total) {
+        charIdx += 1;
+        setTypedLineIndex(lineIdx);
+        setTypedCharCount(charIdx);
+        schedule(TYPE_SPEED_MS, step);
+        return;
+      }
+
+      lineIdx += 1;
+      charIdx = 0;
+      setTypedLineIndex(lineIdx);
+      setTypedCharCount(0);
+      schedule(LINE_PAUSE_MS, step);
+    };
+
+    schedule(220, step);
+
+    return () => {
+      cancelled = true;
+      if (timer !== null) window.clearTimeout(timer);
+    };
+  }, [inView, logEntries]);
 
   return (
-    <Link href="/trails" className="trails-teaser" ref={cardRef} onMouseEnter={restartAnimation}>
-      <div className="trails-top">
-        <div className="trails-map-wrap">
-          <canvas ref={canvasRef} className="trails-map-canvas" />
-          <div className="trails-map-location" ref={locationRef}>{hike.location}</div>
-          {completed && pulsePosition ? (
-            <div className="trails-dot-pulse" style={{ left: pulsePosition.x, top: pulsePosition.y }} />
-          ) : null}
+    <div className="trails-card" ref={cardRef}>
+      <div className="term-bar">
+        <span className="term-dot red" />
+        <span className="term-dot yellow" />
+        <span className="term-dot green" />
+        <span className="term-title">trail_log.sh</span>
+      </div>
+
+      <div className="trails-body">
+        <div className="trails-log">
+          {logEntries.map((entry, idx) => {
+            if (entry.kind === "divider") {
+              const show = typingDone || idx < typedLineIndex;
+              return <div key={`divider-${idx}`} className="log-divider" style={{ opacity: show ? 1 : 0 }} />;
+            }
+
+            if (entry.kind === "spacer") {
+              const show = typingDone || idx < typedLineIndex;
+              return <div key={`spacer-${idx}`} className="log-line">{show ? " " : ""}</div>;
+            }
+
+            const fullLength = lineLength(entry);
+            const isDone = typingDone || idx < typedLineIndex;
+            const isCurrent = !typingDone && idx === typedLineIndex;
+            const chars = isDone ? fullLength : isCurrent ? typedCharCount : 0;
+
+            return (
+              <div key={`line-${idx}`} className="log-line">
+                {renderSegments(entry, chars)}
+                {isCurrent ? <span className="log-cursor" /> : null}
+              </div>
+            );
+          })}
+
+          <div className="trails-cta-row">
+            <a href="/trails" className="btn-cal">
+              OPEN /TRAILS <i className="ph ph-arrow-up-right" aria-hidden="true" />
+            </a>
+          </div>
         </div>
 
-        <div className="trails-stats">
-          <div className="trails-most-recent">MOST RECENT · {hike.date}</div>
-          <h3 className="trails-name">{hike.name}</h3>
-          <div className="trails-sub">{hike.location}</div>
-
-          <div className="trails-stat-row"><span className="trails-stat-key">distance</span><span className="trails-stat-val">{hike.distance}</span></div>
-          <div className="trails-stat-row"><span className="trails-stat-key">elevation_gain</span><span className="trails-stat-val">{hike.elevation_gain}</span></div>
-          <div className="trails-stat-row"><span className="trails-stat-key">high_point</span><span className="trails-stat-val">{hike.high_point}</span></div>
-          <div className="trails-stat-row">
-            <span className="trails-stat-key">snapshots</span>
-            <span className="trails-stat-val trails-snapshot-count">
-              {snapshotsSeen === 0 ? "-" : `${snapshotsSeen} along this route`}
-            </span>
+        <div className="trails-map-side">
+          <div className="trails-map-canvas-wrap">
+            <canvas ref={canvasRef} className="trails-map-canvas" />
+            {completed && pulsePosition ? (
+              <div className="trails-dot-pulse" style={{ left: pulsePosition.x, top: pulsePosition.y }} />
+            ) : null}
+          </div>
+          <div className="trails-map-meta">
+            <span>{hike.location.toLowerCase()}</span>
+            <span>{hike.date.toLowerCase()}</span>
           </div>
         </div>
       </div>
-
-      <div className="trails-bottom">
-        <div className="trails-chip-row">
-          <span className="trails-chip-label">all trails -&gt;</span>
-          {otherHikes.map((entry) => (
-            <span key={entry.id} className="trails-chip">{entry.name}</span>
-          ))}
-        </div>
-        <div className="music-teaser-arrow trails-walk-btn">
-          Walk the trail <i className="ph ph-arrow-up-right" aria-hidden="true" />
-        </div>
-      </div>
-    </Link>
+    </div>
   );
 }
