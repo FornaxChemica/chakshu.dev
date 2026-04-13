@@ -142,7 +142,8 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   const [mobileThumbWidth, setMobileThumbWidth] = useState(60);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const profileCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const desktopProfileCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const mobileProfileCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const shelfRef = useRef<HTMLDivElement>(null);
   const mobileShelfRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapInstance | null>(null);
@@ -150,6 +151,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   const pollTimerRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const draggingRef = useRef(false);
+  const dragCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const progressRef = useRef(0);
 
   const activeHike = hikes[activeIndex] ?? null;
@@ -433,114 +435,118 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
   const drawProfile = useCallback(
     (currentProgress: number) => {
-      const canvas = profileCanvasRef.current;
-      if (!canvas || !activeHike) return;
+      if (!activeHike) return;
       const values = activeHike.gpxData.elevationFt;
 
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      const ctx = canvas.getContext("2d");
-      if (!ctx || values.length < 2) return;
+      const drawOnCanvas = (canvas: HTMLCanvasElement | null) => {
+        if (!canvas) return;
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const width = rect.width;
-      const height = rect.height;
-      const paddingX = 8;
-      const paddingY = 10;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return;
 
-      const min = activeHike.gpxData.elevationMin;
-      const max = activeHike.gpxData.elevationMax;
-      const span = Math.max(max - min, 1);
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        const ctx = canvas.getContext("2d");
+        if (!ctx || values.length < 2) return;
 
-      const project = (idx: number): [number, number] => {
-        const x = paddingX + (idx / (values.length - 1)) * (width - paddingX * 2);
-        const y = paddingY + (1 - (values[idx] - min) / span) * (height - paddingY * 2);
-        return [x, y];
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const width = rect.width;
+        const height = rect.height;
+        const paddingX = 8;
+        const paddingY = 10;
+
+        const min = activeHike.gpxData.elevationMin;
+        const max = activeHike.gpxData.elevationMax;
+        const span = Math.max(max - min, 1);
+
+        const project = (idx: number): [number, number] => {
+          const x = paddingX + (idx / (values.length - 1)) * (width - paddingX * 2);
+          const y = paddingY + (1 - (values[idx] - min) / span) * (height - paddingY * 2);
+          return [x, y];
+        };
+
+        ctx.clearRect(0, 0, width, height);
+
+        ctx.beginPath();
+        values.forEach((_, idx) => {
+          const [x, y] = project(idx);
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.lineTo(width - paddingX, height - paddingY);
+        ctx.lineTo(paddingX, height - paddingY);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(29,158,117,0.08)";
+        ctx.fill();
+
+        ctx.beginPath();
+        values.forEach((_, idx) => {
+          const [x, y] = project(idx);
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.strokeStyle = "rgba(29,158,117,0.25)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        const walkedIndex = Math.max(1, Math.floor(currentProgress * (values.length - 1)));
+        ctx.beginPath();
+        for (let i = 0; i <= walkedIndex; i += 1) {
+          const [x, y] = project(i);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.lineTo(project(walkedIndex)[0], height - paddingY);
+        ctx.lineTo(paddingX, height - paddingY);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(29,158,117,0.3)";
+        ctx.fill();
+
+        ctx.beginPath();
+        for (let i = 0; i <= walkedIndex; i += 1) {
+          const [x, y] = project(i);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = "#1D9E75";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        activeHike.snapshots.forEach((snapshot) => {
+          const idx = Math.min(values.length - 1, Math.floor(clamp01(snapshot.at) * (values.length - 1)));
+          const [x, y] = project(idx);
+          const active = currentProgress >= snapshot.at;
+          ctx.fillStyle = active ? "#EF9F27" : "rgba(239,159,39,0.3)";
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        const handleIdx = Math.max(0, Math.min(values.length - 1, Math.floor(currentProgress * (values.length - 1))));
+        const [handleX, handleY] = project(handleIdx);
+
+        ctx.strokeStyle = "rgba(29,158,117,0.35)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(handleX, 3);
+        ctx.lineTo(handleX, height - 3);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(handleX, handleY, 6, 0, Math.PI * 2);
+        ctx.fillStyle = "#1D9E75";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(handleX, handleY, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = "#0d0f12";
+        ctx.fill();
       };
 
-      ctx.clearRect(0, 0, width, height);
-
-      ctx.beginPath();
-      values.forEach((_, idx) => {
-        const [x, y] = project(idx);
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.lineTo(width - paddingX, height - paddingY);
-      ctx.lineTo(paddingX, height - paddingY);
-      ctx.closePath();
-      ctx.fillStyle = "rgba(29,158,117,0.08)";
-      ctx.fill();
-
-      ctx.beginPath();
-      values.forEach((_, idx) => {
-        const [x, y] = project(idx);
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = "rgba(29,158,117,0.25)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      const walkedIndex = Math.max(1, Math.floor(currentProgress * (values.length - 1)));
-      ctx.beginPath();
-      for (let i = 0; i <= walkedIndex; i += 1) {
-        const [x, y] = project(i);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.lineTo(project(walkedIndex)[0], height - paddingY);
-      ctx.lineTo(paddingX, height - paddingY);
-      ctx.closePath();
-      ctx.fillStyle = "rgba(29,158,117,0.3)";
-      ctx.fill();
-
-      ctx.beginPath();
-      for (let i = 0; i <= walkedIndex; i += 1) {
-        const [x, y] = project(i);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = "#1D9E75";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      activeHike.snapshots.forEach((snapshot) => {
-        const idx = Math.min(values.length - 1, Math.floor(clamp01(snapshot.at) * (values.length - 1)));
-        const [x, y] = project(idx);
-        const active = currentProgress >= snapshot.at;
-        ctx.fillStyle = active ? "#EF9F27" : "rgba(239,159,39,0.3)";
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // get the exact x,y position on the elevation curve at current progress
-      const handleIdx = Math.max(0, Math.min(values.length - 1, Math.floor(currentProgress * (values.length - 1))));
-      const [handleX, handleY] = project(handleIdx);
-
-      // faint full-height vertical position guide line
-      ctx.strokeStyle = "rgba(29,158,117,0.35)";
-      ctx.lineWidth = 1;
-      ctx.setLineDash([]);
-      ctx.beginPath();
-      ctx.moveTo(handleX, 3);
-      ctx.lineTo(handleX, height - 3);
-      ctx.stroke();
-
-      // outer ring
-      ctx.beginPath();
-      ctx.arc(handleX, handleY, 6, 0, Math.PI * 2);
-      ctx.fillStyle = "#1D9E75";
-      ctx.fill();
-
-      // inner dot
-      ctx.beginPath();
-      ctx.arc(handleX, handleY, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = "#0d0f12";
-      ctx.fill();
+      drawOnCanvas(desktopProfileCanvasRef.current);
+      drawOnCanvas(mobileProfileCanvasRef.current);
     },
     [activeHike]
   );
@@ -553,8 +559,18 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   }, [drawProfile, progress]);
 
   const updateFromEvent = useCallback(
-    (clientX: number) => {
-      const canvas = profileCanvasRef.current;
+    (clientX: number, sourceCanvas?: HTMLCanvasElement | null) => {
+      const canvasCandidates = [
+        sourceCanvas,
+        dragCanvasRef.current,
+        desktopProfileCanvasRef.current,
+        mobileProfileCanvasRef.current,
+      ];
+      const canvas = canvasCandidates.find((candidate) => {
+        if (!candidate) return false;
+        const rect = candidate.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      });
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
       const ratio = clamp01((clientX - rect.left) / rect.width);
@@ -604,6 +620,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
     const onUp = () => {
       draggingRef.current = false;
+      dragCanvasRef.current = null;
     };
 
     window.addEventListener("mousemove", onMove);
@@ -727,6 +744,23 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
             <div className={styles.trailNameBadge}>
               <div className={styles.trailNameDot} />
               <span className={styles.trailNameText}>{activeHike.name}</span>
+              {activeHike.alltrails_url ? (
+                <a
+                  href={activeHike.alltrails_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.allTrailsLink}
+                  aria-label={`Open ${activeHike.name} on AllTrails`}
+                >
+                  <svg className={styles.allTrailsIcon} viewBox="0 0 62 48" aria-hidden="true" focusable="false">
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M50.265 14.825c-1.688-3.224-2.993-4.761-4.687-4.761-1.891 0-2.724 1-3.865 2.79-.92 1.2-1.809 2.843-3.289 2.68-1.562-.165-2.466-3.857-3.645-6.947C33.162 4.376 32.23 0 29.544 0c-1.532 0-2.872 1.395-4.95 4.515L3.13 37.428C.664 41.549-1.4 44.42 1.212 47.12c3.07 2.953 10.278-2.215 15.212-5.333 4.933-3.118 9.976-6.153 17.102-5.99 9.593.22 14.253 9.846 20.063 11.678 3.947 1.258 7.565-.191 8.333-4.266.452-2.24-.332-4.414-1.415-6.733L50.265 14.825Zm-.658 19.305c-1.946 1.449-4.66-.876-6.414-1.86-1.863-1.04-5.015-3.528-10.661-3.446-4.605.055-7.1 1.778-9.84 3.637-5.948 4.048-11.32 8.752-12.855 6.318-.986-1.56 1.672-4.677 7.921-14.412 4.44-6.92 7.568-12.444 9.785-12.444 2.45 0 2.588 2.404 2.96 4.868.705 3.925 2.623 5.968 5.115 6.29 2.793.378 5.207-1.966 7.126-1.941 1.792.038 2.971 2.633 4.451 5.34 1.875 3.364 3.832 6.583 2.412 7.65Z"
+                    />
+                  </svg>
+                </a>
+              ) : null}
             </div>
             {!isMobile && <div className={styles.mapCanvas} ref={mapContainerRef} />}
             <div className={styles.statsToggleWrap}>
@@ -790,23 +824,25 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
             <div>{contextLabel(progress, activeHike.snapshots)}</div>
           </div>
           <canvas
-            ref={profileCanvasRef}
+            ref={desktopProfileCanvasRef}
             className={styles.profileCanvas}
             onMouseDown={(event) => {
+              dragCanvasRef.current = event.currentTarget;
               draggingRef.current = true;
               if (!hasInteracted) setHasInteracted(true);
-              updateFromEvent(event.clientX);
+              updateFromEvent(event.clientX, event.currentTarget);
             }}
             onTouchStart={(event) => {
               const touch = event.touches[0];
               if (!touch) return;
+              dragCanvasRef.current = event.currentTarget;
               draggingRef.current = true;
               if (!hasInteracted) setHasInteracted(true);
-              updateFromEvent(touch.clientX);
+              updateFromEvent(touch.clientX, event.currentTarget);
             }}
             onClick={(event) => {
               if (!hasInteracted) setHasInteracted(true);
-              updateFromEvent(event.clientX);
+              updateFromEvent(event.clientX, event.currentTarget);
             }}
           />
         </div>
@@ -918,23 +954,25 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
             <div>{contextLabel(progress, activeHike.snapshots)}</div>
           </div>
           <canvas
-            ref={profileCanvasRef}
+            ref={mobileProfileCanvasRef}
             className={styles.mobileProfileCanvas}
             onMouseDown={(event) => {
+              dragCanvasRef.current = event.currentTarget;
               draggingRef.current = true;
               if (!hasInteracted) setHasInteracted(true);
-              updateFromEvent(event.clientX);
+              updateFromEvent(event.clientX, event.currentTarget);
             }}
             onTouchStart={(event) => {
               const touch = event.touches[0];
               if (!touch) return;
+              dragCanvasRef.current = event.currentTarget;
               draggingRef.current = true;
               if (!hasInteracted) setHasInteracted(true);
-              updateFromEvent(touch.clientX);
+              updateFromEvent(touch.clientX, event.currentTarget);
             }}
             onClick={(event) => {
               if (!hasInteracted) setHasInteracted(true);
-              updateFromEvent(event.clientX);
+              updateFromEvent(event.clientX, event.currentTarget);
             }}
           />
         </div>

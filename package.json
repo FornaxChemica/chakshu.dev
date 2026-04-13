@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "snapshots:at": "node scripts/update-snapshot-at.mjs",
+    "hike:add": "node scripts/add-hike-from-gpx.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

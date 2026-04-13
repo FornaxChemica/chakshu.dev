@@ -1,6 +1,6 @@
 .root {
-  min-height: 100vh;
-  height: 100vh;
+  min-height: 0;
+  height: calc(100dvh - 48px);
   font-family: inherit;
   background: #0d0f12;
   color: rgba(255, 255, 255, 0.85);
@@ -222,11 +222,11 @@
   background: rgba(10, 12, 15, 0.88);
   border: 0.5px solid rgba(0, 229, 255, 0.25);
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 6px 36px 6px 12px;
   display: flex;
   align-items: center;
   gap: 7px;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .trailNameDot {
@@ -243,6 +243,36 @@
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 0.04em;
   white-space: nowrap;
+}
+
+.allTrailsLink {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 0.5px solid rgba(0, 229, 255, 0.45);
+  background: rgba(0, 229, 255, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #00e5ff;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.allTrailsLink:hover {
+  border-color: #00e5ff;
+  background: rgba(0, 229, 255, 0.22);
+  transform: translateY(calc(-50% - 1px));
+}
+
+.allTrailsIcon {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
 }
 
 .mapCanvas {
@@ -498,7 +528,8 @@
 /* ---- MOBILE ROOT ---- */
 .mobileRoot {
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 0;
+  height: calc(100dvh - 48px);
   background: #0d0f12;
   color: rgba(255,255,255,0.85);
   font-family: inherit;

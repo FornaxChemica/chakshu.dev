@@ -8,6 +8,7 @@ export type Snapshot = {
 export type Hike = {
   id: string;
   name: string;
+  alltrails_url?: string;
   location: string;
   date: string;
   distance: string;

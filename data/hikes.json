@@ -2,6 +2,7 @@
   {
     "id": "bryce-canyon-2024",
     "name": "Navajo Loop + Peekaboo + Tropic",
+    "alltrails_url": "https://www.alltrails.com/trail/us/utah/navajo-loop-benchmark-via-peekaboo-loop-and-tropic-trail?u=i&sh=nqw9ya",
     "location": "Bryce Canyon NP, Utah",
     "date": "Oct 2024",
     "distance": "4.08 mi",
@@ -27,6 +28,7 @@
   {
     "id": "bell-trail",
     "name": "Bell Trail",
+    "alltrails_url": "https://www.alltrails.com/trail/us/arizona/bell-trail?u=i&sh=nqw9ya",
     "location": "Sedona, Arizona",
     "date": "TBD",
     "distance": "7.02 mi",
@@ -46,6 +48,7 @@
   {
     "id": "bob-bear-fossil-creek",
     "name": "Bob Bear Trail to Fossil Creek Falls",
+    "alltrails_url": "https://www.alltrails.com/trail/us/arizona/fossil-springs-trail?u=i&sh=nqw9ya",
     "location": "Camp Verde, Arizona",
     "date": "TBD",
     "distance": "8.54 mi",
@@ -65,6 +68,7 @@
   {
     "id": "camelback-echo-canyon",
     "name": "Camelback Mountain via Echo Canyon Trail",
+    "alltrails_url": "https://www.alltrails.com/trail/us/arizona/camelback-mountain-via-echo-canyon-trail?u=i&sh=nqw9ya",
     "location": "Phoenix, Arizona",
     "date": "TBD",
     "distance": "2.36 mi",
@@ -84,6 +88,7 @@
   {
     "id": "lower-la-barge-box",
     "name": "Lower La Barge Box Trail",
+    "alltrails_url": "https://www.alltrails.com/trail/us/arizona/lower-la-barge-box-trail?u=i&sh=nqw9ya",
     "location": "Tonto National Forest, Arizona",
     "date": "TBD",
     "distance": "10.2 mi",
@@ -103,6 +108,7 @@
   {
     "id": "pine-creek-anna-mae-gowan-waterfall",
     "name": "Pine Creek Anna Mae Gowan and Waterfall Loop",
+    "alltrails_url": "https://www.alltrails.com/trail/us/arizona/pine-creek-anna-mae-gowan-and-waterfall-loop?u=i&sh=nqw9ya",
     "location": "Pine, Arizona",
     "date": "TBD",
     "distance": "1.41 mi",
@@ -122,6 +128,7 @@
   {
     "id": "zion-canyon-overlook",
     "name": "Zion Canyon Overlook Trail",
+    "alltrails_url": "https://www.alltrails.com/trail/us/utah/canyon-overlook-trail?u=i&sh=nqw9ya",
     "location": "Zion National Park, Utah",
     "date": "TBD",
     "distance": "0.9 mi",
@@ -141,6 +148,7 @@
   {
     "id": "zion-narrows-big-springs",
     "name": "Zion Narrows Bottom-Up to Big Springs",
+    "alltrails_url": "https://www.alltrails.com/trail/us/utah/zion-narrows-trail-to-imlay-temple-and-big-spring?u=i&sh=nqw9ya",
     "location": "Zion National Park, Utah",
     "date": "TBD",
     "distance": "3.31 mi",
@@ -156,5 +164,18 @@
         "elevation": "TBD"
       }
     ]
+  },
+  {
+    "id": "shi-shi-beach-trail",
+    "name": "Shi Shi Beach Trail",
+    "alltrails_url": "https://www.alltrails.com/trail/us/washington/shi-shi-beach-trail?u=i&sh=nqw9ya",
+    "location": "Olympic National Park, Washington",
+    "date": "TBD",
+    "distance": "4.42 mi",
+    "elevation_gain": "644 ft",
+    "high_point": "217 ft",
+    "difficulty": "Moderate",
+    "gpx": "/hikes/Shi_Shi_Beach_Trail.gpx",
+    "snapshots": []
   }
 ]
