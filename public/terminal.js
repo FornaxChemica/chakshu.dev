@@ -14,6 +14,7 @@ Rules: 2-4 lines max. No markdown. No bullet lists. Be a little witty on persona
 
 const termBody = document.getElementById('termBody');
 const termInput = document.getElementById('termInput');
+const hasTerminal = Boolean(termBody && termInput);
 let isLoading = false;
 
 const terminalFallbacks = [
@@ -40,6 +41,7 @@ const terminalFallbacks = [
 ];
 
 function appendUserLine(t) {
+  if (!termBody) return;
   const d = document.createElement('div');
   d.className = 'term-line';
   d.innerHTML = `<span class="term-prompt">$</span><span class="term-user">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
@@ -47,6 +49,7 @@ function appendUserLine(t) {
 }
 
 function appendTypingLine() {
+  if (!termBody) return null;
   const d = document.createElement('div');
   d.className = 'term-ai-line';
   d.innerHTML = '<span class="typing-cursor"></span>';
@@ -55,6 +58,7 @@ function appendTypingLine() {
 }
 
 function appendAiLines(t) {
+  if (!termBody) return;
   t.trim().split('\n').filter((l) => l.trim()).forEach((l) => {
     const d = document.createElement('div');
     d.className = 'term-ai-line';
@@ -64,6 +68,7 @@ function appendAiLines(t) {
 }
 
 function scrollBottom() {
+  if (!termBody) return;
   termBody.scrollTop = termBody.scrollHeight;
 }
 
@@ -74,7 +79,7 @@ function localTerminalReply(query) {
 }
 
 async function runQuery(query) {
-  if (isLoading || !query.trim()) return;
+  if (!hasTerminal || !termInput || isLoading || !query.trim()) return;
   isLoading = true;
   termInput.disabled = true;
   appendUserLine(query);
@@ -89,10 +94,10 @@ async function runQuery(query) {
     if (!res.ok) throw new Error('api_unavailable');
     const data = await res.json();
     const text = data?.reply || data?.text || data?.message;
-    typer.remove();
+    if (typer) typer.remove();
     appendAiLines(text || localTerminalReply(query));
   } catch (e) {
-    typer.remove();
+    if (typer) typer.remove();
     appendAiLines(localTerminalReply(query));
   }
   scrollBottom();
@@ -101,10 +106,12 @@ async function runQuery(query) {
   termInput.focus();
 }
 
-termInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const v = termInput.value.trim();
-    termInput.value = '';
-    runQuery(v);
-  }
-});
+if (termInput) {
+  termInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const v = termInput.value.trim();
+      termInput.value = '';
+      runQuery(v);
+    }
+  });
+}

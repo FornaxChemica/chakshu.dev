@@ -1,0 +1,160 @@
+[
+  {
+    "id": "bryce-canyon-2024",
+    "name": "Navajo Loop + Peekaboo + Tropic",
+    "location": "Bryce Canyon NP, Utah",
+    "date": "Oct 2024",
+    "distance": "4.08 mi",
+    "elevation_gain": "2,235 ft",
+    "high_point": "8,309 ft",
+    "difficulty": "Hard",
+    "gpx": "/hikes/Navajo_Loop_Benchmark via_Peekaboo_Loop_and_Tropic_Trail.gpx",
+    "snapshots": [
+      {
+        "at": 0.18,
+        "src": "/hikes/photos/bryce-hoodoos.jpg",
+        "caption": "hoodoo alley",
+        "elevation": "7,927 ft"
+      },
+      {
+        "at": 0.52,
+        "src": "/hikes/photos/bryce-peekaboo.jpg",
+        "caption": "peekaboo canyon",
+        "elevation": "7,664 ft"
+      }
+    ]
+  },
+  {
+    "id": "bell-trail",
+    "name": "Bell Trail",
+    "location": "Sedona, Arizona",
+    "date": "TBD",
+    "distance": "7.02 mi",
+    "elevation_gain": "1,527 ft",
+    "high_point": "4,237 ft",
+    "difficulty": "Moderate",
+    "gpx": "/hikes/Bell_Trail.gpx",
+    "snapshots": [
+      {
+        "at": 0.5,
+        "src": "/hikes/photos/bell-trail-1.jpg",
+        "caption": "add caption",
+        "elevation": "TBD"
+      }
+    ]
+  },
+  {
+    "id": "bob-bear-fossil-creek",
+    "name": "Bob Bear Trail to Fossil Creek Falls",
+    "location": "Camp Verde, Arizona",
+    "date": "TBD",
+    "distance": "8.54 mi",
+    "elevation_gain": "2,270 ft",
+    "high_point": "5,696 ft",
+    "difficulty": "Hard",
+    "gpx": "/hikes/Bob_Bear_Trail_to_Fossil_Creek_Falls.gpx",
+    "snapshots": [
+      {
+        "at": 0.5,
+        "src": "/hikes/photos/bob-bear-fossil-creek-1.jpg",
+        "caption": "add caption",
+        "elevation": "TBD"
+      }
+    ]
+  },
+  {
+    "id": "camelback-echo-canyon",
+    "name": "Camelback Mountain via Echo Canyon Trail",
+    "location": "Phoenix, Arizona",
+    "date": "TBD",
+    "distance": "2.36 mi",
+    "elevation_gain": "2,317 ft",
+    "high_point": "2,680 ft",
+    "difficulty": "Hard",
+    "gpx": "/hikes/Camelback_Mountain_via_Echo_Canyon_Trail.gpx",
+    "snapshots": [
+      {
+        "at": 0.5,
+        "src": "/hikes/photos/camelback-echo-canyon-1.jpg",
+        "caption": "add caption",
+        "elevation": "TBD"
+      }
+    ]
+  },
+  {
+    "id": "lower-la-barge-box",
+    "name": "Lower La Barge Box Trail",
+    "location": "Tonto National Forest, Arizona",
+    "date": "TBD",
+    "distance": "10.2 mi",
+    "elevation_gain": "3,057 ft",
+    "high_point": "2,367 ft",
+    "difficulty": "Moderate",
+    "gpx": "/hikes/Lower_La_Barge_Box_Trail.gpx",
+    "snapshots": [
+      {
+        "at": 0.5,
+        "src": "/hikes/photos/lower-la-barge-box-1.jpg",
+        "caption": "add caption",
+        "elevation": "TBD"
+      }
+    ]
+  },
+  {
+    "id": "pine-creek-anna-mae-gowan-waterfall",
+    "name": "Pine Creek Anna Mae Gowan and Waterfall Loop",
+    "location": "Pine, Arizona",
+    "date": "TBD",
+    "distance": "1.41 mi",
+    "elevation_gain": "629 ft",
+    "high_point": "4,575 ft",
+    "difficulty": "Moderate",
+    "gpx": "/hikes/Pine_Creek_Anna_Mae_Gowan_and_Waterfall_Loop.gpx",
+    "snapshots": [
+      {
+        "at": 0.5,
+        "src": "/hikes/photos/pine-creek-anna-mae-gowan-waterfall-1.jpg",
+        "caption": "add caption",
+        "elevation": "TBD"
+      }
+    ]
+  },
+  {
+    "id": "zion-canyon-overlook",
+    "name": "Zion Canyon Overlook Trail",
+    "location": "Zion National Park, Utah",
+    "date": "TBD",
+    "distance": "0.9 mi",
+    "elevation_gain": "782 ft",
+    "high_point": "5,244 ft",
+    "difficulty": "Easy",
+    "gpx": "/hikes/Zion_Canyon_Overlook_Trail.gpx",
+    "snapshots": [
+      {
+        "at": 0.5,
+        "src": "/hikes/photos/zion-canyon-overlook-1.jpg",
+        "caption": "add caption",
+        "elevation": "TBD"
+      }
+    ]
+  },
+  {
+    "id": "zion-narrows-big-springs",
+    "name": "Zion Narrows Bottom-Up to Big Springs",
+    "location": "Zion National Park, Utah",
+    "date": "TBD",
+    "distance": "3.31 mi",
+    "elevation_gain": "1,191 ft",
+    "high_point": "4,611 ft",
+    "difficulty": "Hard",
+    "gpx": "/hikes/Zion_Narrows_Bottom_Up_to_Big_Springs.gpx",
+    "snapshots": [
+      {
+        "at": 0.5,
+        "src": "/hikes/photos/zion-narrows-big-springs-1.jpg",
+        "caption": "add caption",
+        "elevation": "TBD"
+      }
+    ]
+  }
+]

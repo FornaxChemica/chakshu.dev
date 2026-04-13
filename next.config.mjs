@@ -4,12 +4,10 @@ const nextConfig = {
 		return {
 			beforeFiles: [
 				{
-					source: "/",
-					destination: "/index.html",
+					source: "/music",
+					destination: "/music/index.html",
 				},
 			],
-			afterFiles: [],
-			fallback: [],
 		};
 	},
 };
