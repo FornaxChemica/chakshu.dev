@@ -66,6 +66,7 @@ export default function TrailsTeaserClient({
   const cardRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
+  const lastCanvasSizeRef = useRef<{ width: number; height: number } | null>(null);
   const dotAppearedAtRef = useRef<Map<number, number>>(new Map());
   const [snapshotsSeen, setSnapshotsSeen] = useState(0);
   const [completed, setCompleted] = useState(false);
@@ -310,6 +311,7 @@ export default function TrailsTeaserClient({
 
     const cssWidth = Math.floor(rect.width);
     const cssHeight = Math.floor(rect.height);
+    lastCanvasSizeRef.current = { width: cssWidth, height: cssHeight };
     const start = performance.now();
 
     const frame = (now: number) => {
@@ -364,7 +366,29 @@ export default function TrailsTeaserClient({
   useEffect(() => {
     if (!inView) return;
 
-    const onResize = () => restartAnimation();
+    const onResize = () => {
+      const canvas = canvasRef.current;
+      const parent = canvas?.parentElement;
+      if (!canvas || !parent) return;
+
+      const rect = parent.getBoundingClientRect();
+      const nextWidth = Math.floor(rect.width);
+      const nextHeight = Math.floor(rect.height);
+      const prev = lastCanvasSizeRef.current;
+
+      if (!prev) {
+        restartAnimation();
+        return;
+      }
+
+      const widthChanged = Math.abs(nextWidth - prev.width) > 1;
+      const heightChanged = Math.abs(nextHeight - prev.height) > 48;
+
+      if (widthChanged || heightChanged) {
+        restartAnimation();
+      }
+    };
+
     restartAnimation();
     window.addEventListener("resize", onResize);
 

@@ -70,9 +70,17 @@ export default function OrbitalClient() {
     let syncTimer: number | null = null;
 
     const resize = () => {
-      const r = wrap.getBoundingClientRect();
-      W = canvas.width = r.width;
-      H = canvas.height = 480;
+      const dpr = window.devicePixelRatio || 1;
+      const cssWidth = Math.max(1, Math.floor(canvas.clientWidth || wrap.clientWidth));
+      const cssHeight = Math.max(1, Math.floor(canvas.clientHeight));
+
+      W = cssWidth;
+      H = cssHeight;
+
+      canvas.width = Math.floor(cssWidth * dpr);
+      canvas.height = Math.floor(cssHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
       starX = W / 2;
       starY = H / 2;
     };
