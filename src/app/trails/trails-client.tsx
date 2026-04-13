@@ -132,13 +132,17 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   const [progress, setProgress] = useState(0);
   const [openSnapshotIndex, setOpenSnapshotIndex] = useState<number | null>(null);
   const [mapReady, setMapReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [scrollThumbTop, setScrollThumbTop] = useState(8);
   const [scrollThumbHeight, setScrollThumbHeight] = useState(40);
+  const [mobileThumbLeft, setMobileThumbLeft] = useState(0);
+  const [mobileThumbWidth, setMobileThumbWidth] = useState(60);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const profileCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const shelfRef = useRef<HTMLDivElement>(null);
+  const mobileShelfRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapInstance | null>(null);
   const markerRef = useRef<MarkerMeta[]>([]);
   const pollTimerRef = useRef<number | null>(null);
@@ -204,6 +208,13 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   useEffect(() => {
     progressRef.current = progress;
   }, [progress]);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -615,6 +626,27 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
     };
   }, []);
 
+  useEffect(() => {
+    const shelf = mobileShelfRef.current;
+    if (!shelf) return;
+    const update = () => {
+      const trackW = shelf.offsetWidth;
+      const visibleRatio = shelf.offsetWidth / Math.max(1, shelf.scrollWidth);
+      const scrollRatio = shelf.scrollLeft / Math.max(1, shelf.scrollWidth - shelf.offsetWidth);
+      const thumbW = Math.max(32, Math.floor(visibleRatio * trackW));
+      const thumbLeft = Math.floor(scrollRatio * (trackW - thumbW));
+      setMobileThumbWidth(thumbW);
+      setMobileThumbLeft(thumbLeft);
+    };
+    update();
+    shelf.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
+    return () => {
+      shelf.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
   if (!activeHike) {
     return (
       <div className={styles.emptyWrap}>
@@ -685,7 +717,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
               <div className={styles.trailNameDot} />
               <span className={styles.trailNameText}>{activeHike.name}</span>
             </div>
-            <div className={styles.mapCanvas} ref={mapContainerRef} />
+            {!isMobile && <div className={styles.mapCanvas} ref={mapContainerRef} />}
             <div className={styles.statsOverlay}>
               <div className={styles.statRow}><span className={styles.statKey}>distance</span><span className={styles.statValue}>{activeHike.distance}</span></div>
               <div className={styles.statRow}><span className={styles.statKey}>elevation gain</span><span className={styles.statValue}>{activeHike.elevation_gain}</span></div>
@@ -743,6 +775,122 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
             }}
           />
         </div>
+      </div>
+
+      <div className={styles.mobileRoot}>
+        <div className={styles.mobileTopBar}>
+          <Link href="/" className={styles.logo}>CJ<span>.</span></Link>
+          <div className={styles.mobileTopTitle}>/trails</div>
+          <Link href="/" className={styles.mobileBackLink}>← back</Link>
+        </div>
+
+        <div className={styles.mobileScrollTrack}>
+          <div
+            className={styles.mobileScrollThumb}
+            style={{ left: `${mobileThumbLeft}px`, width: `${mobileThumbWidth}px` }}
+          />
+        </div>
+
+        <div className={styles.mobileShelf} ref={mobileShelfRef}>
+          {hikes.map((hike, idx) => (
+            <button
+              key={hike.id}
+              type="button"
+              className={`${styles.mobileCard} ${idx === activeIndex ? styles.mobileCardActive : ""}`}
+              onClick={() => {
+                if (idx === activeIndex) return;
+                setActiveIndex(idx);
+                setOpenSnapshotIndex(null);
+              }}
+            >
+              <div className={styles.mobileCardName}>{hike.name}</div>
+              <div className={styles.mobileCardLoc}>{hike.location}</div>
+              <canvas
+                className={styles.mobileCardSparkline}
+                ref={el => { if (el) drawSparkline(el, hike.gpxData.elevationFt, idx === activeIndex); }}
+              />
+              <div className={styles.mobileCardStats}>
+                <div className={styles.mobileStatItem}>
+                  <span className={styles.mobileStatVal}>{hike.distance}</span>
+                  <span className={styles.mobileStatKey}>dist</span>
+                </div>
+                <div className={styles.mobileStatItem}>
+                  <span className={styles.mobileStatVal}>{hike.elevation_gain}</span>
+                  <span className={styles.mobileStatKey}>gain</span>
+                </div>
+                <div className={styles.mobileStatItem}>
+                  <span className={styles.mobileStatVal}>{hike.date}</span>
+                  <span className={styles.mobileStatKey}>date</span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.mobileActiveInfo}>
+          <div className={styles.mobileActiveDot} />
+          <div className={styles.mobileActiveName}>{activeHike.name}</div>
+          <div className={styles.mobileActiveLoc}>{activeHike.location}</div>
+        </div>
+
+        <div className={styles.mobileMapWrap}>
+          {isMobile && <div className={styles.mobileMapCanvas} ref={mapContainerRef} />}
+          <div className={styles.statsOverlay}>
+            <div className={styles.statRow}><span className={styles.statKey}>distance</span><span className={styles.statValue}>{activeHike.distance}</span></div>
+            <div className={styles.statRow}><span className={styles.statKey}>elevation gain</span><span className={styles.statValue}>{activeHike.elevation_gain}</span></div>
+            <div className={styles.statRow}><span className={styles.statKey}>high point</span><span className={styles.statValue}>{activeHike.high_point}</span></div>
+            <div className={styles.statRow}><span className={styles.statKey}>difficulty</span><span className={styles.statValue}>{activeHike.difficulty}</span></div>
+          </div>
+          <div className={styles.trailNameBadge}>
+            <div className={styles.trailNameDot} />
+            <span className={styles.trailNameText}>{activeHike.name}</span>
+          </div>
+          {openSnapshot ? (
+            <aside className={`${styles.photoPanel} ${styles.photoPanelOpen}`}>
+              <button type="button" className={styles.photoClose} onClick={() => setOpenSnapshotIndex(null)}>×</button>
+              <div className={styles.photoMedia}>
+                <Image src={openSnapshot.src} alt={openSnapshot.caption} fill sizes="100vw" style={{ objectFit: "cover" }} />
+              </div>
+              <div className={styles.photoMeta}>
+                <div className={styles.photoCaption}>{openSnapshot.caption}</div>
+                <div className={styles.photoElevation}>{openSnapshot.elevation}</div>
+                <div className={styles.photoProgress}>{Math.round(openSnapshot.at * 100)}% into the trail</div>
+              </div>
+            </aside>
+          ) : null}
+        </div>
+
+        <div className={styles.mobileScrubber}>
+          <div className={styles.scrubberLabels}>
+            <div>{formatFeet(currentElevation)}</div>
+            <div className={styles.dragHint} style={{ opacity: hasInteracted ? 0 : 1 }}>
+              — drag to walk —
+            </div>
+            <div>{contextLabel(progress, activeHike.snapshots)}</div>
+          </div>
+          <canvas
+            ref={profileCanvasRef}
+            className={styles.mobileProfileCanvas}
+            onMouseDown={(event) => {
+              draggingRef.current = true;
+              if (!hasInteracted) setHasInteracted(true);
+              updateFromEvent(event.clientX);
+            }}
+            onTouchStart={(event) => {
+              const touch = event.touches[0];
+              if (!touch) return;
+              draggingRef.current = true;
+              if (!hasInteracted) setHasInteracted(true);
+              updateFromEvent(touch.clientX);
+            }}
+            onClick={(event) => {
+              if (!hasInteracted) setHasInteracted(true);
+              updateFromEvent(event.clientX);
+            }}
+          />
+        </div>
+
+        <div className={styles.mobileHomeBar} />
       </div>
     </>
   );
