@@ -3,7 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+  type PointerEvent,
+  type SyntheticEvent,
+} from "react";
 
 import type { ParsedHike, Snapshot } from "../../../types/hikes";
 import styles from "./trails.module.css";
@@ -70,6 +80,7 @@ declare global {
 
 const DRAW_DURATION = 1500;
 const SNAP_WINDOW = 0.06;
+const SNAPSHOT_CLOSE_MS = 210;
 
 function clamp01(value: number): number {
   if (value < 0) return 0;
@@ -129,10 +140,34 @@ function contextLabel(progress: number, snapshots: Snapshot[]): string {
   return `past ${ordered[ordered.length - 1].caption}`;
 }
 
+function snapshotCardStyle(ratio: number | null): CSSProperties {
+  if (ratio !== null && ratio < 0.85) {
+    return {
+      "--photo-panel-width": "196px",
+      "--photo-media-height": "248px",
+    } as CSSProperties;
+  }
+
+  if (ratio !== null && ratio > 1.35) {
+    return {
+      "--photo-panel-width": "272px",
+      "--photo-media-height": "176px",
+    } as CSSProperties;
+  }
+
+  return {
+    "--photo-panel-width": "240px",
+    "--photo-media-height": "190px",
+  } as CSSProperties;
+}
+
 export default function TrailsClient({ hikes }: TrailsClientProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [openSnapshotIndex, setOpenSnapshotIndex] = useState<number | null>(null);
+  const [renderedSnapshotIndex, setRenderedSnapshotIndex] = useState<number | null>(null);
+  const [isPhotoViewerOpen, setIsPhotoViewerOpen] = useState(false);
+  const [snapshotAspectRatios, setSnapshotAspectRatios] = useState<Record<string, number>>({});
   const [mapReady, setMapReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -154,6 +189,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   const draggingRef = useRef(false);
   const dragCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const progressRef = useRef(0);
+  const snapshotCloseTimerRef = useRef<number | null>(null);
 
   const activeHike = hikes[activeIndex] ?? null;
   const profileHeights = activeHike?.gpxData.elevationFt ?? [];
@@ -680,6 +716,76 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (snapshotCloseTimerRef.current !== null) {
+      window.clearTimeout(snapshotCloseTimerRef.current);
+      snapshotCloseTimerRef.current = null;
+    }
+
+    if (openSnapshotIndex !== null) {
+      setRenderedSnapshotIndex(openSnapshotIndex);
+      return;
+    }
+
+    if (renderedSnapshotIndex === null) return;
+
+    snapshotCloseTimerRef.current = window.setTimeout(() => {
+      setRenderedSnapshotIndex(null);
+      snapshotCloseTimerRef.current = null;
+    }, SNAPSHOT_CLOSE_MS);
+  }, [openSnapshotIndex, renderedSnapshotIndex]);
+
+  useEffect(() => {
+    return () => {
+      if (snapshotCloseTimerRef.current !== null) {
+        window.clearTimeout(snapshotCloseTimerRef.current);
+      }
+    };
+  }, []);
+
+  const openSnapshot = activeHike && renderedSnapshotIndex !== null ? activeHike.snapshots[renderedSnapshotIndex] : null;
+  const isSnapshotPanelOpen = openSnapshotIndex !== null;
+
+  useEffect(() => {
+    if (openSnapshotIndex !== null) return;
+    setIsPhotoViewerOpen(false);
+  }, [openSnapshotIndex]);
+
+  useEffect(() => {
+    if (!isPhotoViewerOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsPhotoViewerOpen(false);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isPhotoViewerOpen]);
+
+  const handleCloseSnapshot = useCallback((event?: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>) => {
+    event?.stopPropagation();
+    event?.preventDefault();
+    setOpenSnapshotIndex(null);
+  }, []);
+
+  const handleSnapshotImageLoad = useCallback((src: string, event: SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = event.currentTarget;
+    if (!naturalWidth || !naturalHeight) return;
+
+    const ratio = naturalWidth / naturalHeight;
+    setSnapshotAspectRatios((current) => {
+      if (current[src] === ratio) return current;
+      return { ...current, [src]: ratio };
+    });
+  }, []);
+
   if (!activeHike) {
     return (
       <div className={styles.emptyWrap}>
@@ -688,7 +794,8 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
     );
   }
 
-  const openSnapshot = openSnapshotIndex !== null ? activeHike.snapshots[openSnapshotIndex] : null;
+  const openSnapshotRatio = openSnapshot ? snapshotAspectRatios[openSnapshot.src] ?? null : null;
+  const openSnapshotPanelStyle = snapshotCardStyle(openSnapshotRatio);
 
   return (
     <>
@@ -796,13 +903,39 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
               </div>
             </div>
 
-            <aside className={`${styles.photoPanel} ${openSnapshot ? styles.photoPanelOpen : ""}`}>
+            <aside
+              className={`${styles.photoPanel} ${isSnapshotPanelOpen ? styles.photoPanelOpen : ""}`}
+              style={openSnapshot ? openSnapshotPanelStyle : undefined}
+            >
               {openSnapshot ? (
                 <>
-                  <button type="button" className={styles.photoClose} onClick={() => setOpenSnapshotIndex(null)}>×</button>
-                  <div className={styles.photoMedia}>
-                    <Image src={openSnapshot.src} alt={openSnapshot.caption} fill sizes="300px" style={{ objectFit: "cover" }} />
-                  </div>
+                  <button
+                    type="button"
+                    className={styles.photoClose}
+                    onClick={handleCloseSnapshot}
+                    onPointerDown={handleCloseSnapshot}
+                    aria-label="Close snapshot"
+                  >
+                    ×
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.photoMedia}
+                    onClick={() => setIsPhotoViewerOpen(true)}
+                    aria-label={`Open full-size photo of ${openSnapshot.caption}`}
+                  >
+                    <span className={styles.photoMediaFrame}>
+                      <Image
+                        src={openSnapshot.src}
+                        alt={openSnapshot.caption}
+                        fill
+                        sizes="(max-width: 768px) calc(100vw - 52px), 272px"
+                        style={{ objectFit: "contain" }}
+                        onLoad={(event) => handleSnapshotImageLoad(openSnapshot.src, event)}
+                      />
+                    </span>
+                    <span className={styles.photoExpandHint}>tap for full view</span>
+                  </button>
                   <div className={styles.photoMeta}>
                     <div className={styles.photoCaption}>{openSnapshot.caption}</div>
                     <div className={styles.photoElevation}>{openSnapshot.elevation}</div>
@@ -933,11 +1066,37 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
             </div>
           </div>
           {openSnapshot ? (
-            <aside className={`${styles.photoPanel} ${styles.photoPanelOpen}`}>
-              <button type="button" className={styles.photoClose} onClick={() => setOpenSnapshotIndex(null)}>×</button>
-              <div className={styles.photoMedia}>
-                <Image src={openSnapshot.src} alt={openSnapshot.caption} fill sizes="100vw" style={{ objectFit: "cover" }} />
-              </div>
+            <aside
+              className={`${styles.photoPanel} ${isSnapshotPanelOpen ? styles.photoPanelOpen : ""}`}
+              style={openSnapshotPanelStyle}
+            >
+              <button
+                type="button"
+                className={styles.photoClose}
+                onClick={handleCloseSnapshot}
+                onPointerDown={handleCloseSnapshot}
+                aria-label="Close snapshot"
+              >
+                ×
+              </button>
+              <button
+                type="button"
+                className={styles.photoMedia}
+                onClick={() => setIsPhotoViewerOpen(true)}
+                aria-label={`Open full-size photo of ${openSnapshot.caption}`}
+              >
+                <span className={styles.photoMediaFrame}>
+                  <Image
+                    src={openSnapshot.src}
+                    alt={openSnapshot.caption}
+                    fill
+                    sizes="(max-width: 768px) calc(100vw - 52px), 272px"
+                    style={{ objectFit: "contain" }}
+                    onLoad={(event) => handleSnapshotImageLoad(openSnapshot.src, event)}
+                  />
+                </span>
+                <span className={styles.photoExpandHint}>tap for full view</span>
+              </button>
               <div className={styles.photoMeta}>
                 <div className={styles.photoCaption}>{openSnapshot.caption}</div>
                 <div className={styles.photoElevation}>{openSnapshot.elevation}</div>
@@ -981,6 +1140,41 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
         <div className={styles.mobileHomeBar} />
       </div>
+      {isPhotoViewerOpen && openSnapshot ? (
+        <div
+          className={styles.photoViewerBackdrop}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Full view of ${openSnapshot.caption}`}
+          onClick={() => setIsPhotoViewerOpen(false)}
+        >
+          <div className={styles.photoViewerDialog} onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className={styles.photoViewerClose}
+              onClick={() => setIsPhotoViewerOpen(false)}
+              aria-label="Close full-size photo"
+            >
+              ×
+            </button>
+            <div className={styles.photoViewerFrame}>
+              <Image
+                src={openSnapshot.src}
+                alt={openSnapshot.caption}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 90vw"
+                style={{ objectFit: "contain" }}
+              />
+            </div>
+            <div className={styles.photoViewerMeta}>
+              <div className={styles.photoCaption}>{openSnapshot.caption}</div>
+              <div className={styles.photoElevation}>{openSnapshot.elevation}</div>
+              <div className={styles.photoProgress}>{Math.round(openSnapshot.at * 100)}% into the trail</div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
