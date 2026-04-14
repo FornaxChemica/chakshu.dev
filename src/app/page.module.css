@@ -850,6 +850,8 @@
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 8px 24px rgba(0, 229, 255, 0.18);

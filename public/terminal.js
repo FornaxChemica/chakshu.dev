@@ -12,10 +12,11 @@ Key facts:
 
 Rules: 2-4 lines max. No markdown. No bullet lists. Be a little witty on personal questions. Never say "As an AI".`;
 
-const termBody = document.getElementById('termBody');
-const termInput = document.getElementById('termInput');
-const termSendBtn = document.getElementById('termSendBtn');
-const hasTerminal = Boolean(termBody && termInput && termSendBtn);
+let termBody = null;
+let termInput = null;
+let termSendBtn = null;
+let hasTerminal = false;
+let hasTerminalBindings = false;
 let isLoading = false;
 
 const terminalFallbacks = [
@@ -122,22 +123,38 @@ async function runQuery(query) {
   termInput.focus();
 }
 
-if (termInput && termSendBtn) {
+function submitFromInput() {
+  if (!termInput) return;
+  const v = termInput.value.trim();
+  termInput.value = '';
+  updateSendButtonState();
+  runQuery(v);
+}
+
+function initTerminal() {
+  if (hasTerminalBindings) return;
+  termBody = document.getElementById('termBody');
+  termInput = document.getElementById('termInput');
+  termSendBtn = document.getElementById('termSendBtn');
+  hasTerminal = Boolean(termBody && termInput && termSendBtn);
+  if (!hasTerminal || !termInput || !termSendBtn) return;
+
+  hasTerminalBindings = true;
   updateSendButtonState();
   termInput.addEventListener('input', updateSendButtonState);
+  termInput.addEventListener('change', updateSendButtonState);
   termInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-      const v = termInput.value.trim();
-      termInput.value = '';
-      updateSendButtonState();
-      runQuery(v);
+      submitFromInput();
     }
   });
 
-  termSendBtn.addEventListener('click', () => {
-    const v = termInput.value.trim();
-    termInput.value = '';
-    updateSendButtonState();
-    runQuery(v);
+  termSendBtn.addEventListener('pointerup', (event) => {
+    event.preventDefault();
+    submitFromInput();
   });
 }
+
+initTerminal();
+window.addEventListener('DOMContentLoaded', initTerminal, { once: true });
+window.addEventListener('load', initTerminal, { once: true });
