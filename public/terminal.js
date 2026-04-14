@@ -18,6 +18,7 @@ let termSendBtn = null;
 let hasTerminal = false;
 let hasTerminalBindings = false;
 let isLoading = false;
+let lastSubmitAt = 0;
 
 const terminalFallbacks = [
   {
@@ -131,6 +132,14 @@ function submitFromInput() {
   runQuery(v);
 }
 
+function handleSendPress(event) {
+  if (event) event.preventDefault();
+  const now = Date.now();
+  if (now - lastSubmitAt < 250) return;
+  lastSubmitAt = now;
+  submitFromInput();
+}
+
 function initTerminal() {
   if (hasTerminalBindings) return;
   termBody = document.getElementById('termBody');
@@ -149,10 +158,9 @@ function initTerminal() {
     }
   });
 
-  termSendBtn.addEventListener('pointerup', (event) => {
-    event.preventDefault();
-    submitFromInput();
-  });
+  termSendBtn.addEventListener('pointerup', handleSendPress);
+  termSendBtn.addEventListener('click', handleSendPress);
+  termSendBtn.addEventListener('touchend', handleSendPress, { passive: false });
 }
 
 initTerminal();
