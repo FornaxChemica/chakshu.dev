@@ -10,8 +10,8 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type MouseEvent,
-  type PointerEvent,
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
   type SyntheticEvent,
 } from "react";
 
@@ -769,7 +769,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
     };
   }, [isPhotoViewerOpen]);
 
-  const handleCloseSnapshot = useCallback((event?: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>) => {
+  const handleCloseSnapshot = useCallback((event?: ReactMouseEvent<HTMLButtonElement> | ReactPointerEvent<HTMLButtonElement>) => {
     event?.stopPropagation();
     event?.preventDefault();
     setOpenSnapshotIndex(null);
