@@ -463,7 +463,7 @@ export default function TrailsTeaserClient({
         <span className="term-dot red" />
         <span className="term-dot yellow" />
         <span className="term-dot green" />
-        <span className="term-title">trail_log.sh</span>
+        <span className="term-title">trail_log.sh ~ offline when it counts.</span>
       </div>
 
       <div className="trails-body">

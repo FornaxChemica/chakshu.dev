@@ -404,12 +404,19 @@
   height: 100%;
   background: #111418;
   border-left: 0.5px solid rgba(255, 255, 255, 0.08);
-  transform: translateX(300px);
-  transition: transform 350ms ease;
+  transform: scale(0.88) translateY(6px);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: bottom right;
+  transition:
+    transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 140ms ease;
 }
 
 .photoPanelOpen {
-  transform: translateX(0);
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .photoClose {

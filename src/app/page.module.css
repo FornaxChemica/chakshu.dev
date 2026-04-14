@@ -397,6 +397,13 @@
   color: var(--muted);
 }
 
+.page :global(.stat-emphasis) {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+
 .page :global(.dot) {
   width: 6px;
   height: 6px;
@@ -407,6 +414,7 @@
 
 .page :global(.stat-artist-link) {
   font-size: 13px;
+  font-weight: 700;
   color: var(--accent);
   text-align: right;
   max-width: 160px;
@@ -824,7 +832,12 @@
   border: none;
   outline: none;
   color: var(--text);
+  font-family: inherit;
   font-size: 16px;
+}
+
+.page :global(.term-input::placeholder) {
+  font-family: inherit;
 }
 
 .page :global(.term-hint-bar) {
@@ -1003,7 +1016,7 @@
 
 .page :global(.trails-card .term-title) {
   font-size: 10px;
-  color: rgba(255,255,255,0.2);
+  color: var(--muted);
   margin-left: 8px;
   letter-spacing: 0.06em;
   text-align: left;

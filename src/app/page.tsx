@@ -84,9 +84,9 @@ export default async function Home() {
               <div className="stat-row"><span className="stat-key">hours_saved_weekly</span><div><span className="stat-val">15+</span><span className="stat-unit">hrs</span></div></div>
               <div className="stat-row"><span className="stat-key">miles_hiked</span><div><span className="stat-val">{milesHiked.toFixed(1)}</span><span className="stat-unit">mi</span></div></div>
               <div className="stat-row"><span className="stat-key">budget_managed</span><div><span className="stat-val">$50K</span></div></div>
-              <div className="stat-row"><span className="stat-key">degree_focus</span><div><span className="stat-val-text">CS + Data Science</span></div></div>
+              <div className="stat-row"><span className="stat-key">degree_focus</span><div><span className="stat-val-text"><strong>CS + Data Science</strong></span></div></div>
               <div className="stat-row"><span className="stat-key">listening_to</span><a id="stat-artist" className="stat-artist-link" href="https://open.spotify.com/search/chakshu%20jain" target="_blank" rel="noopener noreferrer">-</a></div>
-              <div className="stat-row"><span className="stat-key">status</span><div className="status-dot"><span className="dot" />building</div></div>
+              <div className="stat-row"><span className="stat-key">status</span><div className="status-dot"><span className="dot" /><span className="stat-emphasis">building</span></div></div>
             </div>
           </div>
         </div>

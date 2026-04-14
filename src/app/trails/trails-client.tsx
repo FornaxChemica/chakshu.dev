@@ -69,6 +69,7 @@ declare global {
 }
 
 const DRAW_DURATION = 1500;
+const SNAP_WINDOW = 0.06;
 
 function clamp01(value: number): number {
   if (value < 0) return 0;
@@ -166,17 +167,23 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   const applyProgress = useCallback(
     (value: number) => {
       const next = clamp01(value);
-      setProgress((prev) => {
-        if (openSnapshotIndex !== null && activeHike) {
-          const openSnapshot = activeHike.snapshots[openSnapshotIndex];
-          if (openSnapshot && next < openSnapshot.at && next < prev) {
-            setOpenSnapshotIndex(null);
+      progressRef.current = next;
+
+      let autoSnap: number | null = null;
+      if (activeHike) {
+        for (let i = 0; i < activeHike.snapshots.length; i += 1) {
+          const snapshot = activeHike.snapshots[i];
+          if (next >= snapshot.at && next < snapshot.at + SNAP_WINDOW) {
+            autoSnap = i;
+            break;
           }
         }
-        return next;
-      });
+      }
+
+      setOpenSnapshotIndex(autoSnap);
+      setProgress(next);
     },
-    [activeHike, openSnapshotIndex]
+    [activeHike]
   );
 
   const startTrailAnimation = useCallback(() => {
@@ -415,11 +422,6 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
         const markerEl = document.createElement("div");
         markerEl.className = styles.snapshotMarker;
-        markerEl.addEventListener("click", () => {
-          if (progressRef.current >= snapshot.at) {
-            setOpenSnapshotIndex(index);
-          }
-        });
 
         const marker = new window.mapboxgl.Marker({ element: markerEl })
           .setLngLat([point.lon, point.lat])
