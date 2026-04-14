@@ -230,7 +230,13 @@ export default async function Home() {
               <div className="term-ai-line">Currently building AI outreach systems at EECPLL and managing $50k at DevLabs.</div>
               <div className="term-ai-line accent-line">Type anything - I&apos;ll answer as Chakshu.</div>
             </div>
-            <div className="term-input-row"><span className="term-input-prompt">$</span><input className="term-input" id="termInput" placeholder="ask something..." autoComplete="off" spellCheck="false" /></div>
+            <div className="term-input-row">
+              <span className="term-input-prompt">$</span>
+              <input className="term-input" id="termInput" placeholder="ask something..." autoComplete="off" spellCheck="false" />
+              <button className="term-send-btn" id="termSendBtn" type="button" aria-label="Send terminal message">
+                <i className="ph ph-arrow-up-right" aria-hidden="true" />
+              </button>
+            </div>
             <div className="term-hint-bar">Try: <span>skills</span> · <span>projects</span> · <span>what do you automate</span> · <span>where are you from</span></div>
           </div>
         </div>

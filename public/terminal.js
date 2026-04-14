@@ -14,7 +14,8 @@ Rules: 2-4 lines max. No markdown. No bullet lists. Be a little witty on persona
 
 const termBody = document.getElementById('termBody');
 const termInput = document.getElementById('termInput');
-const hasTerminal = Boolean(termBody && termInput);
+const termSendBtn = document.getElementById('termSendBtn');
+const hasTerminal = Boolean(termBody && termInput && termSendBtn);
 let isLoading = false;
 
 const terminalFallbacks = [
@@ -78,10 +79,24 @@ function localTerminalReply(query) {
   return 'I can answer that, but this demo is currently running in local fallback mode. Ask me about skills, projects, automation, location, or contact and I will give you a crisp answer.';
 }
 
+function setInputControlsDisabled(disabled) {
+  if (!termInput || !termSendBtn) return;
+  termInput.disabled = disabled;
+  termSendBtn.disabled = disabled;
+  termSendBtn.classList.toggle('is-loading', disabled);
+  termSendBtn.setAttribute('aria-busy', disabled ? 'true' : 'false');
+}
+
+function updateSendButtonState() {
+  if (!termInput || !termSendBtn) return;
+  const hasValue = termInput.value.trim().length > 0;
+  termSendBtn.disabled = isLoading || !hasValue;
+}
+
 async function runQuery(query) {
-  if (!hasTerminal || !termInput || isLoading || !query.trim()) return;
+  if (!hasTerminal || !termInput || !termSendBtn || isLoading || !query.trim()) return;
   isLoading = true;
-  termInput.disabled = true;
+  setInputControlsDisabled(true);
   appendUserLine(query);
   const typer = appendTypingLine();
   scrollBottom();
@@ -102,16 +117,27 @@ async function runQuery(query) {
   }
   scrollBottom();
   isLoading = false;
-  termInput.disabled = false;
+  setInputControlsDisabled(false);
+  updateSendButtonState();
   termInput.focus();
 }
 
-if (termInput) {
+if (termInput && termSendBtn) {
+  updateSendButtonState();
+  termInput.addEventListener('input', updateSendButtonState);
   termInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       const v = termInput.value.trim();
       termInput.value = '';
+      updateSendButtonState();
       runQuery(v);
     }
+  });
+
+  termSendBtn.addEventListener('click', () => {
+    const v = termInput.value.trim();
+    termInput.value = '';
+    updateSendButtonState();
+    runQuery(v);
   });
 }
