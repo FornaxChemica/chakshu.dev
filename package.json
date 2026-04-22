@@ -3,16 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
+    "dev": "next dev",
     "start": "next start",
     "lint": "eslint",
     "snapshots:at": "node scripts/update-snapshot-at.mjs",
-    "hike:add": "node scripts/add-hike-from-gpx.mjs"
+    "hike:add": "node scripts/add-hike-from-gpx.mjs",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.19.3",
     "@phosphor-icons/react": "^2.1.10",
-    "next": "14.2.35",
+    "next": "^15.5.15",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
@@ -20,8 +25,9 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.35",
-    "typescript": "^5"
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^15.5.15",
+    "typescript": "^5",
+    "wrangler": "^4.84.1"
   }
 }
