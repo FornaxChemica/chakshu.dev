@@ -299,7 +299,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
       mapRef.current = map;
       map.on("load", () => {
         // Add dark overlay to darken map tiles without affecting GL layers
-        (map as any).addLayer({
+        map.addLayer({
           id: "dark-overlay",
           type: "background",
           paint: {

@@ -14,15 +14,14 @@ type GreetingRule = {
 
 type ProviderName = "anthropic" | "openai" | "groq" | "gemini";
 
-type SupermemoryProfile = {
-  profile: {
-    static: string[];
-    dynamic: string[];
-  };
-  searchResults?: {
-    results: Array<{ memory: string; score?: number }>;
-    total: number;
-  };
+type SupermemoryResult = {
+  chunk?: unknown;
+  memory?: unknown;
+  similarity?: unknown;
+};
+
+type SupermemorySearchResponse = {
+  results?: SupermemoryResult[];
 };
 
 // ─── Hardcoded deflections ────────────────────────────────────────────────────
@@ -157,21 +156,21 @@ async function fetchSupermemoryContext(query: string): Promise<SupermemoryContex
 
     if (!response.ok) return { context: "", chunks: [] };
 
-    const data = (await response.json()) as any;
+    const data = (await response.json()) as SupermemorySearchResponse;
     const results = Array.isArray(data.results) ? data.results : [];
     if (!results.length) return { context: "", chunks: [] };
 
     const sorted = results
       .slice()
-      .sort((a: any, b: any) => (Number(b?.similarity) || 0) - (Number(a?.similarity) || 0));
+      .sort((a, b) => (Number(b?.similarity) || 0) - (Number(a?.similarity) || 0));
 
     const chunks = sorted
-      .map((r: any) => (typeof r?.chunk === "string" ? r.chunk.trim() : ""))
+      .map((r) => (typeof r?.chunk === "string" ? r.chunk.trim() : ""))
       .filter(Boolean)
       .slice(0, 6);
 
     const memories = sorted
-      .map((r: any) => (typeof r?.memory === "string" ? r.memory.trim() : ""))
+      .map((r) => (typeof r?.memory === "string" ? r.memory.trim() : ""))
       .filter(Boolean)
       .slice(0, 4);
 

@@ -61,7 +61,7 @@ export default function OrbitalClient() {
     let myId: string | null = null;
     let launchCount = 0;
     let localShips: Ship[] = [];
-    let remoteShips: Record<string, Ship> = {};
+    const remoteShips: Record<string, Ship> = {};
     let dragging = false;
     let dragStart: { x: number; y: number } | null = null;
     let mousePos: { x: number; y: number } | null = null;
