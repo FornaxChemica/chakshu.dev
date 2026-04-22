@@ -954,7 +954,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
               className={styles.dragHint}
               style={{ opacity: hasInteracted ? 0 : 1 }}
             >
-              — drag to walk the trail —
+              - drag to walk the trail -
             </div>
             <div>{contextLabel(progress, activeHike.snapshots)}</div>
           </div>
@@ -1110,7 +1110,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
           <div className={styles.scrubberLabels}>
             <div>{formatFeet(currentElevation)}</div>
             <div className={styles.dragHint} style={{ opacity: hasInteracted ? 0 : 1 }}>
-              — drag to walk —
+              - drag to walk -
             </div>
             <div>{contextLabel(progress, activeHike.snapshots)}</div>
           </div>

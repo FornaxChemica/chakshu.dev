@@ -3,10 +3,10 @@ import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Chakshu Jain — Software Engineer & Data Scientist",
+  title: "Chakshu Jain - Software Engineer & Data Scientist",
   description: "Software Engineer & Data Scientist at ASU. Building AI automation systems that actually ship.",
   openGraph: {
-    title: "Chakshu Jain — Software Engineer & Data Scientist",
+    title: "Chakshu Jain - Software Engineer & Data Scientist",
     description: "Building AI automation systems that eliminate operational drag.",
     url: "https://chakshu.dev",
     siteName: "Chakshu Jain",
@@ -18,7 +18,20 @@ export const metadata: Metadata = {
     description: "Software Engineer & Data Scientist. Building AI automation systems that actually ship.",
   },
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%2300e5ff'/></svg>",
+    icon: [
+      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon/favicon-196x196.png", sizes: "196x196", type: "image/png" },
+    ],
+    apple: [
+      { url: "/favicon/apple-touch-icon-60x60.png", sizes: "60x60", type: "image/png" },
+      { url: "/favicon/apple-touch-icon-76x76.png", sizes: "76x76", type: "image/png" },
+      { url: "/favicon/apple-touch-icon-120x120.png", sizes: "120x120", type: "image/png" },
+      { url: "/favicon/apple-touch-icon-144x144.png", sizes: "144x144", type: "image/png" },
+      { url: "/favicon/apple-touch-icon-152x152.png", sizes: "152x152", type: "image/png" },
+      { url: "/favicon/apple-touch-icon-167x167.png", sizes: "167x167", type: "image/png" },
+    ],
   },
   alternates: {
     canonical: "https://chakshu.dev",

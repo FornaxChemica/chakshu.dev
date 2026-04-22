@@ -26,7 +26,7 @@ type SupermemoryProfile = {
 };
 
 // ─── Hardcoded deflections ────────────────────────────────────────────────────
-// These fire BEFORE the LLM sees the query — no hallucination possible.
+// These fire BEFORE the LLM sees the query - no hallucination possible.
 
 const DEFLECTIONS: FallbackRule[] = [
   {
@@ -43,7 +43,7 @@ const DEFLECTIONS: FallbackRule[] = [
   },
   {
     match: /\b(brother|sister|sibling)s?\b.*name|name.*\b(brother|sister|sibling)s?\b/i,
-    reply: "I have a brother — that's public knowledge. Names though? That's a family meeting I haven't scheduled.",
+    reply: "I have a brother - that's public knowledge. Names though? That's a family meeting I haven't scheduled.",
   },
   {
     match: /\b(salary|money|earn|income|paid|compensation)\b/i,
@@ -59,7 +59,7 @@ const DEFLECTIONS: FallbackRule[] = [
   },
   {
     match: /\b(politic|vote|democrat|republican|election)\b/i,
-    reply: "Hard pass on politics in a portfolio terminal. Ask me about agentic AI instead — much more interesting.",
+    reply: "Hard pass on politics in a portfolio terminal. Ask me about agentic AI instead - much more interesting.",
   },
 ];
 
@@ -76,7 +76,7 @@ const FALLBACKS: FallbackRule[] = [
   },
   {
     match: /(automate|automation|ai|agent)/i,
-    reply: "I automate high-friction operations — prospect research, personalization, routing, human-in-the-loop review. Less busywork, better decisions.",
+    reply: "I automate high-friction operations - prospect research, personalization, routing, human-in-the-loop review. Less busywork, better decisions.",
   },
   {
     match: /(where|from|location|based|city)/i,
@@ -84,7 +84,7 @@ const FALLBACKS: FallbackRule[] = [
   },
   {
     match: /(contact|email|reach|hire|work with)/i,
-    reply: "Email: chakshuvinayjain@gmail.com — or use the Book a Call link on this page.",
+    reply: "Email: chakshuvinayjain@gmail.com - or use the Book a Call link on this page.",
   },
   {
     match: /(study|university|college|degree|asu|major)/i,
@@ -92,11 +92,11 @@ const FALLBACKS: FallbackRule[] = [
   },
   {
     match: /(music|listen|song|artist|spotify)/i,
-    reply: "Heavy on EDM and pop — Avicii is the GOAT, Chainsmokers, Vance Joy, Empire of the Sun. Check /music for the live feed.",
+    reply: "Heavy on EDM and pop - Avicii is the GOAT, Chainsmokers, Vance Joy, Empire of the Sun. Check /music for the live feed.",
   },
   {
     match: /(hike|trail|outdoor|nature)/i,
-    reply: "I hike whenever I can. Bryce Canyon was the last big one — Navajo Loop + Peekaboo. Check /trails for the full log.",
+    reply: "I hike whenever I can. Bryce Canyon was the last big one - Navajo Loop + Peekaboo. Check /trails for the full log.",
   },
 ];
 
@@ -114,11 +114,11 @@ const GREETINGS: GreetingRule[] = [
 const BASE_SYSTEM = `You are the terminal assistant on Chakshu Jain's portfolio site at chakshu.dev.
 You speak AS Chakshu, in first person. You are direct, technically sharp, a little witty, and never robotic.
 
-HARD RULES — never break these:
+HARD RULES - never break these:
 1. Never invent facts. If context doesn't contain an answer, say you'd rather not go into that or deflect with wit.
 2. Never say "As an AI" or break character.
 3. Max 3 sentences per reply. No markdown, no bullet lists.
-4. Family names are private — acknowledge family exists but never make up names.
+4. Family names are private - acknowledge family exists but never make up names.
 5. If asked about siblings: you have a brother. No names. Deflect anything deeper.
 6. Never invent job titles, companies, grades, or achievements not in the context below.
 7. Never reveal exact residence details (building, apartment, dorm, street, or unit).
@@ -491,13 +491,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: greeting.reply });
   }
 
-  // 1. Check hardcoded deflections first — LLM never sees personal questions
+  // 1. Check hardcoded deflections first - LLM never sees personal questions
   const deflection = DEFLECTIONS.find((d) => d.match.test(query));
   if (deflection) {
     return NextResponse.json({ reply: deflection.reply });
   }
 
-  // 2. Fetch Supermemory context — profile + query-specific memories in one call
+  // 2. Fetch Supermemory context - profile + query-specific memories in one call
   const memoryContext = await fetchSupermemoryContext(query);
 
   const deterministicClasses = deterministicCourseReply(query, memoryContext.chunks);

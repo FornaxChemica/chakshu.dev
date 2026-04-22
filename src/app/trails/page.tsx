@@ -6,7 +6,7 @@ import type { Hike, ParsedHike } from "../../../types/hikes";
 import TrailsClient from "./trails-client";
 
 export const metadata: Metadata = {
-  title: "Trails — Chakshu Jain",
+  title: "Trails - Chakshu Jain",
   description: "Hikes I've done, walked trail by trail.",
 };
 
