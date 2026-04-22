@@ -7,6 +7,11 @@ type FallbackRule = {
   reply: string;
 };
 
+type GreetingRule = {
+  match: RegExp;
+  reply: string;
+};
+
 type ProviderName = "anthropic" | "openai" | "groq" | "gemini";
 
 type SupermemoryProfile = {
@@ -95,6 +100,15 @@ const FALLBACKS: FallbackRule[] = [
   },
 ];
 
+const GREETINGS: GreetingRule[] = [
+  { match: /^\s*ol[áa]\b/i, reply: "Ola! Tudo certo? Manda sua pergunta que eu respondo rapidinho." },
+  { match: /^\s*hola\b/i, reply: "Hola! Dime que quieres saber y te respondo con gusto." },
+  { match: /^\s*bonjour\b/i, reply: "Bonjour! Dis-moi ta question et je te reponds avec plaisir." },
+  { match: /^\s*ciao\b/i, reply: "Ciao! Dimmi pure cosa vuoi sapere." },
+  { match: /^\s*namaste\b/i, reply: "Namaste! Pucho jo bhi puchna hai, main yahin hoon." },
+  { match: /^\s*(hi|hello|hey)\b/i, reply: "Hey! Good to see you here. Ask me anything." },
+];
+
 // ─── Base system prompt (always injected) ────────────────────────────────────
 
 const BASE_SYSTEM = `You are the terminal assistant on Chakshu Jain's portfolio site at chakshu.dev.
@@ -109,15 +123,22 @@ HARD RULES — never break these:
 6. Never invent job titles, companies, grades, or achievements not in the context below.
 7. Never reveal exact residence details (building, apartment, dorm, street, or unit).
 8. Never reveal exact birthday/date of birth.
-9. Personality: perfectionist, efficiency-obsessed, ships real things. From Mumbai / Beawar, now in Tempe AZ.`;
+9. Personality: perfectionist, efficiency-obsessed, ships real things. From Mumbai / Beawar, now in Tempe AZ.
+10. If the user asks for classes/courses/items in a term or asks "all", "list", or "how many", return an exhaustive list from retrieved CHUNK data, then include the total count.
+11. For greetings/salutations, keep it playful and mirror the user's language when possible.`;
 
 // ─── Supermemory ─────────────────────────────────────────────────────────────
 
 const CONTAINER_TAG = "sm_project_default";
 
-async function fetchSupermemoryContext(query: string): Promise<string> {
+type SupermemoryContext = {
+  context: string;
+  chunks: string[];
+};
+
+async function fetchSupermemoryContext(query: string): Promise<SupermemoryContext> {
   const apiKey = process.env.SUPERMEMORY_API_KEY;
-  if (!apiKey) return "";
+  if (!apiKey) return { context: "", chunks: [] };
 
   try {
     const response = await fetch("https://api.supermemory.ai/v4/search", {
@@ -134,17 +155,34 @@ async function fetchSupermemoryContext(query: string): Promise<string> {
       }),
     });
 
-    if (!response.ok) return "";
+    if (!response.ok) return { context: "", chunks: [] };
 
     const data = (await response.json()) as any;
-    const relevantMemories =
-      data.results?.map((r: any) => r.memory || r.chunk).join("\n") ?? "";
+    const results = Array.isArray(data.results) ? data.results : [];
+    if (!results.length) return { context: "", chunks: [] };
 
-    if (!relevantMemories) return "";
+    const sorted = results
+      .slice()
+      .sort((a: any, b: any) => (Number(b?.similarity) || 0) - (Number(a?.similarity) || 0));
 
-    return `RELEVANT MEMORIES:\n${relevantMemories}`;
+    const chunks = sorted
+      .map((r: any) => (typeof r?.chunk === "string" ? r.chunk.trim() : ""))
+      .filter(Boolean)
+      .slice(0, 6);
+
+    const memories = sorted
+      .map((r: any) => (typeof r?.memory === "string" ? r.memory.trim() : ""))
+      .filter(Boolean)
+      .slice(0, 4);
+
+    const contextParts: string[] = [];
+    if (chunks.length) contextParts.push(`PRIMARY CHUNKS (prefer these for factual lists/counts):\n${chunks.join("\n\n")}`);
+    if (memories.length) contextParts.push(`SECONDARY MEMORY SUMMARIES (use only as backup):\n${memories.join("\n")}`);
+    if (!contextParts.length) return { context: "", chunks: [] };
+
+    return { context: contextParts.join("\n\n"), chunks };
   } catch {
-    return "";
+    return { context: "", chunks: [] };
   }
 }
 
@@ -321,12 +359,121 @@ async function getModelReply(systemPrompt: string, query: string): Promise<strin
 }
 
 // ─── Local fallback ───────────────────────────────────────────────────────────
-
 function localFallback(query: string): string {
   return (
     FALLBACKS.find((r) => r.match.test(query))?.reply ??
     "Running in offline mode. Ask me about skills, projects, stack, or where I'm based."
   );
+}
+
+type CourseRow = {
+  code: string;
+  name: string;
+  grade: string;
+  sectionTitle: string;
+};
+
+function isCourseQuery(query: string): boolean {
+  return /\b(class|classes|course|courses|taking|enrolled|semester)\b/i.test(query);
+}
+
+function extractCourseRowsFromChunks(chunks: string[]): CourseRow[] {
+  const rows: CourseRow[] = [];
+
+  for (const chunk of chunks) {
+    let sectionTitle = "";
+    const lines = chunk.split("\n");
+    for (const line of lines) {
+      const heading = line.match(/^##\s+(.+)$/);
+      if (heading) {
+        sectionTitle = heading[1].trim();
+        continue;
+      }
+
+      const row = line.match(/\|\s*\*\*([^*|]+)\*\*\s*\|\s*([^|]+)\|\s*([^|]+)\|\s*([^|]+)\|/);
+      if (!row) continue;
+      const code = row[1].trim();
+      const name = row[2].trim();
+      const grade = row[3].trim();
+      if (!code || !name || /Course Code/i.test(code)) continue;
+      rows.push({ code, name, grade, sectionTitle });
+    }
+  }
+
+  return rows;
+}
+
+function dedupeCourses(rows: CourseRow[]): CourseRow[] {
+  const seen = new Set<string>();
+  const deduped: CourseRow[] = [];
+  for (const row of rows) {
+    const key = `${row.code}::${row.name}`.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(row);
+  }
+  return deduped;
+}
+
+function deterministicCourseReply(query: string, chunks: string[]): string | null {
+  if (!isCourseQuery(query) || !chunks.length) return null;
+
+  const rows = extractCourseRowsFromChunks(chunks);
+  if (!rows.length) return null;
+
+  const asksCurrent = /\b(current|currently|right now|this semester|in progress)\b/i.test(query);
+
+  if (asksCurrent) {
+    const currentRows = rows.filter((r) => /\bin progress\b/i.test(r.sectionTitle) || /\bIP\b/i.test(r.grade));
+    const chosenCurrent = dedupeCourses(currentRows);
+    if (chosenCurrent.length) {
+      const formatted = chosenCurrent.map((c) => `${c.code} ${c.name}`).join("; ");
+      return `Current classes: ${formatted}. Total: ${chosenCurrent.length}.`;
+    }
+  }
+
+  const sectionPriority = rows.filter((r) => /\b20\d{2}\s*(spring|summer|fall)\b/i.test(r.sectionTitle));
+  const chosen = dedupeCourses(sectionPriority.length ? sectionPriority : rows);
+  if (!chosen.length) return null;
+  const formatted = chosen.map((c) => `${c.code} ${c.name}`).join("; ");
+  return `Classes I can confirm: ${formatted}. Total: ${chosen.length}.`;
+}
+
+function fallbackFromChunks(query: string, chunks: string[]): string | null {
+  const asksForClasses = /\b(class|classes|course|courses|taking|enrolled|semester|spring|fall)\b/i.test(query);
+  if (!asksForClasses || !chunks.length) return null;
+  const asksForCurrent = /\b(current|currently|right now|this semester|in progress)\b/i.test(query);
+
+  const seen = new Set<string>();
+  const classes: Array<{ code: string; name: string; grade?: string }> = [];
+
+  for (const chunk of chunks) {
+    const tableRowRegex = /\|\s*\*\*([^*|]+)\*\*\s*\|\s*([^|]+)\|\s*([^|]+)\|/g;
+    let match: RegExpExecArray | null = tableRowRegex.exec(chunk);
+    while (match) {
+      const code = match[1].trim();
+      const name = match[2].trim();
+      const grade = match[3].trim();
+      const key = `${code}::${name}`.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        classes.push({ code, name, grade });
+      }
+      match = tableRowRegex.exec(chunk);
+    }
+  }
+
+  if (!classes.length) return null;
+
+  const currentClasses = classes.filter((c) => /\bIP\b|in progress/i.test(c.grade || ""));
+  const selected = asksForCurrent && currentClasses.length ? currentClasses : classes;
+
+  if (!selected.length) return null;
+  const formatted = selected.map((c) => `${c.code} ${c.name}`).join("; ");
+  if (asksForCurrent) {
+    return `Current classes: ${formatted}. Total: ${selected.length}.`;
+  }
+  return `Classes I can confirm: ${formatted}. Total: ${selected.length}.`;
 }
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
@@ -339,6 +486,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: localFallback("") });
   }
 
+  const greeting = GREETINGS.find((g) => g.match.test(query));
+  if (greeting) {
+    return NextResponse.json({ reply: greeting.reply });
+  }
+
   // 1. Check hardcoded deflections first — LLM never sees personal questions
   const deflection = DEFLECTIONS.find((d) => d.match.test(query));
   if (deflection) {
@@ -348,15 +500,25 @@ export async function POST(req: NextRequest) {
   // 2. Fetch Supermemory context — profile + query-specific memories in one call
   const memoryContext = await fetchSupermemoryContext(query);
 
+  const deterministicClasses = deterministicCourseReply(query, memoryContext.chunks);
+  if (deterministicClasses) {
+    return NextResponse.json({ reply: deterministicClasses });
+  }
+
   // 3. Build enriched system prompt
-  const systemPrompt = memoryContext
-    ? `${BASE_SYSTEM}\n\n--- MEMORY CONTEXT (ground all answers in this) ---\n${memoryContext}\n--- END MEMORY CONTEXT ---`
+  const systemPrompt = memoryContext.context
+    ? `${BASE_SYSTEM}\n\n--- MEMORY CONTEXT (ground all answers in this) ---\n${memoryContext.context}\n--- END MEMORY CONTEXT ---`
     : BASE_SYSTEM;
 
   // 4. Try LLM providers in order
   const aiReply = await getModelReply(systemPrompt, query);
   if (aiReply) {
     return NextResponse.json({ reply: aiReply });
+  }
+
+  const chunkFallback = fallbackFromChunks(query, memoryContext.chunks);
+  if (chunkFallback) {
+    return NextResponse.json({ reply: chunkFallback });
   }
 
   // 5. Last resort local fallback
