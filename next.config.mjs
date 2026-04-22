@@ -4,6 +4,10 @@ const nextConfig = {
 		return {
 			beforeFiles: [
 				{
+					source: "/favicon.ico",
+					destination: "/favicon/favicon-32x32.png",
+				},
+				{
 					source: "/music",
 					destination: "/music/index.html",
 				},
