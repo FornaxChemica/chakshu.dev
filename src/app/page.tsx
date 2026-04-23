@@ -4,8 +4,8 @@ import MusicClient from "./ui/music-client";
 import OrbitalClient from "./ui/orbital-client";
 import TrailsTeaserClient from "./ui/trails-teaser-client";
 import hikes from "../../data/hikes.json";
-import { parseGpx } from "../../lib/parseGpx";
-import type { Hike } from "../../types/hikes";
+import gpxData from "../../data/gpx-data.json";
+import type { GpxData, Hike } from "../../types/hikes";
 
 function parseMiles(distance: string): number {
   const match = distance.match(/[\d.]+/);
@@ -15,7 +15,9 @@ function parseMiles(distance: string): number {
 export default async function Home() {
   const hikeList = hikes as Hike[];
   const featuredHike = hikeList[0] ?? null;
-  const featuredGpxData = featuredHike ? await parseGpx(featuredHike.gpx) : null;
+  const featuredGpxData = featuredHike
+    ? ((gpxData as unknown as Record<string, GpxData>)[featuredHike.id] ?? null)
+    : null;
   const allHikes = hikeList.map((entry) => ({ id: entry.id, name: entry.name }));
   const snapshotPositions = featuredHike ? featuredHike.snapshots.map((snapshot) => snapshot.at) : [];
   const milesHiked = hikeList.reduce((total, hike) => total + parseMiles(hike.distance), 0);
