@@ -1,5 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import type { GpxData } from "../types/hikes";
 
@@ -144,7 +145,8 @@ function buildElevation(points: RawPoint[]): { values: number[]; min: number; ma
 export async function parseGpx(filePath: string): Promise<GpxData> {
   try {
     const cleanRelative = filePath.replace(/^\/+/, "");
-    const absolutePath = path.join(process.cwd(), "public", cleanRelative);
+    const libDir = path.dirname(fileURLToPath(import.meta.url));
+    const absolutePath = path.join(libDir, "..", "public", cleanRelative);
     const xml = await fs.readFile(absolutePath, "utf8");
 
     const rawPoints = parseTrackPoints(xml);
