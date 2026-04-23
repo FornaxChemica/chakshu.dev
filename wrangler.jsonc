@@ -12,20 +12,19 @@
 		// If unset, the app uses object paths from JSON/D1 as-is.
 		"PUBLIC_ASSETS_BASE_URL": ""
 	},
-	// Set these with your real IDs:
-	// "d1_databases": [
-	// 	{
-	// 		"binding": "HIKES_DB",
-	// 		"database_name": "chakshu-core-prod",
-	// 		"database_id": "REPLACE_WITH_D1_DATABASE_ID"
-	// 	}
-	// ],
-	// "r2_buckets": [
-	// 	{
-	// 		"binding": "HIKES_ASSETS",
-	// 		"bucket_name": "chakshu-assets"
-	// 	}
-	// ],
+	"d1_databases": [
+		{
+			"binding": "HIKES_DB",
+			"database_name": "chakshu-core-prod",
+			"database_id": "7d614cf0-f183-421f-94fa-3a9b5e990744"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "HIKES_ASSETS",
+			"bucket_name": "chakshu-assets"
+		}
+	],
 	"compatibility_flags": [
 		"nodejs_compat",
 		"global_fetch_strictly_public"
