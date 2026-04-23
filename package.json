@@ -13,7 +13,8 @@
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "d1:seed:generate": "node scripts/generate-d1-seed.mjs"
+    "d1:seed:generate": "node scripts/generate-d1-seed.mjs",
+    "migrate:hikes:r2": "node scripts/migrate-hikes-to-r2.mjs"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.3",
