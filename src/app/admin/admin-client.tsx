@@ -222,23 +222,23 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
               />
             </label>
             <label className={styles.fileField}>
-              Photos
+              Photos / Videos
               <input
                 type="file"
-                accept="image/*"
+                accept="image/*,video/*"
                 multiple
                 onChange={(e) => handlePhotosAdd(e.currentTarget.files)}
               />
             </label>
           </div>
           <p className={styles.helper}>
-            Photos are uploaded at original quality. For each photo, provide either `at` (0 to 1) or `lat/lon` to auto-place on trail.
+            Media is uploaded at original quality. Placement priority is: manual `at` → manual `lat/lon` → embedded GPS metadata → smart fallback interpolation.
           </p>
         </section>
 
         {photos.length > 0 ? (
           <section className={styles.panel}>
-            <h2>Photo Placement</h2>
+            <h2>Media Placement</h2>
             <div className={styles.photoList}>
               {photos.map((photo) => (
                 <article key={photo.id} className={styles.photoCard}>

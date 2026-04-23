@@ -11,6 +11,7 @@ import {
   parseGpxForIngest,
   progressFromLatLon,
 } from "../../../../../lib/gpx-ingest";
+import { extractMediaMetadata } from "../../../../../lib/media-metadata";
 
 export const runtime = "nodejs";
 
@@ -50,6 +51,23 @@ type SnapshotMetaInput = {
   lon?: string;
 };
 
+type SnapshotDraft = {
+  sortOrder: number;
+  at: number | null;
+  srcPath: string;
+  caption: string;
+  elevation: string;
+  capturedAtMs: number | null;
+  placementSource:
+    | "manual_at"
+    | "manual_latlon"
+    | "auto_exif_gps"
+    | "auto_video_gps"
+    | "timestamp_interpolation"
+    | "neighbor_interpolation"
+    | "even_distribution";
+};
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -82,6 +100,113 @@ function clamp01(value: number): number {
 
 function getDefaultDateISO(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+function resolveMissingSnapshotPositions(drafts: SnapshotDraft[]): SnapshotDraft[] {
+  const output = drafts.map((draft) => ({ ...draft }));
+
+  const timedKnown = output
+    .filter((item) => item.at != null && item.capturedAtMs != null)
+    .sort((a, b) => (a.capturedAtMs ?? 0) - (b.capturedAtMs ?? 0));
+
+  for (const item of output) {
+    if (item.at != null || item.capturedAtMs == null || timedKnown.length === 0) continue;
+    const t = item.capturedAtMs;
+    const prev = [...timedKnown].reverse().find((known) => (known.capturedAtMs ?? 0) <= t);
+    const next = timedKnown.find((known) => (known.capturedAtMs ?? 0) >= t);
+
+    if (prev && next && prev !== next && prev.at != null && next.at != null && (next.capturedAtMs ?? 0) > (prev.capturedAtMs ?? 0)) {
+      const ratio = ((t ?? 0) - (prev.capturedAtMs ?? 0)) / ((next.capturedAtMs ?? 0) - (prev.capturedAtMs ?? 0));
+      item.at = clamp01(prev.at + (next.at - prev.at) * ratio);
+      item.placementSource = "timestamp_interpolation";
+      continue;
+    }
+    if (prev?.at != null) {
+      item.at = clamp01(prev.at);
+      item.placementSource = "timestamp_interpolation";
+      continue;
+    }
+    if (next?.at != null) {
+      item.at = clamp01(next.at);
+      item.placementSource = "timestamp_interpolation";
+    }
+  }
+
+  for (let i = 0; i < output.length; i += 1) {
+    if (output[i].at != null) continue;
+
+    let prevIndex = -1;
+    for (let j = i - 1; j >= 0; j -= 1) {
+      if (output[j].at != null) {
+        prevIndex = j;
+        break;
+      }
+    }
+    let nextIndex = -1;
+    for (let j = i + 1; j < output.length; j += 1) {
+      if (output[j].at != null) {
+        nextIndex = j;
+        break;
+      }
+    }
+
+    if (prevIndex >= 0 && nextIndex >= 0 && output[prevIndex].at != null && output[nextIndex].at != null) {
+      const span = nextIndex - prevIndex;
+      const ratio = (i - prevIndex) / span;
+      output[i].at = clamp01((output[prevIndex].at as number) + ((output[nextIndex].at as number) - (output[prevIndex].at as number)) * ratio);
+      output[i].placementSource = "neighbor_interpolation";
+      continue;
+    }
+
+    if (prevIndex >= 0 && output[prevIndex].at != null) {
+      output[i].at = clamp01(output[prevIndex].at as number);
+      output[i].placementSource = "neighbor_interpolation";
+      continue;
+    }
+
+    if (nextIndex >= 0 && output[nextIndex].at != null) {
+      output[i].at = clamp01(output[nextIndex].at as number);
+      output[i].placementSource = "neighbor_interpolation";
+    }
+  }
+
+  const remaining = output.filter((item) => item.at == null);
+  if (remaining.length > 0) {
+    for (let i = 0; i < output.length; i += 1) {
+      if (output[i].at != null) continue;
+      output[i].at = clamp01((i + 1) / (output.length + 1));
+      output[i].placementSource = "even_distribution";
+    }
+  }
+
+  return output;
+}
+
+function spreadDuplicatePositions(drafts: SnapshotDraft[]): SnapshotDraft[] {
+  const output = drafts.map((draft) => ({ ...draft }));
+  const groups = new Map<number, SnapshotDraft[]>();
+
+  for (const item of output) {
+    const at = item.at ?? 0;
+    const key = Math.round(at * 1000);
+    const group = groups.get(key) ?? [];
+    group.push(item);
+    groups.set(key, group);
+  }
+
+  for (const group of groups.values()) {
+    if (group.length <= 1) continue;
+    const anchor = clamp01(group[0].at ?? 0);
+    const step = 0.003;
+    const center = (group.length - 1) / 2;
+
+    for (let i = 0; i < group.length; i += 1) {
+      const shifted = anchor + (i - center) * step;
+      group[i].at = clamp01(shifted);
+    }
+  }
+
+  return output;
 }
 
 async function getCloudflareEnv(): Promise<CloudflareEnvLike | null> {
@@ -135,7 +260,7 @@ export async function POST(request: NextRequest) {
   const sortOrderRaw = String(formData.get("sort_order") ?? "0").trim();
   const requestedId = String(formData.get("id") ?? "").trim();
   const gpxInput = formData.get("gpx");
-  const photos = formData.getAll("photos").filter((item): item is File => item instanceof File);
+  const mediaFiles = formData.getAll("photos").filter((item): item is File => item instanceof File);
 
   if (!name) {
     return NextResponse.json({ error: "name is required" }, { status: 400 });
@@ -171,48 +296,70 @@ export async function POST(request: NextRequest) {
     httpMetadata: { contentType: "application/gpx+xml" },
   });
 
-  const snapshotRows: Array<{
-    sortOrder: number;
-    at: number;
-    srcPath: string;
-    caption: string;
-    elevation: string;
-  }> = [];
+  const snapshotDrafts: SnapshotDraft[] = [];
 
-  for (let i = 0; i < photos.length; i += 1) {
-    const file = photos[i];
+  for (let i = 0; i < mediaFiles.length; i += 1) {
+    const file = mediaFiles[i];
     const meta = snapshotMeta.find((entry) => entry.index === i) ?? null;
 
-    const safeName = sanitizeKeyPart(file.name || `photo-${i + 1}.jpg`);
-    const photoKey = `hikes/${hikeId}/photos/${Date.now()}-${i + 1}-${safeName}`;
+    const safeName = sanitizeKeyPart(file.name || `media-${i + 1}`);
+    const mediaKey = `hikes/${hikeId}/photos/${Date.now()}-${i + 1}-${safeName}`;
     const bytes = await file.arrayBuffer();
-    await bucket.put(photoKey, new Uint8Array(bytes), {
+    const mediaBytes = new Uint8Array(bytes);
+    await bucket.put(mediaKey, mediaBytes, {
       httpMetadata: {
         contentType: file.type || "application/octet-stream",
       },
     });
 
     const atProvided = parseFloatOrNull(meta?.at);
-    const lat = parseFloatOrNull(meta?.lat);
-    const lon = parseFloatOrNull(meta?.lon);
-    const inferredFromLatLon =
-      lat != null && lon != null
-        ? progressFromLatLon(gpxData.rawPoints, lat, lon)
+    const latManual = parseFloatOrNull(meta?.lat);
+    const lonManual = parseFloatOrNull(meta?.lon);
+    const inferredFromManualLatLon =
+      latManual != null && lonManual != null
+        ? progressFromLatLon(gpxData.rawPoints, latManual, lonManual)
         : null;
 
-    let at = atProvided != null ? clamp01(atProvided) : inferredFromLatLon ?? -1;
-    if (at < 0) {
-      at = clamp01((i + 1) / (photos.length + 1));
+    const metadata = extractMediaMetadata(file.name, file.type, mediaBytes);
+    const inferredFromMetadataGps =
+      metadata.lat != null && metadata.lon != null
+        ? progressFromLatLon(gpxData.rawPoints, metadata.lat, metadata.lon)
+        : null;
+
+    let at: number | null = null;
+    let placementSource: SnapshotDraft["placementSource"] = "even_distribution";
+
+    if (atProvided != null) {
+      at = clamp01(atProvided);
+      placementSource = "manual_at";
+    } else if (inferredFromManualLatLon != null) {
+      at = clamp01(inferredFromManualLatLon);
+      placementSource = "manual_latlon";
+    } else if (inferredFromMetadataGps != null) {
+      at = clamp01(inferredFromMetadataGps);
+      placementSource = metadata.source === "quicktime_iso6709" ? "auto_video_gps" : "auto_exif_gps";
     }
 
-    snapshotRows.push({
+    snapshotDrafts.push({
       sortOrder: i,
       at,
-      srcPath: photoKey,
+      srcPath: mediaKey,
       caption: meta?.caption?.trim() || file.name.replace(/\.[a-z0-9]+$/i, ""),
       elevation: meta?.elevation?.trim() || "",
+      capturedAtMs: metadata.capturedAtMs,
+      placementSource,
     });
   }
+
+  const positioned = spreadDuplicatePositions(resolveMissingSnapshotPositions(snapshotDrafts));
+  const snapshotRows = positioned.map((row) => ({
+    sortOrder: row.sortOrder,
+    at: clamp01(row.at ?? 0),
+    srcPath: row.srcPath,
+    caption: row.caption,
+    elevation: row.elevation,
+    placementSource: row.placementSource,
+  }));
 
   const distance = distanceRaw || formatMiles(stats.distanceMiles);
   const elevationGain = elevationGainRaw || formatFeet(stats.elevationGainFeet);
@@ -291,9 +438,13 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({
-    message: `Published ${name} (${hikeId}) with ${snapshotRows.length} photo(s).`,
+    message: `Published ${name} (${hikeId}) with ${snapshotRows.length} media file(s).`,
     hikeId,
     gpxKey,
-    photosUploaded: snapshotRows.length,
+    mediaUploaded: snapshotRows.length,
+    placementBreakdown: snapshotRows.reduce<Record<string, number>>((acc, row) => {
+      acc[row.placementSource] = (acc[row.placementSource] ?? 0) + 1;
+      return acc;
+    }, {}),
   });
 }

@@ -152,7 +152,14 @@ The repo includes a private admin uploader that lets you publish hikes without e
 - Uploads GPX + photos to R2
 - Writes hike + snapshot records to D1
 - Computes GPX geometry/elevation/profile and trail stats
-- Supports manual photo placement (`at` value) or lat/lon-based placement
+- Placement priority:
+  1. manual `at`
+  2. manual `lat/lon`
+  3. embedded GPS metadata (JPEG EXIF + QuickTime ISO6709 videos)
+  4. timestamp interpolation
+  5. neighbor interpolation
+  6. even distribution fallback
+- Spreads media with identical placement so stacked files at one spot remain clickable
 
 ### Required Cloudflare bindings
 
