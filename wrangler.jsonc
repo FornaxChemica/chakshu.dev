@@ -6,18 +6,24 @@
 	"workers_dev": false,
 	"preview_urls": false,
 	"vars": {
-		// Set to "1" only after D1 binding is configured.
-		"USE_D1_HIKES": "0",
+		// Set to "1" after D1 binding + seed are configured.
+		"USE_D1_HIKES": "1",
 		// Optional. Set this to your public R2 domain, e.g. https://assets.chakshu.dev
 		// If unset, the app uses object paths from JSON/D1 as-is.
 		"PUBLIC_ASSETS_BASE_URL": ""
 	},
-	// Enable once your D1 database exists:
+	// Set these with your real IDs:
 	// "d1_databases": [
 	// 	{
 	// 		"binding": "HIKES_DB",
-	// 		"database_name": "chakshu-hikes",
+	// 		"database_name": "chakshu-core-prod",
 	// 		"database_id": "REPLACE_WITH_D1_DATABASE_ID"
+	// 	}
+	// ],
+	// "r2_buckets": [
+	// 	{
+	// 		"binding": "HIKES_ASSETS",
+	// 		"bucket_name": "chakshu-assets"
 	// 	}
 	// ],
 	"compatibility_flags": [

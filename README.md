@@ -142,3 +142,38 @@ Set:
 - `USE_D1_HIKES=1`
 
 Keep it `0` until D1 binding + seed are complete.
+
+## Admin Upload Flow (`/admin`)
+
+The repo includes a private admin uploader that lets you publish hikes without editing JSON files in git:
+
+- Route: `/admin`
+- API: `POST /api/admin/hikes`
+- Uploads GPX + photos to R2
+- Writes hike + snapshot records to D1
+- Computes GPX geometry/elevation/profile and trail stats
+- Supports manual photo placement (`at` value) or lat/lon-based placement
+
+### Required Cloudflare bindings
+
+In `wrangler.jsonc`, set:
+
+- D1 binding: `HIKES_DB` -> `chakshu-core-prod`
+- R2 binding: `HIKES_ASSETS` -> `chakshu-assets`
+- Optional var: `PUBLIC_ASSETS_BASE_URL=https://assets.chakshu.dev`
+
+### Admin auth (Cloudflare Access + Google)
+
+Protect both paths with Cloudflare Access:
+
+- `chakshu.dev/admin*`
+- `chakshu.dev/api/admin/*`
+
+Policy recommendation:
+
+- Login method: Google
+- Include rule: your Google email only
+
+Also set allowlist env:
+
+- `ADMIN_EMAIL_ALLOWLIST=chakshuvinayjain@gmail.com`
