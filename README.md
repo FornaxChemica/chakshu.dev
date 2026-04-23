@@ -83,3 +83,62 @@ npm run dev
 Deploy on Vercel and set the same environment variables in Project Settings.
 
 The terminal UI will automatically call your deployed `/api/terminal` route.
+
+## D1 + R2 Trails Data (Cloudflare)
+
+The app now supports a dual-source trails loader:
+
+- Primary: Cloudflare D1 table data (`HIKES_DB` binding)
+- Fallback: local `data/hikes.json` + `data/gpx-data.json`
+
+So local/dev still works even before D1 is fully configured.
+
+### 1. Create D1 database
+
+```bash
+npx wrangler d1 create chakshu-hikes
+```
+
+Copy the returned `database_id`, then uncomment/update `d1_databases` in `wrangler.jsonc` with:
+
+- `binding`: `HIKES_DB`
+- `database_name`: `chakshu-hikes`
+- `database_id`: your real ID
+
+### 2. Apply schema
+
+```bash
+npx wrangler d1 execute chakshu-hikes --file=db/migrations/0001_create_hikes_tables.sql
+```
+
+### 3. Generate seed SQL from current JSON
+
+```bash
+npm run d1:seed:generate
+```
+
+This writes `db/seed.sql`.
+
+### 4. Seed D1
+
+```bash
+npx wrangler d1 execute chakshu-hikes --file=db/seed.sql
+```
+
+### 5. R2 asset base URL (optional but recommended)
+
+When your R2 custom domain is ready (for example `https://assets.chakshu.dev`), set:
+
+- `PUBLIC_ASSETS_BASE_URL` in `wrangler.jsonc` (non-secret)
+
+or set env-specific vars in Cloudflare dashboard.
+
+This lets D1 store relative object paths while the app serves full asset URLs.
+
+### 6. Enable D1 reads in app runtime
+
+Set:
+
+- `USE_D1_HIKES=1`
+
+Keep it `0` until D1 binding + seed are complete.

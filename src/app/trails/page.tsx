@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 
-import hikes from "../../../data/hikes.json";
-import gpxData from "../../../data/gpx-data.json";
-import type { GpxData, Hike, ParsedHike } from "../../../types/hikes";
+import { getParsedHikes } from "../../../lib/hikes-data";
 import TrailsClient from "./trails-client";
 
 export const metadata: Metadata = {
@@ -11,20 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TrailsPage() {
-  const hikeList = hikes as Hike[];
-  const gpxById = gpxData as unknown as Record<string, GpxData>;
-
-  const parsedHikes: ParsedHike[] = hikeList.map((hike) => {
-    const parsed = gpxById[hike.id] ?? {
-      trail: [],
-      elevationFt: [],
-      rawPoints: [],
-      bounds: { minLat: 0, maxLat: 0, minLon: 0, maxLon: 0 },
-      elevationMin: 0,
-      elevationMax: 0,
-    };
-    return { ...hike, gpxData: parsed };
-  });
+  const parsedHikes = await getParsedHikes();
 
   return <TrailsClient hikes={parsedHikes} />;
 }
