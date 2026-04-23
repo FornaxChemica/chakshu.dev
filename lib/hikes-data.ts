@@ -77,6 +77,28 @@ function parseJson<T>(input: string, fallback: T): T {
   }
 }
 
+function rebuildRawPointsFromTrail(
+  trail: [number, number][],
+  bounds: { minLat: number; maxLat: number; minLon: number; maxLon: number }
+): Array<{ lat: number; lon: number; ele: number }> {
+  if (!trail.length) return [];
+
+  const latSpan = bounds.maxLat - bounds.minLat;
+  const lonSpan = bounds.maxLon - bounds.minLon;
+  if (!Number.isFinite(latSpan) || !Number.isFinite(lonSpan)) return [];
+  if (latSpan === 0 || lonSpan === 0) return [];
+
+  return trail.map(([x, y]) => {
+    const lon = bounds.minLon + x * lonSpan;
+    const lat = bounds.minLat + (1 - y) * latSpan;
+    return {
+      lat,
+      lon,
+      ele: 0,
+    };
+  });
+}
+
 function normalizeSnapshots(input: Snapshot[]): Snapshot[] {
   return input
     .map((snapshot) => ({
@@ -177,6 +199,15 @@ async function loadFromD1(): Promise<ParsedHike[] | null> {
 
   return hikeRows.map((row) => {
     const snapshots = normalizeSnapshots(snapshotsByHike.get(row.id) ?? []);
+    const trail = parseJson<[number, number][]>(row.trail_json, []);
+    const bounds = parseJson<{ minLat: number; maxLat: number; minLon: number; maxLon: number }>(row.bounds_json, {
+      minLat: 0,
+      maxLat: 0,
+      minLon: 0,
+      maxLon: 0,
+    });
+    const rawPointsParsed = parseJson<Array<{ lat: number; lon: number; ele: number }>>(row.raw_points_json, []);
+    const rawPoints = rawPointsParsed.length ? rawPointsParsed : rebuildRawPointsFromTrail(trail, bounds);
 
     return {
       id: row.id,
@@ -191,15 +222,10 @@ async function loadFromD1(): Promise<ParsedHike[] | null> {
       gpx: resolveAssetPath(row.gpx_path, env?.PUBLIC_ASSETS_BASE_URL),
       snapshots,
       gpxData: {
-        trail: parseJson<[number, number][]>(row.trail_json, []),
+        trail,
         elevationFt: parseJson<number[]>(row.elevation_ft_json, []),
-        rawPoints: parseJson<Array<{ lat: number; lon: number; ele: number }>>(row.raw_points_json, []),
-        bounds: parseJson<{ minLat: number; maxLat: number; minLon: number; maxLon: number }>(row.bounds_json, {
-          minLat: 0,
-          maxLat: 0,
-          minLon: 0,
-          maxLon: 0,
-        }),
+        rawPoints,
+        bounds,
         elevationMin: toNumber(row.elevation_min, 0),
         elevationMax: toNumber(row.elevation_max, 0),
       },
