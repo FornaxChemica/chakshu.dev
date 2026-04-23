@@ -169,18 +169,24 @@ In `wrangler.jsonc`, set:
 - R2 binding: `HIKES_ASSETS` -> `chakshu-assets`
 - Optional var: `PUBLIC_ASSETS_BASE_URL=https://assets.chakshu.dev`
 
-### Admin auth (Cloudflare Access + Google)
+### Admin auth (BetterAuth + Google OAuth)
 
-Protect both paths with Cloudflare Access:
+Admin now uses BetterAuth Google sign-in:
 
-- `chakshu.dev/admin*`
-- `chakshu.dev/api/admin/*`
+- Login page: `/admin/login`
+- BetterAuth handler: `/api/auth/[...all]`
+- Protected pages/API: `/admin`, `/api/admin/*`
 
-Policy recommendation:
+Required env vars:
 
-- Login method: Google
-- Include rule: your Google email only
-
-Also set allowlist env:
-
+- `BETTER_AUTH_URL=https://chakshu.dev`
+- `BETTER_AUTH_SECRET=<long-random-secret>`
+- `GOOGLE_CLIENT_ID=<google-oauth-client-id>`
+- `GOOGLE_CLIENT_SECRET=<google-oauth-client-secret>`
 - `ADMIN_EMAIL_ALLOWLIST=chakshuvinayjain@gmail.com`
+
+Google OAuth redirect URIs:
+
+- `https://chakshu.dev/api/auth/callback/google`
+- `https://www.chakshu.dev/api/auth/callback/google`
+- `http://localhost:3000/api/auth/callback/google`

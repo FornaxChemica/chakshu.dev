@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import {
-  getAccessAuthenticatedEmailFromHeaders,
-  getAllowedAdminEmails,
-  isAdminEmail,
-} from "../../../../../lib/admin-auth";
+import { auth } from "../../../../../lib/auth";
 import {
   formatFeet,
   formatMiles,
@@ -220,11 +216,17 @@ async function getCloudflareEnv(): Promise<CloudflareEnvLike | null> {
 }
 
 export async function POST(request: NextRequest) {
-  const email = getAccessAuthenticatedEmailFromHeaders(request.headers);
-  if (!isAdminEmail(email)) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  const email = session?.user?.email?.toLowerCase() ?? null;
+  const allowlist = (process.env.ADMIN_EMAIL_ALLOWLIST ?? "")
+    .split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+  const allowed = !!email && (allowlist.length === 0 || allowlist.includes(email));
+  if (!allowed) {
     return NextResponse.json(
       {
-        error: `Unauthorized. Allowed: ${getAllowedAdminEmails().join(", ")}`,
+        error: "Unauthorized admin account.",
       },
       { status: 401 }
     );

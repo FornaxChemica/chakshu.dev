@@ -8,6 +8,7 @@
 	"vars": {
 		// Set to "1" after D1 binding + seed are configured.
 		"USE_D1_HIKES": "1",
+		"BETTER_AUTH_URL": "https://chakshu.dev",
 		"ADMIN_EMAIL_ALLOWLIST": "chakshuvinayjain@gmail.com",
 		// Optional. Set this to your public R2 domain, e.g. https://assets.chakshu.dev
 		// If unset, the app uses object paths from JSON/D1 as-is.

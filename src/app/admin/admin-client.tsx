@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 
+import { authClient } from "../../../lib/auth-client";
 import styles from "./admin.module.css";
 
 type PhotoDraft = {
@@ -156,10 +157,22 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Trail Admin</h1>
-        <p className={styles.subtitle}>
-          Signed in as <span>{adminEmail}</span>
-        </p>
+        <div>
+          <h1 className={styles.title}>Trail Admin</h1>
+          <p className={styles.subtitle}>
+            Signed in as <span>{adminEmail}</span>
+          </p>
+        </div>
+        <button
+          type="button"
+          className={styles.removeBtn}
+          onClick={async () => {
+            await authClient.signOut();
+            window.location.href = "/admin/login";
+          }}
+        >
+          Sign out
+        </button>
       </header>
 
       <form className={styles.form} onSubmit={onSubmit}>

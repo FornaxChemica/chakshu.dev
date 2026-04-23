@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
-import { getAccessAuthenticatedEmailFromHeaders, isAdminEmail } from "../../../lib/admin-auth";
+import { auth } from "../../../lib/auth";
 import AdminClient from "./admin-client";
 import styles from "./admin.module.css";
 
@@ -12,20 +12,22 @@ export const metadata = {
 
 export default async function AdminPage() {
   const headerStore = await headers();
-  const email = getAccessAuthenticatedEmailFromHeaders(headerStore);
-  const authorized = isAdminEmail(email);
+  const session = await auth.api.getSession({ headers: headerStore });
+  const email = session?.user?.email ?? null;
+  const allowlist = (process.env.ADMIN_EMAIL_ALLOWLIST ?? "")
+    .split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
 
-  if (!authorized) {
+  if (!session?.user) redirect("/admin/login");
+  if (allowlist.length && (!email || !allowlist.includes(email.toLowerCase()))) {
     return (
       <main className={styles.page}>
         <div className={styles.card}>
-          <h1 className={styles.title}>Admin Access Required</h1>
+          <h1 className={styles.title}>Admin Access Restricted</h1>
           <p className={styles.subtitle}>
-            Sign in through Cloudflare Access with your allowed Google account, then refresh this page.
+            This account is signed in, but not in the admin allowlist.
           </p>
-          <Link className={styles.backLink} href="/">
-            ← Back to site
-          </Link>
         </div>
       </main>
     );
