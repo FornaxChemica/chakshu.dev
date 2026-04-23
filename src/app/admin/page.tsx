@@ -22,10 +22,10 @@ export default async function AdminPage() {
   if (!session?.user) redirect("/admin/login");
   if (allowlist.length && (!email || !allowlist.includes(email.toLowerCase()))) {
     return (
-      <main className={styles.page}>
-        <div className={styles.card}>
-          <h1 className={styles.title}>Admin Access Restricted</h1>
-          <p className={styles.subtitle}>
+      <main className={styles.adminPage}>
+        <div className={styles.restrictedCard}>
+          <h1 className={styles.restrictedTitle}>Admin Access Restricted</h1>
+          <p className={styles.restrictedSubtitle}>
             This account is signed in, but not in the admin allowlist.
           </p>
         </div>
@@ -34,7 +34,7 @@ export default async function AdminPage() {
   }
 
   return (
-    <main className={styles.page}>
+    <main className={styles.adminPage}>
       <AdminClient adminEmail={email ?? "authorized-admin"} />
     </main>
   );

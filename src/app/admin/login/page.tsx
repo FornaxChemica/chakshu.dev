@@ -9,12 +9,7 @@ export const metadata = {
 export default function AdminLoginPage() {
   return (
     <main className={styles.page}>
-      <div className={styles.card}>
-        <h1 className={styles.title}>Admin Login</h1>
-        <p className={styles.subtitle}>Sign in with Google to access the upload dashboard.</p>
-        <LoginClient />
-      </div>
+      <LoginClient />
     </main>
   );
 }
-

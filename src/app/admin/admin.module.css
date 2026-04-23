@@ -1,42 +1,278 @@
 .page {
   min-height: 100vh;
-  padding: 32px 16px;
+  background: #05070b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.loginGlowCyan,
+.loginGlowTeal {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 999px;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.loginGlowCyan {
+  top: -120px;
+  left: -80px;
+  background: rgba(0, 229, 255, 0.22);
+}
+
+.loginGlowTeal {
+  right: -100px;
+  bottom: -120px;
+  background: rgba(29, 158, 117, 0.22);
+}
+
+.loginCard {
+  width: 340px;
+  background: rgba(8, 11, 16, 0.92);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 36px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.loginLogo {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(0, 229, 255, 0.4);
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: #00e5ff;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.loginPill {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-family: "JetBrains Mono", monospace;
+  color: rgba(0, 229, 255, 0.5);
+  background: rgba(0, 229, 255, 0.08);
+  border: 0.5px solid rgba(0, 229, 255, 0.2);
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.loginTitle {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-family: "JetBrains Mono", monospace;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.loginSubtitle {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.03em;
+}
+
+.loginDivider {
+  width: 100%;
+  height: 0.5px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 6px 0 2px;
+}
+
+.loginFootnote {
+  margin: 2px 0 0;
+  font-size: 10px;
+  font-family: "JetBrains Mono", monospace;
+  color: rgba(255, 255, 255, 0.15);
+  text-align: center;
+}
+
+.loginActions {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+}
+
+.adminPage {
+  min-height: 100vh;
   background:
     radial-gradient(1200px 700px at 10% -10%, rgba(239, 159, 39, 0.14), transparent 60%),
     radial-gradient(1000px 700px at 100% 0%, rgba(20, 120, 255, 0.1), transparent 52%),
     #05070b;
+}
+
+.restrictedCard {
+  width: min(420px, calc(100% - 32px));
+  margin: 28vh auto 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(8, 11, 16, 0.88);
+  padding: 20px;
+}
+
+.restrictedTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.restrictedSubtitle {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.adminFrame {
   color: rgba(255, 255, 255, 0.92);
 }
 
-.shell {
-  width: min(1120px, 100%);
-  margin: 0 auto;
-  display: grid;
-  gap: 14px;
+.adminTopbar {
+  height: 44px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(8px);
+  background: rgba(5, 7, 11, 0.9);
 }
 
-.header {
+.breadcrumbs {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.topbarRight {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+}
+
+.signOutBtn {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  height: 28px;
+  padding: 0 10px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.adminShell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100vh - 44px);
+}
+
+.adminSidebar {
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  background: rgba(8, 11, 16, 0.8);
+}
+
+.sideNav {
+  display: grid;
+  gap: 8px;
+}
+
+.sideNavItem {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 255, 255, 0.74);
+  border-radius: 10px;
+  height: 34px;
+  padding: 0 10px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+.sideNavItemActive {
+  border-color: rgba(0, 229, 255, 0.35);
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+}
+
+.sidebarStats {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebarStatsHead {
+  margin-bottom: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.sidebarStatRow {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-  flex-wrap: wrap;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 5px 0;
 }
 
-.title {
-  margin: 0;
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  letter-spacing: 0.01em;
-}
-
-.subtitle {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-}
-
-.subtitle span {
-  color: #ef9f27;
+.adminMain {
+  overflow-y: auto;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .form {
@@ -44,48 +280,162 @@
   gap: 14px;
 }
 
-.panel,
-.card {
+.panel {
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
+  border-radius: 14px;
   background: rgba(8, 11, 16, 0.88);
-  backdrop-filter: blur(8px);
-  padding: 16px;
+  padding: 14px;
 }
 
 .panel h2 {
   margin: 0 0 12px;
-  font-size: 0.95rem;
+  font-size: 0.84rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.68);
+  font-family: "JetBrains Mono", monospace;
 }
 
-.grid {
+.gpxDropZone {
+  border: 1px dashed rgba(0, 229, 255, 0.2);
+  background: rgba(0, 229, 255, 0.04);
+  border-radius: 12px;
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  position: relative;
+  cursor: pointer;
+}
+
+.gpxDropZone input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.gpxIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 229, 255, 0.28);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  place-items: center;
+  color: #00e5ff;
+  font-size: 20px;
+}
+
+.gpxDropText {
+  display: grid;
+  gap: 4px;
+}
+
+.gpxDropText strong {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.gpxDropText span {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.54);
+}
+
+.autofillStrip {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.autofillStrip > div {
+  border: 1px solid rgba(29, 158, 117, 0.28);
+  border-radius: 10px;
+  background: rgba(29, 158, 117, 0.08);
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.autofillStrip span {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.autofillStrip strong {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.autofillStrip em {
+  font-size: 10px;
+  font-style: normal;
+  color: rgba(29, 158, 117, 0.9);
+}
+
+.gridFull,
+.gridTwo,
+.gridThree {
+  display: grid;
   gap: 10px;
 }
 
-.grid label,
-.photoGrid label,
+.gridTwo {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.gridThree {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gridFull + .gridThree,
+.gridThree + .gridThree,
+.gridThree + .gridTwo,
+.gridTwo + .helper {
+  margin-top: 10px;
+}
+
+.gridFull label,
+.gridTwo label,
+.gridThree label,
+.mediaMetaGrid label,
 .fileField {
   display: grid;
   gap: 6px;
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.68);
 }
 
-.grid input,
-.photoGrid input,
+.gridFull small,
+.gridTwo small,
+.gridThree small {
+  color: rgba(29, 158, 117, 0.92);
+  font-size: 10px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.gridFull input,
+.gridTwo input,
+.gridThree input,
+.gridThree select,
+.mediaMetaGrid input,
 .fileField input {
-  height: 40px;
+  height: 38px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.26);
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.94);
   padding: 0 10px;
   font-size: 0.9rem;
+}
+
+.helper {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.52);
 }
 
 .uploadRow {
@@ -94,13 +444,8 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.helper {
-  margin: 10px 0 0;
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.58);
-}
-
 .photoList {
+  margin-top: 10px;
   display: grid;
   gap: 10px;
 }
@@ -108,65 +453,207 @@
 .photoCard {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.24);
+  padding: 10px;
+  position: relative;
 }
 
-.photoName {
-  font-size: 0.85rem;
-  margin-bottom: 10px;
-  color: rgba(255, 255, 255, 0.88);
-  word-break: break-all;
-}
-
-.photoGrid {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.removeBtn {
-  margin-top: 10px;
+.removeIconBtn {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
   border: 1px solid rgba(255, 90, 90, 0.35);
+  border-radius: 6px;
   background: rgba(255, 90, 90, 0.08);
   color: rgba(255, 140, 140, 0.95);
-  border-radius: 999px;
-  height: 34px;
-  padding: 0 14px;
+  font-size: 12px;
   cursor: pointer;
 }
 
-.actions {
+.photoHead {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-right: 30px;
+}
+
+.photoThumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 7px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.photoThumbFallback {
+  width: 44px;
+  height: 44px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-family: "JetBrains Mono", monospace;
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.photoHeadText {
+  display: grid;
+  gap: 6px;
+}
+
+.photoName {
+  font-size: 0.83rem;
+  color: rgba(255, 255, 255, 0.9);
+  word-break: break-all;
+}
+
+.placementBadge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.badgeGps {
+  color: rgba(29, 158, 117, 0.95);
+  border: 0.5px solid rgba(29, 158, 117, 0.35);
+  background: rgba(29, 158, 117, 0.12);
+}
+
+.badgeNoGps {
+  color: rgba(239, 159, 39, 0.95);
+  border: 0.5px solid rgba(239, 159, 39, 0.35);
+  background: rgba(239, 159, 39, 0.12);
+}
+
+.badgeManualAt {
+  color: rgba(0, 229, 255, 0.95);
+  border: 0.5px solid rgba(0, 229, 255, 0.35);
+  background: rgba(0, 229, 255, 0.12);
+}
+
+.sliderRow {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 10px;
 }
 
-.publishBtn {
+.placementSlider {
+  width: 100%;
+  accent-color: #ef9f27;
+  cursor: ew-resize;
+}
+
+.placementSliderGps {
+  accent-color: #1d9e75;
+}
+
+.atValue {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: rgba(239, 159, 39, 0.9);
+}
+
+.mediaMetaGrid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.publishSummary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.publishSummary > div {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.publishSummary span {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.48);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.publishSummary strong {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.86);
+  word-break: break-all;
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.publishBtnSquare {
   border: 1px solid rgba(239, 159, 39, 0.6);
   background: linear-gradient(135deg, #ef9f27, #ffbe54);
   color: #0a0d11;
   font-weight: 700;
-  border-radius: 999px;
-  height: 42px;
-  padding: 0 18px;
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 14px;
   cursor: pointer;
 }
 
-.publishBtn:disabled {
+.publishBtnSquare:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.discardBtn {
+  margin-left: auto;
+  border: 1px solid rgba(255, 90, 90, 0.35);
+  background: rgba(255, 90, 90, 0.08);
+  color: rgba(255, 140, 140, 0.95);
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.status {
+  margin: 8px 0 0;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.status[data-status="success"] {
+  color: #62d59c;
+}
+
+.status[data-status="error"] {
+  color: #ff8a8a;
 }
 
 .googleBtn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  width: 100%;
   height: 44px;
-  padding: 0 16px 0 12px;
+  padding: 0 14px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
+  border-radius: 10px;
   background: #ffffff;
   color: #1f1f1f;
   font-weight: 600;
@@ -197,38 +684,26 @@
   border: 1px solid #e5e7eb;
 }
 
-.status {
-  margin: 0;
-  font-size: 0.86rem;
-  color: rgba(255, 255, 255, 0.72);
+.autofilled {
+  border-color: rgba(29, 158, 117, 0.4) !important;
+  background: rgba(29, 158, 117, 0.04) !important;
 }
 
-.status[data-status="success"] {
-  color: #62d59c;
-}
-
-.status[data-status="error"] {
-  color: #ff8a8a;
-}
-
-.backLink {
-  display: inline-block;
-  margin-top: 12px;
-  color: #ef9f27;
-  text-decoration: none;
-}
-
-@media (max-width: 860px) {
-  .grid,
-  .uploadRow {
+@media (max-width: 1024px) {
+  .adminShell {
     grid-template-columns: 1fr;
   }
 
-  .photoGrid {
-    grid-template-columns: 1fr;
+  .adminSidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  .page {
-    padding: 18px 12px;
+  .autofillStrip,
+  .gridThree,
+  .mediaMetaGrid,
+  .uploadRow,
+  .publishSummary {
+    grid-template-columns: 1fr;
   }
 }
