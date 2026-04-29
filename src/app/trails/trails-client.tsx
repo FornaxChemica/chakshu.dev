@@ -81,6 +81,7 @@ declare global {
 const DRAW_DURATION = 1500;
 const SNAP_WINDOW = 0.06;
 const SNAPSHOT_CLOSE_MS = 210;
+const MAPBOX_TOKEN = (process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "").trim();
 
 function clamp01(value: number): number {
   if (value < 0) return 0;
@@ -169,6 +170,7 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
   const [isPhotoViewerOpen, setIsPhotoViewerOpen] = useState(false);
   const [snapshotAspectRatios, setSnapshotAspectRatios] = useState<Record<string, number>>({});
   const [mapReady, setMapReady] = useState(false);
+  const [mapboxUnavailable, setMapboxUnavailable] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
@@ -267,8 +269,15 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
     if (!mapContainerRef.current) return;
 
     let resizeObserver: ResizeObserver | null = null;
+    let initializationFailed = false;
 
     const waitForMapbox = () => {
+      if (!MAPBOX_TOKEN) {
+        initializationFailed = true;
+        setMapboxUnavailable(true);
+        return;
+      }
+
       if (!window.mapboxgl) return;
       if (pollTimerRef.current) {
         window.clearInterval(pollTimerRef.current);
@@ -277,42 +286,47 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
       if (!mapContainerRef.current || mapRef.current) return;
 
-      window.mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
-      const map = new window.mapboxgl.Map({
-        container: mapContainerRef.current,
-        style: "mapbox://styles/mapbox/outdoors-v12",
-        dragRotate: false,
-        attributionControl: false,
-        logoPosition: "bottom-left",
-      });
-      setTimeout(() => {
-        map.resize();
-      }, 100);
-      resizeObserver = new ResizeObserver(() => {
-        map.resize();
-      });
-      if (mapContainerRef.current) {
-        resizeObserver.observe(mapContainerRef.current);
-      }
-      map.addControl(new window.mapboxgl.AttributionControl({ compact: true }), "bottom-left");
-      map.addControl(new window.mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
-      mapRef.current = map;
-      map.on("load", () => {
-        // Add dark overlay to darken map tiles without affecting GL layers
-        map.addLayer({
-          id: "dark-overlay",
-          type: "background",
-          paint: {
-            "background-color": "#000000",
-            "background-opacity": 0.45,
-          },
+      try {
+        window.mapboxgl.accessToken = MAPBOX_TOKEN;
+        const map = new window.mapboxgl.Map({
+          container: mapContainerRef.current,
+          style: "mapbox://styles/mapbox/outdoors-v12",
+          dragRotate: false,
+          attributionControl: false,
+          logoPosition: "bottom-left",
         });
-        setMapReady(true);
-      });
+        setTimeout(() => {
+          map.resize();
+        }, 100);
+        resizeObserver = new ResizeObserver(() => {
+          map.resize();
+        });
+        if (mapContainerRef.current) {
+          resizeObserver.observe(mapContainerRef.current);
+        }
+        map.addControl(new window.mapboxgl.AttributionControl({ compact: true }), "bottom-left");
+        map.addControl(new window.mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
+        mapRef.current = map;
+        map.on("load", () => {
+          // Add dark overlay to darken map tiles without affecting GL layers
+          map.addLayer({
+            id: "dark-overlay",
+            type: "background",
+            paint: {
+              "background-color": "#000000",
+              "background-opacity": 0.45,
+            },
+          });
+          setMapReady(true);
+        });
+      } catch {
+        initializationFailed = true;
+        setMapboxUnavailable(true);
+      }
     };
 
     waitForMapbox();
-    if (!mapRef.current) {
+    if (!mapRef.current && !initializationFailed) {
       pollTimerRef.current = window.setInterval(waitForMapbox, 120);
     }
 
@@ -332,6 +346,8 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
       }
     };
   }, []);
+
+  const showMapFallback = mapboxUnavailable || !MAPBOX_TOKEN;
 
   const syncMarkerStates = useCallback(
     (value: number) => {
@@ -799,7 +815,9 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
   return (
     <>
-      <Script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" strategy="afterInteractive" />
+      {!showMapFallback ? (
+        <Script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" strategy="afterInteractive" />
+      ) : null}
       <nav className={styles.trailsNav}>
         <div className={styles.trailsNavTitle}>/trails</div>
         <Link href="/" className={styles.trailsNavBack}>← back to chakshu.dev</Link>
@@ -871,7 +889,16 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
                 </a>
               ) : null}
             </div>
-            {!isMobile && <div className={styles.mapCanvas} ref={mapContainerRef} />}
+            {!isMobile && (
+              showMapFallback ? (
+                <div className={styles.mapFallback}>
+                  <div className={styles.mapFallbackTitle}>Map preview unavailable</div>
+                  <div className={styles.mapFallbackText}>Trail details, photos, and the AllTrails link still work.</div>
+                </div>
+              ) : (
+                <div className={styles.mapCanvas} ref={mapContainerRef} />
+              )
+            )}
             <div className={styles.statsToggleWrap}>
               <button
                 type="button"
@@ -1034,7 +1061,16 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
         </div>
 
         <div className={styles.mobileMapWrap}>
-          {isMobile && <div className={styles.mobileMapCanvas} ref={mapContainerRef} />}
+          {isMobile && (
+            showMapFallback ? (
+              <div className={styles.mapFallback}>
+                <div className={styles.mapFallbackTitle}>Map preview unavailable</div>
+                <div className={styles.mapFallbackText}>Trail details, photos, and the AllTrails link still work.</div>
+              </div>
+            ) : (
+              <div className={styles.mobileMapCanvas} ref={mapContainerRef} />
+            )
+          )}
           <div className={styles.statsToggleWrap}>
             <button
               type="button"
