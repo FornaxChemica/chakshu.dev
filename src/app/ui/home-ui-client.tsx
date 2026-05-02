@@ -48,7 +48,7 @@ export default function HomeUiClient() {
     };
 
     const onResize = () => {
-      if (window.innerWidth > 700) {
+      if (window.innerWidth > 680) {
         setNavOpen(false);
       }
     };

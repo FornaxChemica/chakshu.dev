@@ -2,6 +2,7 @@ import styles from "./page.module.css";
 import HomeUiClient from "./ui/home-ui-client";
 import MusicClient from "./ui/music-client";
 import OrbitalClient from "./ui/orbital-client";
+import ProfilePhotoFrame from "./ui/profile-photo-frame";
 import TrailsTeaserClient from "./ui/trails-teaser-client";
 import { getParsedHikes } from "../../lib/hikes-data";
 
@@ -65,17 +66,21 @@ export default async function Home() {
         <div className="hero-glow" />
         <div className="container">
           <div className="hero-grid">
-            <div>
-              <div className="hero-label fade-in">Available for opportunities</div>
-              <div className="hero-name-wrap fade-in"><h1 className="hero-name">Chakshu<br /><span className="accent">Jain</span></h1></div>
-              <p className="hero-bio fade-in">
-                <strong>Software Engineer &amp; Data Scientist</strong> at ASU.<br /><br />
-                I don&apos;t just write code - I build <strong>automation systems</strong> that eliminate operational drag, blending CS + Data Science + AI into solutions that actually ship.
-              </p>
-              <div className="hero-cta fade-in">
-                <a className="btn btn-primary" href="#projects">View Work -&gt;</a>
-                <a className="btn btn-ghost" href="https://cal.com/chakshujain" target="_blank" rel="noopener noreferrer">Book a Call</a>
+            <div className="hero-left">
+              <div className="hero-bio-block fade-in">
+                <div className="hero-label">Turning ideas into systems that scale</div>
+                <div className="hero-name-wrap"><h1 className="hero-name">Chakshu<br /><span className="accent">Jain</span></h1></div>
               </div>
+              <ProfilePhotoFrame />
+            </div>
+            <p className="hero-bio fade-in">
+              I work across software, data, and AI, building systems that turn complex ideas into real, production-ready solutions. I enjoy moving quickly from concept to implementation, whether that means designing backend systems, working with data pipelines, or streamlining workflows through automation.
+              <br /><br />
+              I am especially drawn to problems that require both structured thinking and adaptability. I like working in environments where I can learn quickly, take ownership, and push ideas into something tangible.
+            </p>
+            <div className="hero-cta fade-in">
+              <a className="btn btn-primary" href="#projects">View Work -&gt;</a>
+              <a className="btn btn-ghost" href="https://cal.com/chakshujain" target="_blank" rel="noopener noreferrer">Book a Call</a>
             </div>
             <div className="hero-stats fade-in">
               <div className="stat-row"><span className="stat-key">gpa</span><div><span className="stat-val">4.00</span><span className="stat-unit">/ 4.00</span></div></div>
