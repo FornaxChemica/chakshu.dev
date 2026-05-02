@@ -1829,22 +1829,27 @@
     order: 0;
   }
   .page :global(.photo-img) {
-    clip-path: inset(0 0 0 0);
-    animation: none;
+    /* enable a shorter reveal on mobile */
+    clip-path: inset(0 0 100% 0);
+    animation: photoReveal 2.8s ease forwards 0.5s;
     opacity: 1;
   }
   .page :global(.photo-radar) {
-    animation: none;
-    opacity: 0.35;
+    /* keep subtle radar ping on mobile */
+    animation: photoPing 3.5s linear infinite;
+    opacity: 0.25;
   }
   .page :global(.scan-bar) {
-    animation: none;
+    animation: photoScan 2.8s ease forwards 0.5s;
     top: 0;
     opacity: 0.85;
   }
   .page :global(.ascii-layer) {
-    display: none;
-    animation: none;
+    /* enable a lighter ASCII overlay on mobile (smaller glyphs) */
+    display: block;
+    font-size: 6px;
+    line-height: 0.95;
+    animation: asciiFadeOut 0.45s ease forwards 3.3s;
   }
   .page :global(.hero-bio) {
     grid-column: 1 / -1;
