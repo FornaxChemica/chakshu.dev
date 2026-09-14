@@ -277,7 +277,11 @@ export default function TrailsClient({ hikes }: TrailsClientProps) {
 
       if (!mapContainerRef.current || mapRef.current) return;
 
-      window.mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+      window.mapboxgl.accessToken = (process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "").trim();
+      if (!window.mapboxgl.accessToken) {
+        console.error("[trails] NEXT_PUBLIC_MAPBOX_TOKEN is missing");
+        return;
+      }
       const map = new window.mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/outdoors-v12",
