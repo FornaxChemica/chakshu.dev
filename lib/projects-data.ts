@@ -5,6 +5,11 @@ import type {
   ProjectsPageRepo,
 } from "../types/projects";
 import { fetchPublicRepos } from "./github-repos";
+import {
+  deriveProjectStack,
+  deriveProjectTag,
+  enrichFeaturedWithGitHub,
+} from "./project-enrichment";
 
 type D1ResultSet<T> = {
   results?: T[];
@@ -172,8 +177,22 @@ async function loadAllFeaturedRowsFromD1(): Promise<FeaturedProject[] | null> {
 
 export async function getFeaturedProjects(): Promise<FeaturedProject[]> {
   const fromD1 = await loadFeaturedFromD1();
-  if (fromD1 !== null) return fromD1;
-  return fallbackFeaturedProjects().filter((project) => project.featured);
+  const rows =
+    fromD1 !== null
+      ? fromD1
+      : fallbackFeaturedProjects().filter((project) => project.featured);
+
+  let reposByName = new Map<string, Awaited<ReturnType<typeof fetchPublicRepos>>[number]>();
+  try {
+    const repos = await fetchPublicRepos();
+    reposByName = new Map(repos.map((repo) => [repo.name.toLowerCase(), repo]));
+  } catch {
+    // Homepage can still render D1/JSON overrides if GitHub is unavailable.
+  }
+
+  return rows.map((row) =>
+    enrichFeaturedWithGitHub(row, reposByName.get(row.repoName.toLowerCase()))
+  );
 }
 
 export async function getAllFeaturedProjectRows(): Promise<FeaturedProject[]> {
@@ -192,14 +211,18 @@ export async function getProjectsPageData(): Promise<ProjectsPageRepo[]> {
 
   return repos.map((repo) => {
     const featured = featuredByName.get(repo.name.toLowerCase());
+    const enriched = featured
+      ? enrichFeaturedWithGitHub(featured, repo)
+      : null;
+
     return {
       ...repo,
       featured: featured?.featured === true,
-      displayName: featured?.displayName ?? null,
-      tag: featured?.tag ?? null,
-      overrideDescription: featured?.description ?? null,
-      stack: featured?.stack ?? [],
-      homepageUrl: featured?.homepageUrl ?? null,
+      displayName: enriched?.displayName ?? null,
+      tag: enriched?.tag ?? deriveProjectTag(repo),
+      overrideDescription: enriched?.description ?? null,
+      stack: enriched?.stack?.length ? enriched.stack : deriveProjectStack(repo),
+      homepageUrl: enriched?.homepageUrl ?? null,
       logoUrl: featured?.logoUrl ?? null,
       sortOrder: featured?.featured ? featured.sortOrder : null,
     };

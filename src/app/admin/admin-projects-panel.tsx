@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { githubDefaultsForAdmin } from "../../../lib/project-enrichment";
 import type { FeaturedProject, GitHubRepo } from "../../../types/projects";
 import styles from "./admin.module.css";
 
@@ -18,6 +19,7 @@ type DraftProject = {
   language: string | null;
   htmlUrl: string;
   githubDescription: string | null;
+  defaults: ReturnType<typeof githubDefaultsForAdmin>;
 };
 
 type LoadState =
@@ -32,19 +34,21 @@ type SaveState =
   | { status: "error"; message: string };
 
 function toDraft(repo: GitHubRepo, featured: FeaturedProject | undefined): DraftProject {
+  const defaults = githubDefaultsForAdmin(repo);
   return {
     repoName: repo.name,
     featured: featured?.featured === true,
     sortOrder: String(featured?.sortOrder ?? 0),
-    displayName: featured?.displayName ?? "",
-    tag: featured?.tag ?? "",
-    description: featured?.description ?? "",
-    stackText: (featured?.stack ?? []).join(", "),
-    homepageUrl: featured?.homepageUrl ?? "",
+    displayName: featured?.displayName?.trim() || defaults.displayName,
+    tag: featured?.tag?.trim() || defaults.tag,
+    description: featured?.description?.trim() || defaults.description,
+    stackText: featured?.stack?.length ? featured.stack.join(", ") : defaults.stackText,
+    homepageUrl: featured?.homepageUrl?.trim() || defaults.homepageUrl,
     logoUrl: featured?.logoUrl ?? "",
     language: repo.language,
     htmlUrl: repo.htmlUrl,
     githubDescription: repo.description,
+    defaults,
   };
 }
 
@@ -120,6 +124,40 @@ export default function AdminProjectsPanel() {
     );
   }
 
+  function toggleFeatured(repoName: string, featured: boolean) {
+    setDrafts((prev) =>
+      prev.map((draft) => {
+        if (draft.repoName !== repoName) return draft;
+        if (!featured) return { ...draft, featured: false };
+        return {
+          ...draft,
+          featured: true,
+          displayName: draft.displayName.trim() || draft.defaults.displayName,
+          tag: draft.tag.trim() || draft.defaults.tag,
+          description: draft.description.trim() || draft.defaults.description,
+          stackText: draft.stackText.trim() || draft.defaults.stackText,
+          homepageUrl: draft.homepageUrl.trim() || draft.defaults.homepageUrl,
+        };
+      })
+    );
+  }
+
+  function resetFromGitHub(repoName: string) {
+    setDrafts((prev) =>
+      prev.map((draft) => {
+        if (draft.repoName !== repoName) return draft;
+        return {
+          ...draft,
+          displayName: draft.defaults.displayName,
+          tag: draft.defaults.tag,
+          description: draft.defaults.description,
+          stackText: draft.defaults.stackText,
+          homepageUrl: draft.defaults.homepageUrl,
+        };
+      })
+    );
+  }
+
   async function saveFeatured() {
     setSaveState({ status: "loading", message: "Saving featured set…" });
     const projects = drafts
@@ -170,7 +208,8 @@ export default function AdminProjectsPanel() {
           <div className={styles.kicker}>Projects</div>
           <h1 className={styles.formTitle}>Featured curation</h1>
           <p className={styles.formSubtitle}>
-            Toggle featured repos for the homepage. Overrides win over GitHub copy.
+            Fields are prefilled from GitHub (description, language, topics). Edit to override;
+            empty values fall back to GitHub on the site.
           </p>
         </div>
         <button type="button" className={styles.primaryBtn} onClick={() => void saveFeatured()}>
@@ -209,9 +248,7 @@ export default function AdminProjectsPanel() {
                   <input
                     type="checkbox"
                     checked={draft.featured}
-                    onChange={(event) =>
-                      updateDraft(draft.repoName, { featured: event.target.checked })
-                    }
+                    onChange={(event) => toggleFeatured(draft.repoName, event.target.checked)}
                   />
                   Featured
                 </label>
@@ -241,7 +278,6 @@ export default function AdminProjectsPanel() {
                       onChange={(event) =>
                         updateDraft(draft.repoName, { displayName: event.target.value })
                       }
-                      placeholder={draft.repoName}
                     />
                   </label>
                   <label>
@@ -250,18 +286,16 @@ export default function AdminProjectsPanel() {
                       className={styles.input}
                       value={draft.tag}
                       onChange={(event) => updateDraft(draft.repoName, { tag: event.target.value })}
-                      placeholder="Full-stack · AI-native"
                     />
                   </label>
                   <label className={styles.projectFieldWide}>
-                    Description override
+                    Description
                     <textarea
                       className={styles.textarea}
                       value={draft.description}
                       onChange={(event) =>
                         updateDraft(draft.repoName, { description: event.target.value })
                       }
-                      placeholder={draft.githubDescription ?? "Homepage description…"}
                       rows={3}
                     />
                   </label>
@@ -273,7 +307,6 @@ export default function AdminProjectsPanel() {
                       onChange={(event) =>
                         updateDraft(draft.repoName, { stackText: event.target.value })
                       }
-                      placeholder="React, Node.js, TypeScript"
                     />
                   </label>
                   <label className={styles.projectFieldWide}>
@@ -298,6 +331,15 @@ export default function AdminProjectsPanel() {
                       placeholder="/favicon.png or https://…"
                     />
                   </label>
+                  <div className={styles.projectFieldWide}>
+                    <button
+                      type="button"
+                      className={styles.resetGithubBtn}
+                      onClick={() => resetFromGitHub(draft.repoName)}
+                    >
+                      Reset fields from GitHub
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <p className={styles.projectGithubDesc}>
