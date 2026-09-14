@@ -1,0 +1,46 @@
+[
+  {
+    "repoName": "chakshu.dev",
+    "sortOrder": 0,
+    "featured": true,
+    "displayName": "chakshu.dev",
+    "tag": "Portfolio · Live",
+    "description": "Personal portfolio — experience, trails, music, and projects.",
+    "stack": ["Next.js", "TypeScript", "Cloudflare"],
+    "homepageUrl": null,
+    "logoUrl": null
+  },
+  {
+    "repoName": "Sage",
+    "sortOrder": 1,
+    "featured": true,
+    "displayName": "Sage",
+    "tag": "Full-stack · AI-native",
+    "description": "Interactive analytics platform that ingests unstructured enterprise data and uses advanced GenAI models to summarize and output structured analytics. Features repeatable prompt templates and a responsive dashboard bridging UI with backend REST APIs.",
+    "stack": ["React", "Node.js", "TypeScript", "Python", "LLM APIs"],
+    "homepageUrl": null,
+    "logoUrl": null
+  },
+  {
+    "repoName": "aero_docs",
+    "sortOrder": 2,
+    "featured": true,
+    "displayName": "AeroDocs",
+    "tag": "Backend · Cloud-native",
+    "description": "Enterprise-grade, cloud-native backend service built from scratch using OOP to process, validate, and securely store sensitive organizational records. Features automated testing, strict data-handling protocols, and API optimization.",
+    "stack": ["Java", "SQL", "Docker", "CI/CD", "OOP"],
+    "homepageUrl": null,
+    "logoUrl": null
+  },
+  {
+    "repoName": "AZNext-Workflow-Engine",
+    "sortOrder": 3,
+    "featured": true,
+    "displayName": "AZNext Workflow Engine",
+    "tag": "Agentic AI · Automation",
+    "description": "Autonomous state machine that tracks operational data in real-time, identifies anti-patterns, and dynamically extracts and structures ambiguous business information - eliminating 15+ hours of manual work weekly across the organization.",
+    "stack": ["Python", "Agentic AI", "State Machines", "Data Analysis", "OpenAI API"],
+    "homepageUrl": null,
+    "logoUrl": null
+  }
+]

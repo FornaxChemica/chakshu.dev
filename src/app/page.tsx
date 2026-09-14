@@ -5,6 +5,7 @@ import OrbitalClient from "./ui/orbital-client";
 import ProfilePhotoFrame from "./ui/profile-photo-frame";
 import TrailsTeaserClient from "./ui/trails-teaser-client";
 import { getParsedHikes } from "../../lib/hikes-data";
+import { getFeaturedProjects } from "../../lib/projects-data";
 
 function parseMiles(distance: string): number {
   const match = distance.match(/[\d.]+/);
@@ -12,7 +13,10 @@ function parseMiles(distance: string): number {
 }
 
 export default async function Home() {
-  const hikeList = await getParsedHikes();
+  const [hikeList, featuredProjects] = await Promise.all([
+    getParsedHikes(),
+    getFeaturedProjects(),
+  ]);
   const featuredHike = hikeList[0] ?? null;
   const featuredGpxData = featuredHike?.gpxData ?? null;
   const allHikes = hikeList.map((entry) => ({ id: entry.id, name: entry.name }));
@@ -79,7 +83,7 @@ export default async function Home() {
               I am especially drawn to problems that require both structured thinking and adaptability. I like working in environments where I can learn quickly, take ownership, and push ideas into something tangible.
             </p>
             <div className="hero-cta fade-in">
-              <a className="btn btn-primary" href="#projects">View Work -&gt;</a>
+              <a className="btn btn-primary" href="/projects">View Work -&gt;</a>
               <a className="btn btn-ghost" href="https://cal.com/chakshujain" target="_blank" rel="noopener noreferrer">Book a Call</a>
             </div>
             <div className="hero-stats fade-in">
@@ -175,25 +179,41 @@ export default async function Home() {
         <div className="container">
           <div className="section-header"><span className="section-num">02</span><span className="section-icon"><i className="ph ph-code" aria-hidden="true" /></span><h2 className="section-title">Projects</h2><div className="section-line" /></div>
           <div className="projects-grid">
-            <div className="project-card">
-              <div className="project-tag">Full-stack · AI-native</div>
-              <div className="project-name">Sage</div>
-              <p className="project-desc">Interactive analytics platform that ingests unstructured enterprise data and uses advanced GenAI models to summarize and output structured analytics. Features repeatable prompt templates and a responsive dashboard bridging UI with backend REST APIs.</p>
-              <div className="project-stack"><span className="tag">React</span><span className="tag">Node.js</span><span className="tag">TypeScript</span><span className="tag">Python</span><span className="tag">LLM APIs</span></div>
-            </div>
-            <div className="project-card">
-              <div className="project-tag">Backend · Cloud-native</div>
-              <div className="project-name">AeroDocs</div>
-              <p className="project-desc">Enterprise-grade, cloud-native backend service built from scratch using OOP to process, validate, and securely store sensitive organizational records. Features automated testing, strict data-handling protocols, and API optimization.</p>
-              <div className="project-stack"><span className="tag">Java</span><span className="tag">SQL</span><span className="tag">Docker</span><span className="tag">CI/CD</span><span className="tag">OOP</span></div>
-            </div>
-            <div className="project-card project-full-width">
-              <div className="project-tag">Agentic AI · Automation</div>
-              <div className="project-name">AZNext Workflow Engine</div>
-              <p className="project-desc">Autonomous state machine that tracks operational data in real-time, identifies anti-patterns, and dynamically extracts and structures ambiguous business information - eliminating 15+ hours of manual work weekly across the organization.</p>
-              <div className="project-stack"><span className="tag">Python</span><span className="tag">Agentic AI</span><span className="tag">State Machines</span><span className="tag">Data Analysis</span><span className="tag">OpenAI API</span></div>
-            </div>
+            {featuredProjects.map((project, index) => {
+              const isLastOdd =
+                featuredProjects.length % 2 === 1 && index === featuredProjects.length - 1;
+              return (
+                <div
+                  key={project.repoName}
+                  className={`project-card${isLastOdd ? " project-full-width" : ""}`}
+                >
+                  {project.tag ? <div className="project-tag">{project.tag}</div> : null}
+                  <div className="project-name">{project.displayName || project.repoName}</div>
+                  {project.description ? <p className="project-desc">{project.description}</p> : null}
+                  {project.stack.length > 0 ? (
+                    <div className="project-stack">
+                      {project.stack.map((item) => (
+                        <span key={item} className="tag">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
           </div>
+          <a href="/projects" className="projects-teaser">
+            <div className="projects-teaser-left">
+              <div className="projects-teaser-label">All public repos.</div>
+              <div className="projects-teaser-sub">
+                searchable archive pulled live from github.com/FornaxChemica
+              </div>
+            </div>
+            <div className="projects-teaser-arrow">
+              Open /projects <i className="ph ph-arrow-up-right" aria-hidden="true" />
+            </div>
+          </a>
         </div>
       </section>
 

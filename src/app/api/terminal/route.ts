@@ -71,7 +71,7 @@ const FALLBACKS: FallbackRule[] = [
   },
   {
     match: /(project|build|working on|made)/i,
-    reply: "Sage is my AI analytics platform, AeroDocs is my Java secure backend, and AZNext was the agentic workflow engine that cut 15+ hrs/week of manual work.",
+    reply: "Sage is my AI analytics platform, AeroDocs is my Java secure backend, and AZNext was the agentic workflow engine that cut 15+ hrs/week of manual work. Browse everything public on /projects.",
   },
   {
     match: /(automate|automation|ai|agent)/i,

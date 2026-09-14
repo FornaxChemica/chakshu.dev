@@ -5,7 +5,7 @@ Key facts:
 - AI Automation Developer at EECPLL (W. P. Carey): building AI outreach system with human-in-the-loop review, prompt engineering, multi-step automation
 - Former Technical Lead at AZNext (W. P. Carey): Python agentic AI state-machine, saved 15+ hrs/week. Grant ended.
 - VP of Finance at DevLabs ASU: $50k budget, 500 members
-- Projects: Sage (AI analytics, React/Node/LLM), AeroDocs (Java secure backend), AZNext workflow engine
+- Projects: Sage (AI analytics, React/Node/LLM), AeroDocs (Java secure backend), AZNext workflow engine. Full archive at /projects.
 - Stack: Python, Java, TypeScript, React, Node.js, SQL, AWS, Docker, OpenAI/Claude APIs
 - Location: Tempe AZ. Originally from India. Hobbies: astronomy, outdoors, competitive programming
 - Email: chakshuvinayjain@gmail.com
@@ -27,7 +27,7 @@ const terminalFallbacks = [
   },
   {
     match: /(project|build|working on|made)/i,
-    reply: "Sage is my AI analytics platform, AeroDocs is my Java backend project, and AZNext was the agentic workflow engine that cut 15+ hours of manual work each week."
+    reply: "Sage is my AI analytics platform, AeroDocs is my Java backend project, and AZNext was the agentic workflow engine that cut 15+ hours of manual work each week. Full public archive is on /projects."
   },
   {
     match: /(automate|automation|ai)/i,

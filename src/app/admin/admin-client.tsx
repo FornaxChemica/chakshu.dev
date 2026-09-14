@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { authClient } from "../../../lib/auth-client";
+import AdminProjectsPanel from "./admin-projects-panel";
 import styles from "./admin.module.css";
 
 type PhotoDraft = {
@@ -164,6 +165,7 @@ async function parseGpxPreview(file: File): Promise<GpxPreview | null> {
 }
 
 export default function AdminClient({ adminEmail }: AdminClientProps) {
+  const [panel, setPanel] = useState<"trails" | "projects">("trails");
   const [name, setName] = useState("");
   const [hikeId, setHikeId] = useState("");
   const [location, setLocation] = useState("");
@@ -326,7 +328,7 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
           <span>/</span>
           <span>admin</span>
           <span>/</span>
-          <span>new trail</span>
+          <span>{panel === "projects" ? "projects" : "new trail"}</span>
         </div>
         <div className={styles.topbarRight}>
           <div className={styles.avatar}>{initials || "CJ"}</div>
@@ -346,9 +348,23 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
       <div className={styles.adminShell}>
         <aside className={styles.adminSidebar}>
           <nav className={styles.sideNav}>
-            <button type="button" className={styles.sideNavItem}>all trails</button>
-            <button type="button" className={`${styles.sideNavItem} ${styles.sideNavItemActive}`}>+ new trail</button>
-            <button type="button" className={styles.sideNavItem}>media library</button>
+            <button
+              type="button"
+              className={`${styles.sideNavItem} ${panel === "trails" ? styles.sideNavItemActive : ""}`}
+              onClick={() => setPanel("trails")}
+            >
+              + new trail
+            </button>
+            <button
+              type="button"
+              className={`${styles.sideNavItem} ${panel === "projects" ? styles.sideNavItemActive : ""}`}
+              onClick={() => setPanel("projects")}
+            >
+              projects
+            </button>
+            <button type="button" className={styles.sideNavItem} disabled>
+              media library
+            </button>
           </nav>
           <div className={styles.sidebarStats}>
             <div className={styles.sidebarStatsHead}>quick stats</div>
@@ -359,6 +375,9 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
         </aside>
 
         <main className={styles.adminMain}>
+          {panel === "projects" ? (
+            <AdminProjectsPanel />
+          ) : (
           <form className={styles.form} onSubmit={onSubmit}>
             <section className={styles.panel}>
               <h2>01 — GPX File</h2>
@@ -576,6 +595,7 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
               <p className={styles.status} data-status={submitState.status}>{submitState.message}</p>
             </section>
           </form>
+          )}
         </main>
       </div>
     </div>

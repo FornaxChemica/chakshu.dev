@@ -84,9 +84,46 @@ Deploy on Vercel and set the same environment variables in Project Settings.
 
 The terminal UI will automatically call your deployed `/api/terminal` route.
 
+## Featured Projects + `/projects`
+
+Homepage featured cards are curated in D1 (`featured_projects`) via `/admin` → **projects**.
+
+- Public archive: `/projects` (all public GitHub repos for `FornaxChemica`, searchable/filterable)
+- Featured source: D1 when `USE_D1_HIKES=1` + binding available, else `data/projects.json`
+- Admin API: `GET`/`PUT` `/api/admin/projects`
+
+### 1. Migrate + seed D1
+
+```bash
+npx wrangler d1 execute chakshu-core-prod --remote --file=db/migrations/0002_create_featured_projects.sql
+npx wrangler d1 execute chakshu-core-prod --remote --file=db/seed-featured-projects.sql
+```
+
+Use the same files with `--local` if you develop against local D1.
+
+### 2. Optional GitHub token
+
+Unauthenticated GitHub API works, but rate limits are low. For production:
+
+```bash
+npx wrangler secret put GITHUB_TOKEN
+```
+
+Also set `GITHUB_TOKEN` in `.env.local` for local `/projects` fetches.
+
+Match `repo_name` in admin/D1 to the exact GitHub repository name so featured badges join correctly.
+
+Optional `logo_url` overrides the card mark. Otherwise live `homepage`/`homepage_url` uses the site favicon; GitHub-only repos use the GitHub logo.
+
+If `0002` already ran without `logo_url`:
+
+```bash
+npx wrangler d1 execute chakshu-core-prod --remote --file=db/migrations/0003_add_featured_project_logo_url.sql
+```
+
 ## D1 + R2 Trails Data (Cloudflare)
 
-The app now supports a dual-source trails loader:
+The app supports a dual-source trails loader:
 
 - Primary: Cloudflare D1 table data (`HIKES_DB` binding)
 - Fallback: local `data/hikes.json` + `data/gpx-data.json`
