@@ -126,7 +126,7 @@ export default async function Home() {
               <div className="exp-badge">Concluded</div>
             </div>
             <div>
-              <div className="exp-role">Technical Lead - Data &amp; Software Eng.</div>
+              <div className="exp-role">Program Coordinator Assistant</div>
               <div className="exp-impact">15+ hrs saved per week</div>
               <ul className="exp-bullets">
                 <li>Built a Python-based agentic AI workflow and state-machine that completely automated manual data entry, saving the organization 15+ hours per week</li>
