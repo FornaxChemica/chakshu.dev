@@ -7,7 +7,7 @@ import styles from "./admin.module.css";
 
 export const metadata = {
   title: "Admin - Chakshu Jain",
-  description: "Private admin tools for hikes, projects, and media ingest.",
+  description: "Private admin tools for hikes, trail edits, projects, and media ingest.",
 };
 
 export default async function AdminPage() {

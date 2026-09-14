@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { authClient } from "../../../lib/auth-client";
 import AdminProjectsPanel from "./admin-projects-panel";
+import AdminTrailsEditPanel from "./admin-trails-edit-panel";
 import styles from "./admin.module.css";
 
 type PhotoDraft = {
@@ -165,7 +166,7 @@ async function parseGpxPreview(file: File): Promise<GpxPreview | null> {
 }
 
 export default function AdminClient({ adminEmail }: AdminClientProps) {
-  const [panel, setPanel] = useState<"trails" | "projects">("trails");
+  const [panel, setPanel] = useState<"trails" | "edit-trails" | "projects">("trails");
   const [name, setName] = useState("");
   const [hikeId, setHikeId] = useState("");
   const [location, setLocation] = useState("");
@@ -328,7 +329,9 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
           <span>/</span>
           <span>admin</span>
           <span>/</span>
-          <span>{panel === "projects" ? "projects" : "new trail"}</span>
+          <span>
+            {panel === "projects" ? "projects" : panel === "edit-trails" ? "edit trails" : "new trail"}
+          </span>
         </div>
         <div className={styles.topbarRight}>
           <div className={styles.avatar}>{initials || "CJ"}</div>
@@ -357,6 +360,13 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
             </button>
             <button
               type="button"
+              className={`${styles.sideNavItem} ${panel === "edit-trails" ? styles.sideNavItemActive : ""}`}
+              onClick={() => setPanel("edit-trails")}
+            >
+              edit trails
+            </button>
+            <button
+              type="button"
               className={`${styles.sideNavItem} ${panel === "projects" ? styles.sideNavItemActive : ""}`}
               onClick={() => setPanel("projects")}
             >
@@ -377,6 +387,8 @@ export default function AdminClient({ adminEmail }: AdminClientProps) {
         <main className={styles.adminMain}>
           {panel === "projects" ? (
             <AdminProjectsPanel />
+          ) : panel === "edit-trails" ? (
+            <AdminTrailsEditPanel />
           ) : (
           <form className={styles.form} onSubmit={onSubmit}>
             <section className={styles.panel}>

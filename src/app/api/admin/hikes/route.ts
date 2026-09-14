@@ -11,9 +11,14 @@ import { extractMediaMetadata } from "../../../../../lib/media-metadata";
 
 export const runtime = "nodejs";
 
+type D1ResultSet<T> = {
+  results?: T[];
+};
+
 type D1Statement = {
   bind: (...values: unknown[]) => D1Statement;
   run: () => Promise<unknown>;
+  all: <T>() => Promise<D1ResultSet<T>>;
 };
 
 type D1DatabaseLike = {
@@ -215,14 +220,104 @@ async function getCloudflareEnv(): Promise<CloudflareEnvLike | null> {
   }
 }
 
-export async function POST(request: NextRequest) {
-  const session = await auth.api.getSession({ headers: request.headers });
-  const email = session?.user?.email?.toLowerCase() ?? null;
+type HikeListRow = {
+  id: string;
+  sort_order: number | string;
+  published: number | string;
+  name: string;
+  alltrails_url: string | null;
+  location: string;
+  date: string;
+  distance: string;
+  elevation_gain: string;
+  high_point: string;
+  difficulty: string;
+  gpx_path: string;
+  snapshot_count: number | string;
+};
+
+function isAllowedAdmin(email: string | null): boolean {
+  if (!email) return false;
   const allowlist = (process.env.ADMIN_EMAIL_ALLOWLIST ?? "")
     .split(",")
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean);
-  const allowed = !!email && (allowlist.length === 0 || allowlist.includes(email));
+  return allowlist.length === 0 || allowlist.includes(email);
+}
+
+export async function GET(request: NextRequest) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  const email = session?.user?.email?.toLowerCase() ?? null;
+  if (!isAllowedAdmin(email)) {
+    return NextResponse.json({ error: "Unauthorized admin account." }, { status: 401 });
+  }
+
+  const env = await getCloudflareEnv();
+  const db = env?.HIKES_DB;
+  if (!db) {
+    return NextResponse.json({ error: "Missing D1 binding: HIKES_DB" }, { status: 500 });
+  }
+
+  try {
+    const rows =
+      (
+        await db
+          .prepare(
+            `
+            SELECT
+              h.id,
+              h.sort_order,
+              h.published,
+              h.name,
+              h.alltrails_url,
+              h.location,
+              h.date,
+              h.distance,
+              h.elevation_gain,
+              h.high_point,
+              h.difficulty,
+              h.gpx_path,
+              (
+                SELECT COUNT(*) FROM snapshots s WHERE s.hike_id = h.id
+              ) AS snapshot_count
+            FROM hikes h
+            ORDER BY h.sort_order ASC, h.name ASC
+            `
+          )
+          .all<HikeListRow>()
+      ).results ?? [];
+
+    return NextResponse.json({
+      hikes: rows.map((row) => ({
+        id: row.id,
+        sortOrder: Number(row.sort_order) || 0,
+        published: Number(row.published) === 1,
+        name: row.name,
+        alltrailsUrl: row.alltrails_url,
+        location: row.location,
+        date: row.date,
+        distance: row.distance,
+        elevationGain: row.elevation_gain,
+        highPoint: row.high_point,
+        difficulty: row.difficulty,
+        gpxPath: row.gpx_path,
+        snapshotCount: Number(row.snapshot_count) || 0,
+      })),
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Failed to list hikes.",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  const email = session?.user?.email?.toLowerCase() ?? null;
+  const allowed = isAllowedAdmin(email);
   if (!allowed) {
     return NextResponse.json(
       {
