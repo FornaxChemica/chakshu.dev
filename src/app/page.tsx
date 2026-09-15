@@ -56,6 +56,7 @@ export default async function Home() {
         </button>
         <ul className="nav-links" id="navLinks">
           <li><a href="#experience">Experience</a></li>
+          <li><a href="#leadership">Leadership</a></li>
           <li><a href="#projects">Projects</a></li>
           <li><a href="#stack">Stack</a></li>
           <li><a href="#orbital">Orbital</a></li>
@@ -106,7 +107,7 @@ export default async function Home() {
           <div className="exp-item">
             <div>
               <div className="exp-period">Apr 2025 - Present</div>
-              <div className="exp-org">EECPLL</div>
+              <div className="exp-org">Executive Education</div>
               <div className="exp-org-sub">W. P. Carey School of Business<br />Arizona State University<br />Tempe, AZ · Part-time</div>
               <div className="exp-badge current">● Active</div>
             </div>
@@ -139,21 +140,27 @@ export default async function Home() {
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="leadership">
+        <div className="container">
+          <div className="section-header"><span className="section-num">02</span><span className="section-icon"><i className="ph ph-users-three" aria-hidden="true" /></span><h2 className="section-title">Leadership</h2><div className="section-line" /></div>
 
           <div className="exp-item">
             <div>
-              <div className="exp-period">May 2024 - Present</div>
+              <div className="exp-period">May 2024 - May 2026</div>
               <div className="exp-org">DevLabs at ASU</div>
               <div className="exp-org-sub">500-member organization<br />Arizona State University</div>
-              <div className="exp-badge current">● Active</div>
+              <div className="exp-badge">Concluded</div>
             </div>
             <div>
               <div className="exp-role">VP of Finance (Treasurer)</div>
               <div className="exp-impact">$50,000 budget managed</div>
               <ul className="exp-bullets">
-                <li>Manages a $50,000 operational budget for a 500-member organization, collaborating with the executive board to fund large-scale technical events</li>
+                <li>Managed a $50,000 operational budget for a 500-member organization, collaborating with the executive board to fund large-scale technical events</li>
                 <li>Built dynamic financial models in Excel for cash flow forecasting and automated repetitive end-of-month financial reporting pipelines</li>
-                <li>Combines developer logic with high-level financial strategy to sustain one of ASU&apos;s largest technical clubs</li>
+                <li>Combined developer logic with high-level financial strategy to sustain one of ASU&apos;s largest technical clubs</li>
               </ul>
             </div>
           </div>
@@ -177,7 +184,7 @@ export default async function Home() {
 
       <section id="projects">
         <div className="container">
-          <div className="section-header"><span className="section-num">02</span><span className="section-icon"><i className="ph ph-code" aria-hidden="true" /></span><h2 className="section-title">Projects</h2><div className="section-line" /></div>
+          <div className="section-header"><span className="section-num">03</span><span className="section-icon"><i className="ph ph-code" aria-hidden="true" /></span><h2 className="section-title">Projects</h2><div className="section-line" /></div>
           <div className="projects-grid">
             {featuredProjects.map((project, index) => {
               const isLastOdd =
@@ -219,7 +226,7 @@ export default async function Home() {
 
       <section id="stack">
         <div className="container">
-          <div className="section-header"><span className="section-num">03</span><span className="section-icon"><i className="ph ph-stack" aria-hidden="true" /></span><h2 className="section-title">Stack</h2><div className="section-line" /></div>
+          <div className="section-header"><span className="section-num">04</span><span className="section-icon"><i className="ph ph-stack" aria-hidden="true" /></span><h2 className="section-title">Stack</h2><div className="section-line" /></div>
 
           <div className="skills-grid">
             <div className="skill-group"><div className="skill-group-label">Languages</div><div className="skill-list"><span className="tag">Python</span><span className="tag">Java</span><span className="tag">R</span><span className="tag">MATLAB</span><span className="tag">SQL</span><span className="tag">TypeScript</span><span className="tag">C++</span></div></div>
@@ -236,7 +243,7 @@ export default async function Home() {
       </section>
 
       <section id="orbital">
-        <div id="orbital-header"><span className="orb-num">04</span><span className="orb-title">Orbital</span></div>
+        <div id="orbital-header"><span className="orb-num">05</span><span className="orb-title">Orbital</span></div>
         <div id="orbital-meta"><div id="orbital-id">you are: -</div><div id="orbital-count">objects in field: 0</div></div>
         <canvas id="orb-canvas" />
         <div id="orb-hint">click + drag to launch · shared with every visitor</div>
@@ -244,13 +251,13 @@ export default async function Home() {
 
       <section id="terminal">
         <div className="container">
-          <div className="section-header"><span className="section-num">05</span><span className="section-icon"><i className="ph ph-terminal-window" aria-hidden="true" /></span><h2 className="section-title">Terminal</h2><div className="section-line" /></div>
+          <div className="section-header"><span className="section-num">06</span><span className="section-icon"><i className="ph ph-terminal-window" aria-hidden="true" /></span><h2 className="section-title">Terminal</h2><div className="section-line" /></div>
           <div className="terminal-wrap">
             <div className="term-bar"><div className="term-dot r" /><div className="term-dot y" /><div className="term-dot g" /><div className="term-title">chakshu@dev ~ ask me anything</div></div>
             <div className="term-body" id="termBody">
               <div className="term-line"><span className="term-prompt">$</span><span className="term-user">whoami</span></div>
               <div className="term-ai-line">Chakshu Jain. Software engineer, data scientist, automation builder.</div>
-              <div className="term-ai-line">Currently building AI outreach systems at EECPLL and managing $50k at DevLabs.</div>
+              <div className="term-ai-line">Currently building AI outreach systems at Executive Education. Formerly VP of Finance at DevLabs ($50k budget).</div>
               <div className="term-ai-line accent-line">Type anything - I&apos;ll answer as Chakshu.</div>
             </div>
             <div className="term-input-row">
@@ -267,7 +274,7 @@ export default async function Home() {
 
       <section id="listening">
         <div className="container">
-          <div className="section-header"><span className="section-num">06</span><span className="section-icon"><i className="ph ph-music-notes" aria-hidden="true" /></span><h2 className="section-title">Listening</h2><div className="section-line" /></div>
+          <div className="section-header"><span className="section-num">07</span><span className="section-icon"><i className="ph ph-music-notes" aria-hidden="true" /></span><h2 className="section-title">Listening</h2><div className="section-line" /></div>
           <a href="/music" className="music-teaser">
             <div className="music-teaser-left">
               <div className="music-teaser-label">Current rotation.</div>
@@ -282,7 +289,7 @@ export default async function Home() {
 
       <section id="trails">
         <div className="container">
-          <div className="section-header"><span className="section-num">07</span><span className="section-icon"><i className="ph ph-mountains" aria-hidden="true" /></span><h2 className="section-title">Trails</h2><div className="section-line" /></div>
+          <div className="section-header"><span className="section-num">08</span><span className="section-icon"><i className="ph ph-mountains" aria-hidden="true" /></span><h2 className="section-title">Trails</h2><div className="section-line" /></div>
           {mostRecent && featuredGpxData ? (
             <TrailsTeaserClient
               hike={mostRecent}
@@ -302,7 +309,7 @@ export default async function Home() {
 
       <section id="booking">
         <div className="container">
-          <div className="section-header"><span className="section-num">08</span><span className="section-icon"><i className="ph ph-calendar-blank" aria-hidden="true" /></span><h2 className="section-title">Book a call</h2><div className="section-line" /></div>
+          <div className="section-header"><span className="section-num">09</span><span className="section-icon"><i className="ph ph-calendar-blank" aria-hidden="true" /></span><h2 className="section-title">Book a call</h2><div className="section-line" /></div>
           <div className="cal-card">
             <div>
               <div className="cal-tag">30 min</div>
@@ -316,7 +323,7 @@ export default async function Home() {
 
       <section id="contact" className="contact-section">
         <div className="container">
-          <div className="section-header"><span className="section-num">09</span><span className="section-icon"><i className="ph ph-address-book" aria-hidden="true" /></span><h2 className="section-title">Contact</h2><div className="section-line" /></div>
+          <div className="section-header"><span className="section-num">10</span><span className="section-icon"><i className="ph ph-address-book" aria-hidden="true" /></span><h2 className="section-title">Contact</h2><div className="section-line" /></div>
           <div className="contact-grid">
             <div>
               <div className="contact-tagline">Let&apos;s build something <span className="accent">real.</span></div>

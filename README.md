@@ -1,13 +1,7 @@
 # chakshu.dev
 My personal portfolio. Live at https://chakshu.dev
 
-## Next.js Migration Status
-
-This repository is now running on Next.js 14 App Router with TypeScript and Tailwind.
-
-- New app routes: `/` and `/music`
-- New terminal API route: `app/api/terminal/route.ts`
-- Legacy static snapshots are still present (`index.html`, `music/index.html`) during migration
+Stack: **Next.js 15** (App Router) → **OpenNext** → **Cloudflare Workers**, with D1, R2, Upstash Redis, and Better Auth.
 
 ### Run locally
 
@@ -18,15 +12,196 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+---
+
+## Architecture
+
+High-level map of how the site is built, deployed, and how each major feature talks to storage and external APIs.
+
+### System overview
+
+```mermaid
+flowchart TB
+  subgraph Clients
+    Browser["Browser"]
+    AdminUser["Admin browser<br/>Google OAuth"]
+  end
+
+  subgraph GitHub["GitHub"]
+    Repo["main branch"]
+    GHA["Actions: deploy-cloudflare.yml"]
+  end
+
+  subgraph CF["Cloudflare"]
+    Worker["Worker: chakshu-next<br/>OpenNext + Next.js 15"]
+    Assets["Assets binding<br/>static JS/CSS/images"]
+    D1[("D1: chakshu-core-prod<br/>HIKES_DB")]
+    R2[("R2: chakshu-assets<br/>HIKES_ASSETS")]
+    R2CDN["assets.chakshu.dev"]
+  end
+
+  subgraph DataFallbacks["Local / repo fallbacks"]
+    HikesJSON["data/hikes.json<br/>data/gpx-data.json"]
+    ProjectsJSON["data/projects.json"]
+  end
+
+  subgraph External["External services"]
+    Upstash[("Upstash Redis<br/>terminal rate limits")]
+    Supermemory["Supermemory<br/>profile / course memory"]
+    LLMs["LLM providers<br/>Anthropic · OpenAI · Groq · Gemini"]
+    Google["Google OAuth"]
+    GitHubAPI["GitHub API<br/>public repos"]
+    Mapbox["Mapbox GL"]
+    LastFM["Last.fm API"]
+  end
+
+  Browser --> Worker
+  AdminUser --> Worker
+  Repo --> GHA --> Worker
+  Worker --> Assets
+  Worker --> D1
+  Worker --> R2
+  R2 --> R2CDN
+  Worker -.->|dev / missing binding| HikesJSON
+  Worker -.->|dev / missing binding| ProjectsJSON
+  Worker --> Upstash
+  Worker --> Supermemory
+  Worker --> LLMs
+  Worker --> Google
+  Worker --> GitHubAPI
+  Browser --> Mapbox
+  Browser --> LastFM
+  Browser --> R2CDN
+```
+
+### Public surfaces → APIs
+
+```mermaid
+flowchart LR
+  subgraph Pages["App routes"]
+    Home["/  homepage<br/>terminal · music teaser · featured projects"]
+    Trails["/trails<br/>Mapbox + hike gallery"]
+    Projects["/projects<br/>GitHub archive + featured"]
+    Admin["/admin<br/>hikes + featured projects CMS"]
+    Login["/admin/login"]
+  end
+
+  subgraph APIs["Route handlers"]
+    TermAPI["POST /api/terminal"]
+    AuthAPI["/api/auth/[...all]<br/>Better Auth"]
+    AdminHikes["/api/admin/hikes"]
+    AdminHikeId["/api/admin/hikes/[id]"]
+    AdminProjects["/api/admin/projects"]
+  end
+
+  Home --> TermAPI
+  Home --> LastFM["Last.fm client-side"]
+  Trails --> Mapbox["Mapbox client-side"]
+  Trails --> D1orJSON["D1 hikes · else JSON"]
+  Projects --> GitHubAPI["GitHub repos"]
+  Projects --> Featured["D1 featured_projects · else JSON"]
+  Login --> AuthAPI
+  Admin --> AuthAPI
+  Admin --> AdminHikes
+  Admin --> AdminHikeId
+  Admin --> AdminProjects
+```
+
+### Terminal pipeline
+
+`public/terminal.js` posts to `POST /api/terminal`. Server path is rate-limit → privacy gates → memory → model waterfall → fallbacks.
+
+```mermaid
+flowchart TD
+  UI["Browser terminal.js"] -->|POST query ≤500 chars| API["/api/terminal"]
+
+  API --> RL{"Rate limit<br/>Upstash → else in-memory"}
+  RL -->|429| Cool["reply: cooldown + Retry-After"]
+  RL -->|ok| Len{"Length / empty checks"}
+  Len -->|too long| Bad["400 short-question reply"]
+  Len --> Greet{"Standalone greeting only?<br/>hi / hola / …"}
+  Greet -->|yes| GreetReply["Greeting reply"]
+  Greet -->|no| Deflect{"Privacy deflection?<br/>address · DOB · salary · …"}
+  Deflect -->|yes| DeflectReply["Hardcoded witty reply"]
+  Deflect -->|no| SM["Supermemory hybrid search<br/>chunks + memories"]
+
+  SM --> Courses{"Course / class query<br/>+ parseable chunks?"}
+  Courses -->|yes| CourseReply["Deterministic class list"]
+  Courses -->|no| Prompt["BASE_SYSTEM + memory context"]
+
+  Prompt --> Providers["Provider order<br/>AI_PROVIDER first, then others"]
+  Providers --> A["Anthropic"]
+  Providers --> O["OpenAI"]
+  Providers --> G["Groq"]
+  Providers --> Ge["Gemini"]
+  G -.->|429 + GROQ_FALLBACK_TO_GEMINI| Ge
+
+  A --> Out["Model reply"]
+  O --> Out
+  G --> Out
+  Ge --> Out
+  Out -->|miss| ChunkFB["Chunk / local FALLBACKS"]
+  ChunkFB --> UI
+  Out --> UI
+  CourseReply --> UI
+  DeflectReply --> UI
+  GreetReply --> UI
+  Cool --> UI
+  Bad --> UI
+```
+
+**Guarantees worth knowing:**
+- Queries capped at 500 chars; provider / Supermemory / Upstash fetches time out at ~10s.
+- Rate limits: default **8 req / 60s / IP**, then **5 min** block (`RATE_LIMIT_*`). Shared via Upstash when configured.
+- Privacy deflections never reach an LLM.
+- Client keeps a synced offline fallback copy if the API is down.
+
+### Trails + admin data path
+
+```mermaid
+flowchart TB
+  subgraph ReadPath["Public read"]
+    TrailsPage["/trails"]
+    TrailsPage --> Loader["lib/hikes-data"]
+    Loader -->|USE_D1_HIKES=1 + binding| D1[(D1 hikes + snapshots)]
+    Loader -->|else| JSON["data/hikes.json<br/>data/gpx-data.json"]
+    D1 --> Media["Media URLs via<br/>PUBLIC_ASSETS_BASE_URL → R2"]
+    JSON --> Media
+    TrailsPage --> Map["Mapbox GL map + markers"]
+  end
+
+  subgraph WritePath["Admin write"]
+    AdminUI["/admin"] --> Auth["Better Auth + Google<br/>ADMIN_EMAIL_ALLOWLIST"]
+    Auth --> Post["POST /api/admin/hikes"]
+    Post --> GPX["Parse GPX · elevation · stats"]
+    Post --> Place["Snapshot placement:<br/>manual → EXIF/ISO6709 → time → neighbors → even"]
+    Post --> R2[("R2 HIKES_ASSETS<br/>GPX + photos/video")]
+    Post --> D1w[("D1 HIKES_DB")]
+  end
+```
+
+### Deploy pipeline
+
+```mermaid
+flowchart LR
+  Push["git push main"] --> GHA["GitHub Actions"]
+  GHA --> Build["npm ci<br/>opennextjs-cloudflare build"]
+  Build --> Deploy["wrangler deploy<br/>Worker chakshu-next"]
+  Secrets["Cloudflare Worker secrets<br/>AI keys · Upstash · OAuth · …"] -.-> Deploy
+  BuildSecrets["GHA secrets<br/>CF token · account · NEXT_PUBLIC_MAPBOX_TOKEN"] -.-> GHA
+```
+
+Runtime secrets (LLM keys, Upstash, Google OAuth, etc.) live on the **Worker**, not in GitHub Actions — except `NEXT_PUBLIC_MAPBOX_TOKEN`, which is baked in at build time.
+
+---
+
 ## Terminal API Setup
 
-The portfolio terminal calls `POST /api/terminal`.
-
-The primary implementation is now the Next.js Route Handler in `app/api/terminal/route.ts`.
+The portfolio terminal calls `POST /api/terminal` (`src/app/api/terminal/route.ts`).
 
 ### 1. Configure environment variables
 
-Configure `.env` and fill keys:
+Local: `.env.local`. Production: Cloudflare Worker secrets / vars.
 
 - `AI_PROVIDER=anthropic`, `openai`, `groq`, or `gemini`
 - If using Anthropic:
@@ -42,6 +217,7 @@ Configure `.env` and fill keys:
 - If using Gemini:
 	- `GEMINI_API_KEY`
 	- Optional: `GEMINI_MODEL` (default: `gemini-1.5-flash`)
+- Optional: `SUPERMEMORY_API_KEY` for grounded answers (classes, profile facts)
 
 Groq fallback behavior:
 
@@ -62,9 +238,9 @@ If a client exceeds the limit, the API returns `429 rate_limited` with a `Retry-
 
 ### Shared global limits (recommended)
 
-To enforce limits across all serverless instances/regions, connect Upstash Redis:
+To enforce limits across all Worker isolates, connect Upstash Redis:
 
-- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_URL` — HTTPS REST URL (not the redis-cli string)
 - `UPSTASH_REDIS_REST_TOKEN`
 
 Behavior:
@@ -80,9 +256,13 @@ npm run dev
 
 ### 3. Deploy
 
-Deploy on Vercel and set the same environment variables in Project Settings.
+Deploy via GitHub Actions on `main`, or locally:
 
-The terminal UI will automatically call your deployed `/api/terminal` route.
+```bash
+npm run deploy
+```
+
+Set the same runtime secrets on the Cloudflare Worker (`npx wrangler secret put …`). The terminal UI calls `/api/terminal` on the deployed Worker automatically.
 
 ## Featured Projects + `/projects`
 

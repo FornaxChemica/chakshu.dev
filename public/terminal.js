@@ -1,17 +1,3 @@
-const SYSTEM_PROMPT = `You are Chakshu Jain's portfolio terminal assistant. Respond AS Chakshu in first person - concise, sharp, technically confident. Never robotic. Personality: analytical, dry, self-aware.
-
-Key facts:
-- CS + Data Science double major at ASU, GPA 4.00, graduating May 2027
-- AI Automation Developer at EECPLL (W. P. Carey): building AI outreach system with human-in-the-loop review, prompt engineering, multi-step automation
-- Former Technical Lead at AZNext (W. P. Carey): Python agentic AI state-machine, saved 15+ hrs/week. Grant ended.
-- VP of Finance at DevLabs ASU: $50k budget, 500 members
-- Projects: Sage (AI analytics, React/Node/LLM), AeroDocs (Java secure backend), AZNext workflow engine. Full archive at /projects.
-- Stack: Python, Java, TypeScript, React, Node.js, SQL, AWS, Docker, OpenAI/Claude APIs
-- Location: Tempe AZ. Originally from India. Hobbies: astronomy, outdoors, competitive programming
-- Email: chakshuvinayjain@gmail.com
-
-Rules: 2-4 lines max. No markdown. No bullet lists. Be a little witty on personal questions. Never say "As an AI".`;
-
 let termBody = null;
 let termInput = null;
 let termSendBtn = null;
@@ -20,26 +6,39 @@ let hasTerminalBindings = false;
 let isLoading = false;
 let lastSubmitAt = 0;
 
+// Keep in sync with FALLBACKS in src/app/api/terminal/route.ts
 const terminalFallbacks = [
   {
     match: /(skill|stack|tech|language)/i,
-    reply: "Core stack is Python, TypeScript, Java, SQL, React, Node, Docker, and AWS. I spend most of my time building AI workflows that actually survive contact with production."
+    reply: "Core stack: Python, TypeScript, Java, SQL, React, Node, Docker, AWS. I spend most of my time building AI workflows that survive production."
   },
   {
     match: /(project|build|working on|made)/i,
-    reply: "Sage is my AI analytics platform, AeroDocs is my Java backend project, and AZNext was the agentic workflow engine that cut 15+ hours of manual work each week. Full public archive is on /projects."
+    reply: "Sage is my AI analytics platform, AeroDocs is my Java secure backend, and AZNext was the agentic workflow engine that cut 15+ hrs/week of manual work. Browse everything public on /projects."
   },
   {
-    match: /(automate|automation|ai)/i,
-    reply: "I automate high-friction operations: prospect research, personalization, routing, and human-in-the-loop review. The goal is less busywork, better decisions."
+    match: /(automate|automation|ai|agent)/i,
+    reply: "I automate high-friction operations - prospect research, personalization, routing, human-in-the-loop review. Less busywork, better decisions."
   },
   {
-    match: /(where|from|location|based)/i,
-    reply: "Based in Tempe, Arizona. Originally from India. I like building systems, watching stars, and over-optimizing workflows for fun."
+    match: /(where|from|location|based|city)/i,
+    reply: "Tempe, AZ right now. Grew up in Mumbai. Originally from Beawar, Rajasthan."
   },
   {
-    match: /(contact|email|reach|hire)/i,
-    reply: "Best route is email: chakshuvinayjain@gmail.com. If you want to talk live, book me through the calendar link and I will show up prepared."
+    match: /(contact|email|reach|hire|work with)/i,
+    reply: "Email: chakshuvinayjain@gmail.com - or use the Book a Call link on this page."
+  },
+  {
+    match: /(study|university|college|degree|asu|major)/i,
+    reply: "BS in Computer Science + Data Science at Arizona State University. GPA 4.00. Graduating May 2027."
+  },
+  {
+    match: /(music|listen|song|artist|spotify)/i,
+    reply: "Heavy on EDM and pop - Avicii is the GOAT, Chainsmokers, Vance Joy, Empire of the Sun. Check /music for the live feed."
+  },
+  {
+    match: /(hike|trail|outdoor|nature)/i,
+    reply: "I hike whenever I can. Bryce Canyon was the last big one - Navajo Loop + Peekaboo. Check /trails for the full log."
   }
 ];
 
@@ -47,7 +46,14 @@ function appendUserLine(t) {
   if (!termBody) return;
   const d = document.createElement('div');
   d.className = 'term-line';
-  d.innerHTML = `<span class="term-prompt">$</span><span class="term-user">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
+  const prompt = document.createElement('span');
+  prompt.className = 'term-prompt';
+  prompt.textContent = '$';
+  const user = document.createElement('span');
+  user.className = 'term-user';
+  user.textContent = t;
+  d.appendChild(prompt);
+  d.appendChild(user);
   termBody.appendChild(d);
 }
 
@@ -78,7 +84,7 @@ function scrollBottom() {
 function localTerminalReply(query) {
   const hit = terminalFallbacks.find((entry) => entry.match.test(query));
   if (hit) return hit.reply;
-  return 'I can answer that, but this demo is currently running in local fallback mode. Ask me about skills, projects, automation, location, or contact and I will give you a crisp answer.';
+  return "Running in offline mode. Ask me about skills, projects, stack, or where I'm based.";
 }
 
 function setInputControlsDisabled(disabled) {
@@ -103,16 +109,30 @@ async function runQuery(query) {
   const typer = appendTypingLine();
   scrollBottom();
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     const res = await fetch('/api/terminal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
+      signal: controller.signal
     });
-    if (!res.ok) throw new Error('api_unavailable');
-    const data = await res.json();
+    clearTimeout(timeoutId);
+
+    const data = await res.json().catch(() => ({}));
     const text = data?.reply || data?.text || data?.message;
+
     if (typer) typer.remove();
-    appendAiLines(text || localTerminalReply(query));
+
+    if (res.status === 429) {
+      appendAiLines(text || 'Easy — terminal cooldown. Try again in a bit.');
+    } else if (res.status === 400 && text) {
+      appendAiLines(text);
+    } else if (!res.ok) {
+      appendAiLines(localTerminalReply(query));
+    } else {
+      appendAiLines(text || localTerminalReply(query));
+    }
   } catch (e) {
     if (typer) typer.remove();
     appendAiLines(localTerminalReply(query));

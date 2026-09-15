@@ -24,6 +24,21 @@ type SupermemorySearchResponse = {
   results?: SupermemoryResult[];
 };
 
+type RateLimitResult = {
+  allowed: boolean;
+  retryAfterSec: number;
+};
+
+// ─── Limits / timeouts ────────────────────────────────────────────────────────
+
+const MAX_QUERY_LENGTH = 500;
+const FETCH_TIMEOUT_MS = 10_000;
+
+const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS) || 60_000;
+const RATE_LIMIT_MAX_REQUESTS = Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 8;
+const RATE_LIMIT_BLOCK_MS = Number(process.env.RATE_LIMIT_BLOCK_MS) || 300_000;
+const RATE_LIMIT_KEY_PREFIX = process.env.RATE_LIMIT_KEY_PREFIX || "terminal_rl";
+
 // ─── Hardcoded deflections ────────────────────────────────────────────────────
 // These fire BEFORE the LLM sees the query - no hallucination possible.
 
@@ -99,13 +114,14 @@ const FALLBACKS: FallbackRule[] = [
   },
 ];
 
+// Standalone greetings only — "hey where are you from?" must continue the pipeline.
 const GREETINGS: GreetingRule[] = [
-  { match: /^\s*ol[áa]\b/i, reply: "Ola! Tudo certo? Manda sua pergunta que eu respondo rapidinho." },
-  { match: /^\s*hola\b/i, reply: "Hola! Dime que quieres saber y te respondo con gusto." },
-  { match: /^\s*bonjour\b/i, reply: "Bonjour! Dis-moi ta question et je te reponds avec plaisir." },
-  { match: /^\s*ciao\b/i, reply: "Ciao! Dimmi pure cosa vuoi sapere." },
-  { match: /^\s*namaste\b/i, reply: "Namaste! Pucho jo bhi puchna hai, main yahin hoon." },
-  { match: /^\s*(hi|hello|hey)\b/i, reply: "Hey! Good to see you here. Ask me anything." },
+  { match: /^\s*ol[áa]\s*[!.?]*\s*$/i, reply: "Ola! Tudo certo? Manda sua pergunta que eu respondo rapidinho." },
+  { match: /^\s*hola\s*[!.?]*\s*$/i, reply: "Hola! Dime que quieres saber y te respondo con gusto." },
+  { match: /^\s*bonjour\s*[!.?]*\s*$/i, reply: "Bonjour! Dis-moi ta question et je te reponds avec plaisir." },
+  { match: /^\s*ciao\s*[!.?]*\s*$/i, reply: "Ciao! Dimmi pure cosa vuoi sapere." },
+  { match: /^\s*namaste\s*[!.?]*\s*$/i, reply: "Namaste! Pucho jo bhi puchna hai, main yahin hoon." },
+  { match: /^\s*(hi|hello|hey)\s*[!.?]*\s*$/i, reply: "Hey! Good to see you here. Ask me anything." },
 ];
 
 // ─── Base system prompt (always injected) ────────────────────────────────────
@@ -126,6 +142,168 @@ HARD RULES - never break these:
 10. If the user asks for classes/courses/items in a term or asks "all", "list", or "how many", return an exhaustive list from retrieved CHUNK data, then include the total count.
 11. For greetings/salutations, keep it playful and mirror the user's language when possible.`;
 
+// ─── Fetch helper ─────────────────────────────────────────────────────────────
+
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit = {},
+  timeoutMs = FETCH_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// ─── Rate limiting ────────────────────────────────────────────────────────────
+
+type MemoryBucket = {
+  count: number;
+  windowStart: number;
+  blockedUntil: number;
+};
+
+const memoryBuckets = new Map<string, MemoryBucket>();
+
+function getClientIp(req: NextRequest): string {
+  const cf = req.headers.get("cf-connecting-ip");
+  if (cf) return cf.trim();
+
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp) return realIp.trim();
+
+  return "unknown";
+}
+
+function checkMemoryRateLimit(ip: string): RateLimitResult {
+  const now = Date.now();
+  const key = `${RATE_LIMIT_KEY_PREFIX}:${ip}`;
+  let bucket = memoryBuckets.get(key);
+
+  if (!bucket) {
+    bucket = { count: 0, windowStart: now, blockedUntil: 0 };
+    memoryBuckets.set(key, bucket);
+  }
+
+  if (bucket.blockedUntil > now) {
+    return {
+      allowed: false,
+      retryAfterSec: Math.max(1, Math.ceil((bucket.blockedUntil - now) / 1000)),
+    };
+  }
+
+  if (bucket.blockedUntil > 0 && bucket.blockedUntil <= now) {
+    bucket.blockedUntil = 0;
+    bucket.count = 0;
+    bucket.windowStart = now;
+  }
+
+  if (now - bucket.windowStart >= RATE_LIMIT_WINDOW_MS) {
+    bucket.count = 0;
+    bucket.windowStart = now;
+  }
+
+  bucket.count += 1;
+
+  if (bucket.count > RATE_LIMIT_MAX_REQUESTS) {
+    bucket.blockedUntil = now + RATE_LIMIT_BLOCK_MS;
+    return {
+      allowed: false,
+      retryAfterSec: Math.max(1, Math.ceil(RATE_LIMIT_BLOCK_MS / 1000)),
+    };
+  }
+
+  return { allowed: true, retryAfterSec: 0 };
+}
+
+async function upstashCommand(commands: unknown[][]): Promise<Array<{ result?: unknown }> | null> {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+
+  try {
+    const response = await fetchWithTimeout(`${url.replace(/\/$/, "")}/pipeline`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(commands),
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as Array<{ result?: unknown }>;
+    return Array.isArray(data) ? data : null;
+  } catch {
+    return null;
+  }
+}
+
+async function checkUpstashRateLimit(ip: string): Promise<RateLimitResult | null> {
+  const windowKey = `${RATE_LIMIT_KEY_PREFIX}:${ip}:win`;
+  const blockKey = `${RATE_LIMIT_KEY_PREFIX}:${ip}:block`;
+  const windowSec = Math.max(1, Math.ceil(RATE_LIMIT_WINDOW_MS / 1000));
+  const blockSec = Math.max(1, Math.ceil(RATE_LIMIT_BLOCK_MS / 1000));
+
+  const blocked = await upstashCommand([["GET", blockKey]]);
+  if (!blocked) return null;
+
+  const blockVal = blocked[0]?.result;
+  if (typeof blockVal === "string" && blockVal) {
+    const blockedUntil = Number(blockVal);
+    if (Number.isFinite(blockedUntil) && blockedUntil > Date.now()) {
+      return {
+        allowed: false,
+        retryAfterSec: Math.max(1, Math.ceil((blockedUntil - Date.now()) / 1000)),
+      };
+    }
+  }
+
+  const counted = await upstashCommand([["INCR", windowKey]]);
+  if (!counted) return null;
+
+  const count = Number(counted[0]?.result) || 0;
+  if (count === 1) {
+    await upstashCommand([["EXPIRE", windowKey, windowSec]]);
+  }
+
+  if (count > RATE_LIMIT_MAX_REQUESTS) {
+    const blockedUntil = Date.now() + RATE_LIMIT_BLOCK_MS;
+    await upstashCommand([
+      ["SET", blockKey, String(blockedUntil)],
+      ["EXPIRE", blockKey, blockSec],
+    ]);
+    return { allowed: false, retryAfterSec: blockSec };
+  }
+
+  return { allowed: true, retryAfterSec: 0 };
+}
+
+async function enforceRateLimit(req: NextRequest): Promise<RateLimitResult> {
+  const ip = getClientIp(req);
+  const shared = await checkUpstashRateLimit(ip);
+  if (shared) return shared;
+  return checkMemoryRateLimit(ip);
+}
+
+function rateLimitedResponse(retryAfterSec: number): NextResponse {
+  return NextResponse.json(
+    { error: "rate_limited", reply: "Easy — terminal cooldown. Try again in a bit." },
+    {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSec) },
+    }
+  );
+}
+
 // ─── Supermemory ─────────────────────────────────────────────────────────────
 
 const CONTAINER_TAG = "sm_project_default";
@@ -140,7 +318,7 @@ async function fetchSupermemoryContext(query: string): Promise<SupermemoryContex
   if (!apiKey) return { context: "", chunks: [] };
 
   try {
-    const response = await fetch("https://api.supermemory.ai/v4/search", {
+    const response = await fetchWithTimeout("https://api.supermemory.ai/v4/search", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -216,7 +394,7 @@ async function tryAnthropic(systemPrompt: string, query: string): Promise<string
   if (!apiKey) return null;
 
   const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514";
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -240,7 +418,7 @@ async function tryOpenAI(systemPrompt: string, query: string): Promise<string | 
   if (!apiKey) return null;
 
   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetchWithTimeout("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -263,12 +441,12 @@ async function tryOpenAI(systemPrompt: string, query: string): Promise<string | 
   return extractFirstText(data.choices?.[0]?.message?.content) || null;
 }
 
-async function tryGroq(systemPrompt: string, query: string): Promise<string | null> {
+async function tryGroq(systemPrompt: string, query: string): Promise<{ reply: string | null; rateLimited: boolean }> {
   const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) return { reply: null, rateLimited: false };
 
   const model = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  const response = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -284,11 +462,13 @@ async function tryGroq(systemPrompt: string, query: string): Promise<string | nu
     }),
   });
 
-  if (!response.ok) return null;
+  if (response.status === 429) return { reply: null, rateLimited: true };
+  if (!response.ok) return { reply: null, rateLimited: false };
+
   const data = (await response.json()) as {
     choices?: Array<{ message?: { content?: unknown } }>;
   };
-  return extractFirstText(data.choices?.[0]?.message?.content) || null;
+  return { reply: extractFirstText(data.choices?.[0]?.message?.content) || null, rateLimited: false };
 }
 
 async function tryGemini(systemPrompt: string, query: string): Promise<string | null> {
@@ -296,7 +476,7 @@ async function tryGemini(systemPrompt: string, query: string): Promise<string | 
   if (!apiKey) return null;
 
   const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
-  const response = await fetch(
+  const response = await fetchWithTimeout(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
       method: "POST",
@@ -339,17 +519,41 @@ function getProviderOrder(): ProviderName[] {
 }
 
 async function getModelReply(systemPrompt: string, query: string): Promise<string | null> {
-  for (const name of getProviderOrder()) {
+  const order = getProviderOrder();
+  const groqFallbackToGemini =
+    process.env.GROQ_FALLBACK_TO_GEMINI === "true" || process.env.GROQ_FALLBACK_TO_GEMINI === "1";
+
+  for (const name of order) {
     const config = PROVIDERS.find((p) => p.name === name);
     if (!config?.hasKey()) continue;
 
     try {
-      let reply: string | null = null;
-      if (name === "anthropic") reply = await tryAnthropic(systemPrompt, query);
-      else if (name === "openai") reply = await tryOpenAI(systemPrompt, query);
-      else if (name === "groq") reply = await tryGroq(systemPrompt, query);
-      else if (name === "gemini") reply = await tryGemini(systemPrompt, query);
-      if (reply) return reply;
+      if (name === "anthropic") {
+        const reply = await tryAnthropic(systemPrompt, query);
+        if (reply) return reply;
+        continue;
+      }
+
+      if (name === "openai") {
+        const reply = await tryOpenAI(systemPrompt, query);
+        if (reply) return reply;
+        continue;
+      }
+
+      if (name === "groq") {
+        const { reply, rateLimited } = await tryGroq(systemPrompt, query);
+        if (reply) return reply;
+        if (rateLimited && groqFallbackToGemini && process.env.GEMINI_API_KEY) {
+          const geminiReply = await tryGemini(systemPrompt, query);
+          if (geminiReply) return geminiReply;
+        }
+        continue;
+      }
+
+      if (name === "gemini") {
+        const reply = await tryGemini(systemPrompt, query);
+        if (reply) return reply;
+      }
     } catch {
       // try next provider
     }
@@ -478,11 +682,23 @@ function fallbackFromChunks(query: string, chunks: string[]): string | null {
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  const limited = await enforceRateLimit(req);
+  if (!limited.allowed) {
+    return rateLimitedResponse(limited.retryAfterSec);
+  }
+
   const body = (await req.json().catch(() => ({}))) as { query?: string };
   const query = (body.query || "").trim();
 
   if (!query) {
     return NextResponse.json({ reply: localFallback("") });
+  }
+
+  if (query.length > MAX_QUERY_LENGTH) {
+    return NextResponse.json(
+      { reply: `Keep it under ${MAX_QUERY_LENGTH} characters — shorter questions get sharper answers.` },
+      { status: 400 }
+    );
   }
 
   const greeting = GREETINGS.find((g) => g.match.test(query));
