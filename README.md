@@ -16,182 +16,53 @@ Open `http://localhost:3000`.
 
 ## Architecture
 
-High-level map of how the site is built, deployed, and how each major feature talks to storage and external APIs.
-
-### System overview
-
-```mermaid
-flowchart TB
-  subgraph Clients
-    Browser["Browser"]
-    AdminUser["Admin browser<br/>Google OAuth"]
-  end
-
-  subgraph GitHub["GitHub"]
-    Repo["main branch"]
-    GHA["Actions: deploy-cloudflare.yml"]
-  end
-
-  subgraph CF["Cloudflare"]
-    Worker["Worker: chakshu-next<br/>OpenNext + Next.js 15"]
-    Assets["Assets binding<br/>static JS/CSS/images"]
-    D1[("D1: chakshu-core-prod<br/>HIKES_DB")]
-    R2[("R2: chakshu-assets<br/>HIKES_ASSETS")]
-    R2CDN["assets.chakshu.dev"]
-  end
-
-  subgraph DataFallbacks["Local / repo fallbacks"]
-    HikesJSON["data/hikes.json<br/>data/gpx-data.json"]
-    ProjectsJSON["data/projects.json"]
-  end
-
-  subgraph External["External services"]
-    Upstash[("Upstash Redis<br/>terminal rate limits")]
-    Supermemory["Supermemory<br/>profile / course memory"]
-    LLMs["LLM providers<br/>Anthropic · OpenAI · Groq · Gemini"]
-    Google["Google OAuth"]
-    GitHubAPI["GitHub API<br/>public repos"]
-    Mapbox["Mapbox GL"]
-    LastFM["Last.fm API"]
-  end
-
-  Browser --> Worker
-  AdminUser --> Worker
-  Repo --> GHA --> Worker
-  Worker --> Assets
-  Worker --> D1
-  Worker --> R2
-  R2 --> R2CDN
-  Worker -.->|dev / missing binding| HikesJSON
-  Worker -.->|dev / missing binding| ProjectsJSON
-  Worker --> Upstash
-  Worker --> Supermemory
-  Worker --> LLMs
-  Worker --> Google
-  Worker --> GitHubAPI
-  Browser --> Mapbox
-  Browser --> LastFM
-  Browser --> R2CDN
-```
-
-### Public surfaces → APIs
-
 ```mermaid
 flowchart LR
-  subgraph Pages["App routes"]
-    Home["/  homepage<br/>terminal · music teaser · featured projects"]
-    Trails["/trails<br/>Mapbox + hike gallery"]
-    Projects["/projects<br/>GitHub archive + featured"]
-    Admin["/admin<br/>hikes + featured projects CMS"]
-    Login["/admin/login"]
+  subgraph Edge["Visitors"]
+    Web["Browser"]
+    Admin["/admin<br/>Google OAuth"]
   end
 
-  subgraph APIs["Route handlers"]
-    TermAPI["POST /api/terminal"]
-    AuthAPI["/api/auth/[...all]<br/>Better Auth"]
-    AdminHikes["/api/admin/hikes"]
-    AdminHikeId["/api/admin/hikes/[id]"]
-    AdminProjects["/api/admin/projects"]
+  subgraph App["chakshu-next · Cloudflare Worker"]
+    direction TB
+    Pages["Pages<br/>/ · /trails · /projects · /admin"]
+    APIs["APIs<br/>/api/terminal · /api/admin/* · /api/auth/*"]
+    Pages --- APIs
   end
 
-  Home --> TermAPI
-  Home --> LastFM["Last.fm client-side"]
-  Trails --> Mapbox["Mapbox client-side"]
-  Trails --> D1orJSON["D1 hikes · else JSON"]
-  Projects --> GitHubAPI["GitHub repos"]
-  Projects --> Featured["D1 featured_projects · else JSON"]
-  Login --> AuthAPI
-  Admin --> AuthAPI
-  Admin --> AdminHikes
-  Admin --> AdminHikeId
-  Admin --> AdminProjects
-```
-
-### Terminal pipeline
-
-`public/terminal.js` posts to `POST /api/terminal`. Server path is rate-limit → privacy gates → memory → model waterfall → fallbacks.
-
-```mermaid
-flowchart TD
-  UI["Browser terminal.js"] -->|POST query ≤500 chars| API["/api/terminal"]
-
-  API --> RL{"Rate limit<br/>Upstash → else in-memory"}
-  RL -->|429| Cool["reply: cooldown + Retry-After"]
-  RL -->|ok| Len{"Length / empty checks"}
-  Len -->|too long| Bad["400 short-question reply"]
-  Len --> Greet{"Standalone greeting only?<br/>hi / hola / …"}
-  Greet -->|yes| GreetReply["Greeting reply"]
-  Greet -->|no| Deflect{"Privacy deflection?<br/>address · DOB · salary · …"}
-  Deflect -->|yes| DeflectReply["Hardcoded witty reply"]
-  Deflect -->|no| SM["Supermemory hybrid search<br/>chunks + memories"]
-
-  SM --> Courses{"Course / class query<br/>+ parseable chunks?"}
-  Courses -->|yes| CourseReply["Deterministic class list"]
-  Courses -->|no| Prompt["BASE_SYSTEM + memory context"]
-
-  Prompt --> Providers["Provider order<br/>AI_PROVIDER first, then others"]
-  Providers --> A["Anthropic"]
-  Providers --> O["OpenAI"]
-  Providers --> G["Groq"]
-  Providers --> Ge["Gemini"]
-  G -.->|429 + GROQ_FALLBACK_TO_GEMINI| Ge
-
-  A --> Out["Model reply"]
-  O --> Out
-  G --> Out
-  Ge --> Out
-  Out -->|miss| ChunkFB["Chunk / local FALLBACKS"]
-  ChunkFB --> UI
-  Out --> UI
-  CourseReply --> UI
-  DeflectReply --> UI
-  GreetReply --> UI
-  Cool --> UI
-  Bad --> UI
-```
-
-**Guarantees worth knowing:**
-- Queries capped at 500 chars; provider / Supermemory / Upstash fetches time out at ~10s.
-- Rate limits: default **8 req / 60s / IP**, then **5 min** block (`RATE_LIMIT_*`). Shared via Upstash when configured.
-- Privacy deflections never reach an LLM.
-- Client keeps a synced offline fallback copy if the API is down.
-
-### Trails + admin data path
-
-```mermaid
-flowchart TB
-  subgraph ReadPath["Public read"]
-    TrailsPage["/trails"]
-    TrailsPage --> Loader["lib/hikes-data"]
-    Loader -->|USE_D1_HIKES=1 + binding| D1[(D1 hikes + snapshots)]
-    Loader -->|else| JSON["data/hikes.json<br/>data/gpx-data.json"]
-    D1 --> Media["Media URLs via<br/>PUBLIC_ASSETS_BASE_URL → R2"]
-    JSON --> Media
-    TrailsPage --> Map["Mapbox GL map + markers"]
+  subgraph Store["Cloudflare data"]
+    D1[("D1<br/>hikes · featured projects")]
+    R2[("R2<br/>GPX · media")]
+    Static["Assets<br/>+ JSON fallbacks"]
   end
 
-  subgraph WritePath["Admin write"]
-    AdminUI["/admin"] --> Auth["Better Auth + Google<br/>ADMIN_EMAIL_ALLOWLIST"]
-    Auth --> Post["POST /api/admin/hikes"]
-    Post --> GPX["Parse GPX · elevation · stats"]
-    Post --> Place["Snapshot placement:<br/>manual → EXIF/ISO6709 → time → neighbors → even"]
-    Post --> R2[("R2 HIKES_ASSETS<br/>GPX + photos/video")]
-    Post --> D1w[("D1 HIKES_DB")]
+  subgraph Services["External"]
+    Upstash[("Upstash<br/>rate limits")]
+    Memory["Supermemory"]
+    LLM["LLMs<br/>Anthropic · OpenAI · Groq · Gemini"]
+    GH["GitHub API"]
+    Map["Mapbox"]
+    FM["Last.fm"]
   end
+
+  CI["GitHub Actions<br/>build → deploy"] -.-> App
+
+  Web --> Pages
+  Admin --> Pages
+  APIs --> D1
+  APIs --> R2
+  APIs --> Static
+  APIs --> Upstash
+  APIs --> Memory
+  APIs --> LLM
+  APIs --> GH
+  Web --> Map
+  Web --> FM
+  R2 --> CDN["assets.chakshu.dev"]
+  Web --> CDN
 ```
 
-### Deploy pipeline
-
-```mermaid
-flowchart LR
-  Push["git push main"] --> GHA["GitHub Actions"]
-  GHA --> Build["npm ci<br/>opennextjs-cloudflare build"]
-  Build --> Deploy["wrangler deploy<br/>Worker chakshu-next"]
-  Secrets["Cloudflare Worker secrets<br/>AI keys · Upstash · OAuth · …"] -.-> Deploy
-  BuildSecrets["GHA secrets<br/>CF token · account · NEXT_PUBLIC_MAPBOX_TOKEN"] -.-> GHA
-```
-
-Runtime secrets (LLM keys, Upstash, Google OAuth, etc.) live on the **Worker**, not in GitHub Actions — except `NEXT_PUBLIC_MAPBOX_TOKEN`, which is baked in at build time.
+**How it fits together:** OpenNext runs the Next.js 15 app on a Cloudflare Worker. Trails/projects read D1 (JSON fallback locally); admin writes to D1 + R2 behind Better Auth. The homepage terminal hits `/api/terminal` → Upstash rate limit → privacy gates → Supermemory → LLM waterfall. Mapbox and Last.fm are called from the browser. Deploy is `main` → GitHub Actions → Worker; runtime secrets live on Cloudflare (`NEXT_PUBLIC_MAPBOX_TOKEN` is build-time only).
 
 ---
 
