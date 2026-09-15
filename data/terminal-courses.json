@@ -1,0 +1,109 @@
+{
+  "current_semester_id": "2026-fall",
+  "semesters": [
+    {
+      "id": "2023-fall",
+      "label": "Fall 2023",
+      "season": "fall",
+      "year": 2023,
+      "courses": [
+        { "code": "ASU 101-CAI", "name": "The ASU Experience", "grade": "A+" },
+        { "code": "CSE 110", "name": "Principles of Programming", "grade": "A" },
+        { "code": "ENG 107", "name": "First-Year Composition", "grade": "A+" },
+        { "code": "FSE 100", "name": "Introduction to Engineering", "grade": "A+" },
+        { "code": "GCU 121", "name": "World Geography", "grade": "A+" },
+        { "code": "HST 100", "name": "Global History to 1500", "grade": "A" },
+        { "code": "MAT 265", "name": "Calculus for Engineers I", "grade": "A" }
+      ]
+    },
+    {
+      "id": "2024-spring",
+      "label": "Spring 2024",
+      "season": "spring",
+      "year": 2024,
+      "courses": [
+        { "code": "CSE 205", "name": "Object-Oriented Programming and Data Structures", "grade": "A" },
+        { "code": "EEE 120", "name": "Digital Design Fundamentals", "grade": "A" },
+        { "code": "ENG 108", "name": "First-Year Composition", "grade": "A+" },
+        { "code": "GLG 108", "name": "Water Planet", "grade": "A+" },
+        { "code": "JUS 207", "name": "Homicide and Serial Killers", "grade": "A" },
+        { "code": "MAT 266", "name": "Calculus for Engineers II", "grade": "A+" },
+        { "code": "PUP 200", "name": "Cities in Cinema", "grade": "A+" }
+      ]
+    },
+    {
+      "id": "2024-fall",
+      "label": "Fall 2024",
+      "season": "fall",
+      "year": 2024,
+      "courses": [
+        { "code": "CSE 240", "name": "Introduction to Programming Languages", "grade": "A" },
+        { "code": "CSE 301", "name": "Computing Ethics", "grade": "A" },
+        { "code": "DAT 250", "name": "Data Science and Society", "grade": "A" },
+        { "code": "GPH 111", "name": "Introduction to Physical Geography", "grade": "A+" },
+        { "code": "GPH 112", "name": "Introduction to Physical Geography Lab", "grade": "A+" },
+        { "code": "MAT 243", "name": "Discrete Mathematical Structures", "grade": "A" },
+        { "code": "MAT 267", "name": "Calculus for Engineers III", "grade": "A" },
+        { "code": "MAT 343", "name": "Applied Linear Algebra", "grade": "C+" }
+      ]
+    },
+    {
+      "id": "2025-spring",
+      "label": "Spring 2025",
+      "season": "spring",
+      "year": 2025,
+      "courses": [
+        { "code": "CIS 235", "name": "Information Systems, Analytics, and AI for Business", "grade": "A" },
+        { "code": "CSE 310", "name": "Data Structures and Algorithms", "grade": "A" },
+        { "code": "CSE 360", "name": "Introduction to Software Engineering", "grade": "A" },
+        { "code": "DAT 300", "name": "Mathematical Tools for Data Science", "grade": "A" },
+        { "code": "DAT 301", "name": "Exploring Data in R and Python", "grade": "A+" },
+        { "code": "IEE 380", "name": "Probability and Statistics for Engineering Problem Solving", "grade": "C" },
+        { "code": "TCL 323", "name": "Latina/o Health Issues", "grade": "A" }
+      ]
+    },
+    {
+      "id": "2025-fall",
+      "label": "Fall 2025",
+      "season": "fall",
+      "year": 2025,
+      "courses": [
+        { "code": "CIS 407", "name": "Business Database Systems", "grade": "A" },
+        { "code": "CSE 330", "name": "Operating Systems", "grade": "A+" },
+        { "code": "CSE 355", "name": "Introduction to Theoretical Computer Science", "grade": "A" },
+        { "code": "CSE 365", "name": "Information Assurance", "grade": "A+" },
+        { "code": "DAT 401", "name": "Statistical Modeling and Inference for Data Science", "grade": "A" },
+        { "code": "GPH 211", "name": "Landform Processes", "grade": "A+" },
+        { "code": "WPC 300", "name": "Problem Solving and Action Analytics", "grade": "A+" }
+      ]
+    },
+    {
+      "id": "2026-spring",
+      "label": "Spring 2026",
+      "season": "spring",
+      "year": 2026,
+      "courses": [
+        { "code": "CIS 409", "name": "Business Data Warehouse Dimensional Modeling", "grade": "C+" },
+        { "code": "CIS 412", "name": "Business Machine Learning", "grade": "A+" },
+        { "code": "CSE 340", "name": "Principles of Programming Languages", "grade": "A+" },
+        { "code": "CSE 412", "name": "Database Management", "grade": "A+" },
+        { "code": "CSE 463", "name": "Introduction to Human-Computer Interaction", "grade": "A-" },
+        { "code": "CSE 475", "name": "Foundations of Machine Learning", "grade": "A" }
+      ]
+    },
+    {
+      "id": "2026-fall",
+      "label": "Fall 2026",
+      "season": "fall",
+      "year": 2026,
+      "courses": [
+        { "code": "CIS 415", "name": "Big Data and AI in Business", "grade": "NR" },
+        { "code": "CSE 477", "name": "Foundations of Data Visualization", "grade": "NR" },
+        { "code": "CSE 485", "name": "Computer Science Capstone Project I", "grade": "NR" },
+        { "code": "CSE 511", "name": "Data Processing at Scale", "grade": "NR" },
+        { "code": "DAT 490", "name": "Data Science Capstone", "grade": "NR" },
+        { "code": "PPE 240", "name": "Competitive Pickleball II", "grade": null }
+      ]
+    }
+  ]
+}

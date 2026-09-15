@@ -1,0 +1,2017 @@
+{
+  "ineligible_claims": [
+    "Summer 2026 software engineering / AI automation / data / ML internship (examples of companies of interest historically include Amazon, Aurora, AlphaSights; open to work in Tempe, AZ and broader tech roles)",
+    "Roles aligned with software engineering, data science, AI automation, ML, backend, data engineering, and technical product",
+    "Builds high-impact automation that removes operational drag (QA eval 3h→15m; workflow engines; ETL/CRM reconciliation)",
+    "Combines CS + Data Science academics (4.0 GPA) with production shipping (Next.js/Vercel dashboards, CI/CD, secure OAuth)",
+    "Works at intersection of AI systems, data/CRM operations, and business outcomes (pricing/ROI, executive demos at W. P. Carey Executive Education)",
+    "Responsible GenAI practitioner: uses AI for drafting/boilerplate/debugging/research/repetitive coding with human review; avoids confidential/PII on unapproved tools, unreviewed final decisions, compliance-prohibited use, and undisclosed sole authorship; emphasizes human judgment, accountability, taste, stakeholder trust, problem framing, and verification",
+    "Student org financial leadership and large-event operations (DevLabs VP Finance; DevHacks/DevSpace logistics)",
+    "Do not claim real-market alpha, live trading, or measured investment performance for QuantileLedger without completed forward results",
+    "Do not claim production adoption, users, downloads, revenue, or measured business impact for personal projects without separately verified telemetry",
+    "QuantileLedger completed-state roadmap includes full challenger families, FinBERT ablations, immutable recalibration variants, ensembles, a gated long-options paper path, Streamlit research UI, and nightly walk-forward jobs; promote only after shipment confirmation",
+    "Do not claim Devtize's full TUI, MCP, broad cloud/database adapter matrix, or provider-sync roadmap as shipped until those completion milestones are confirmed",
+    "Do not claim Engagement OS cloud production deployment, managed-database migration, prospect discovery, alumni matching, or capability matching until those completion milestones are confirmed",
+    "Do not claim completed capstone model results, model performance, publication, peer review, or a finalized 100,000-paper analytical dataset until those results are confirmed"
+  ],
+  "last_reviewed_at": "2026-09-15T16:52:21Z",
+  "personal": {
+    "email": "chakshuvinayjain@gmail.com",
+    "github": "https://github.com/FornaxChemica",
+    "linkedin": "https://linkedin.com/in/chakshu-jain-281307243",
+    "location": "Tempe, AZ",
+    "name": "Chakshu Jain",
+    "website": "https://chakshu.dev"
+  },
+  "prohibited_claims": [
+    "Official job title of Senior Data & Product Strategy Engineer.",
+    "Sole ownership of AWS hosting, Entra configuration, or the entire Engagement OS.",
+    "Employment or internship offers from companies that were only targets of interest.",
+    "YC founder or YC-backed company status.",
+    "Unsupported technologies, scale, user counts, revenue, team size, or metrics.",
+    "Official job title of “Senior Data & Product Strategy Engineer” (document/project label; known official title is AI Automation Developer)",
+    "Sole ownership of AWS hosting, Entra configuration, or entire Engagement OS without acknowledging collaboration/TSO assistance",
+    "Technologies not evidenced (do not invent frameworks, scale, user counts, revenue, or team size beyond 500-member DevLabs org note)",
+    "Exaggerated internship offers or employment at Amazon/Aurora/AlphaSights (only targeting/interest is known)",
+    "YC founder status or YC-backed company (only joined YC Co-Founder Matching platform May 2025)",
+    "Confidential/PII handling details, client data specifics, or undisclosed GenAI authorship of work products",
+    "Deep expertise / production ownership of every skill on the long competencies list without project backup"
+  ],
+  "records": [
+    {
+      "dates": "Fall 2023–May 2027",
+      "degree": "B.S. Computer Science and B.S. Data Science (double major)",
+      "eligible_sections": [
+        "Education"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "00a088710b83cd5a60f379bd0d3ea21c02d1ca43039f76c2e644ad6df153fce0",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-education_01_00a088710b",
+          "skills": [
+            "Computer Science",
+            "Data Science",
+            "algorithms",
+            "machine learning",
+            "databases"
+          ],
+          "source_context": "User context summary, ASU transcript/course history memories, student intro post",
+          "text": "Arizona State University — B.S. Computer Science and B.S. Data Science (double major); expected graduation May 2027; cumulative GPA 4.00/4.00; attended since Fall 2023.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "65b075033a0eafc7798d758574904224bbccfe866467718ccc37715226eb456e",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-education_02_f1c808cf1d",
+          "skills": [
+            "computing ethics",
+            "data science",
+            "R",
+            "Python",
+            "analytics",
+            "data structures and algorithms",
+            "operating systems",
+            "programming languages",
+            "linear algebra",
+            "theoretical computer science",
+            "software engineering",
+            "information assurance",
+            "probability",
+            "statistics"
+          ],
+          "source_context": "Exact 300-level primary course list supplied and explicitly verified by the user on 2026-09-15",
+          "text": "Primary 300-level coursework: CSE 301 — Computing Ethics; DAT 300 — Math Tools for Data Science; DAT 301 — Exploring Data in R and Python; WPC 300 — Problem Solving & Action Analytics; CSE 310 — Data Structures and Algorithms; CSE 330 — Operating Systems; CSE 340 — Principles of Programming Languages; MAT 343 — Applied Linear Algebra; CSE 355 — Introduction to Theoretical Computer Science; CSE 360 — Introduction to Software Engineering; CSE 365 — Information Assurance; IEE 380 — Probability & Statistics for Engineering Problem Solving.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "8ce4854b9551adcfc2c13f95193105f9f7c76971ba36a836e11c16ff69f1d898",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-education_03_dbcc6737bc",
+          "skills": [
+            "statistical modeling",
+            "inference",
+            "business database systems",
+            "data warehousing",
+            "machine learning",
+            "database management",
+            "big data",
+            "AI",
+            "data visualization",
+            "capstone"
+          ],
+          "source_context": "Exact 400-level primary course list supplied and explicitly verified by the user on 2026-09-15",
+          "text": "Primary 400-level coursework: DAT 401 — Statistical Modeling and Inference for Data Science; CIS 407 — Business Database Systems; CIS 409 — Business Data Warehouse Dimensional Modeling; CIS 412 — Business Machine Learning; CSE 412 — Database Management; CIS 415 — Big Data and AI in Business; CSE 463 — Introduction to Human-Computer Interaction; CSE 478 — Foundations of Data Visualization; CSE 475 — Foundations of Machine Learning; CSE 485 — Computer Science Capstone Project I; DAT 490 — Data Science Capstone.",
+          "verified": true
+        }
+      ],
+      "id": "asu-education",
+      "kind": "education",
+      "label": "Arizona State University",
+      "location": "Tempe, AZ",
+      "organization": "Arizona State University",
+      "status": "current",
+      "title": ""
+    },
+    {
+      "dates": "",
+      "eligible_sections": [
+        "Technical Skills"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "e29402221132291733aa0d57f3aa6c4fb554517276ee55589450ce737a9c481a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_01_e294022211",
+          "skills": [
+            "Python"
+          ],
+          "source_context": "Competencies list; QA evaluation engine; coursework",
+          "text": "Python.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "084c12022483153177ee69c90a4e26a3789ede9c3ec2f9c77bfa672be1d1b115",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_02_084c120224",
+          "skills": [
+            "Java"
+          ],
+          "source_context": "Competencies list; foundational CS coursework",
+          "text": "Java.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "8bda4331de11246cee99ac88de7a62e9d496d0c78edc47d17a9c004014707e1e",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_03_8bda4331de",
+          "skills": [
+            "SQL"
+          ],
+          "source_context": "Competencies list; database coursework",
+          "text": "SQL.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "e22a1a82cca3133baf9cd267d4147ba1887714663eede3934e9527554131f7c0",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_04_16fd3fa8e9",
+          "skills": [
+            "TypeScript",
+            "JavaScript"
+          ],
+          "source_context": "Competencies list and verified Next.js/React product work; JavaScript explicitly reconfirmed by the user on 2026-09-15",
+          "text": "TypeScript, JavaScript.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "43e7606a09245b2593ed9498552347047ba16e995634a5e0c3e0e98ca27b6e6f",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_05_43e7606a09",
+          "skills": [
+            "R"
+          ],
+          "source_context": "Competencies list; DAT courses exploring data in R and Python",
+          "text": "R.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "82d5c47338d6ce4550ce39c398e4e32d7d446bcc9d071ddcfc27ff6d532f9d1f",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_06_82d5c47338",
+          "skills": [
+            "C++"
+          ],
+          "source_context": "Competencies list",
+          "text": "C++.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "1c337ef2ead4742d43b6992cf0bcb9579c8c2dd29685c8d830c73aa9f64879f3",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_07_1c337ef2ea",
+          "skills": [
+            "MATLAB"
+          ],
+          "source_context": "Competencies list",
+          "text": "MATLAB.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "c9f85a7263577f11337c0583ac820d0b1e80bac37185c0ce109abc9fa664a947",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_08_c9f85a7263",
+          "skills": [
+            "C"
+          ],
+          "source_context": "Transcript summary foundational programming",
+          "text": "C (coursework/foundational programming).",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "407380f31b462f7b5aacb66aab110dc27fb123b572596b5621f551247993cb5e",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_09_407380f31b",
+          "skills": [
+            "PyTorch",
+            "TensorFlow",
+            "deep learning"
+          ],
+          "source_context": "Technical competencies memory",
+          "text": "PyTorch, TensorFlow.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "f1e04d66d029bec75dd92a6bdf3b02590be198dc769cced60a27d76f02898a0d",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_10_f1e04d66d0",
+          "skills": [
+            "CNNs",
+            "RNNs",
+            "ML"
+          ],
+          "source_context": "Technical competencies memory",
+          "text": "CNNs/RNNs.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "76754bf289340b78f23b129b4f6f690efbbe9aae73a24990c555cfb81a56ba04",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_11_76754bf289",
+          "skills": [
+            "RAG",
+            "agents",
+            "LLMs"
+          ],
+          "source_context": "Technical competencies memory; Engagement OS / outreach agent mentions",
+          "text": "RAG, Agentic AI, LLM orchestration.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "1e190cb90a3e58993341821de62a7b586bed7815c4c267e9e1d7c2c1d684c566",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_12_1e190cb90a",
+          "skills": [
+            "evaluation harnesses",
+            "API testing",
+            "automation"
+          ],
+          "source_context": "ASU for Life Recommender Evaluation Platform document",
+          "text": "QA automation for AI recommender systems (API evaluation, scoring, reporting).",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "1e8df9b63d924c856b478f938650ac657fcf3fb2ab00beb83d85394136c4dae8",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_13_1e8df9b63d",
+          "skills": [
+            "REST",
+            "GraphQL",
+            "APIs"
+          ],
+          "source_context": "Competencies list; recommender API integration",
+          "text": "REST/Graph APIs.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "eb43c5ef29886550b128fc3197e379ce675cc12acded90536cd40da8997abb94",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_14_eb43c5ef29",
+          "skills": [
+            "Pandas",
+            "NumPy",
+            "Matplotlib",
+            "data analysis"
+          ],
+          "source_context": "Technical competencies memory",
+          "text": "Pandas, NumPy, Matplotlib.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "646c4f28cac36a32514d8cc4cbe7d15355cafd5305ac2ca89475ba1482817cdd",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_15_646c4f28ca",
+          "skills": [
+            "ETL",
+            "BigQuery",
+            "Fabric",
+            "Tableau"
+          ],
+          "source_context": "Technical competencies memory; CRM ETL work bullets",
+          "text": "ETL pipelines; BigQuery; Microsoft Fabric; Tableau.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "07e315953abaa279e076146c8a529bd2ad02a8c3e9b25047048866d87ef3b319",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_16_07e315953a",
+          "skills": [
+            "HubSpot",
+            "Salesforce",
+            "CRM"
+          ],
+          "source_context": "Competencies list; EECPLL marketing/ops workflows; Engagement OS alongside Salesforce",
+          "text": "HubSpot, Salesforce CRM, ZoomInfo.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "a986a5bfce86ac7614ba1dc0f5af27e43968744895af8258dcfa9697b77cf87e",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_17_a986a5bfce",
+          "skills": [
+            "Microsoft Graph",
+            "Entra",
+            "M365"
+          ],
+          "source_context": "Competencies list; Engagement OS integration notes",
+          "text": "Microsoft 365, Microsoft Graph/Entra.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "b974f72b0d99ce33eaec75d91504176140ed5297d759c8bdff6e1baaa62635f3",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_18_b974f72b0d",
+          "skills": [
+            "reporting",
+            "Excel"
+          ],
+          "source_context": "ASU for Life evaluation platform tech stack",
+          "text": "Excel/CSV/JSON/Markdown reporting and export.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "947c07c30b12ac48a7a438c613c6f517b861c90f303bbfe715dbc553fec79ecc",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_19_947c07c30b",
+          "skills": [
+            "Next.js",
+            "React",
+            "Node.js"
+          ],
+          "source_context": "Competencies; ASU-themed dashboard on Vercel",
+          "text": "Next.js, React, Node.js.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "094994d6f8f4ffcbbee02a628e3a7193e908b20fcd526d0988d74960b883ae81",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_20_094994d6f8",
+          "skills": [
+            "Django"
+          ],
+          "source_context": "Technical competencies memory",
+          "text": "Django.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "c8d6757ba14b24c9a6764a57cc6aae05cc52ca3090676ded7f0ac34c650eabfd",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_21_c8d6757ba1",
+          "skills": [
+            "Vercel",
+            "GitHub Actions",
+            "Git",
+            "CI/CD"
+          ],
+          "source_context": "Evaluation platform deployment and automation",
+          "text": "Vercel, GitHub Actions, Git, CI/CD.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "9d6a20c1b7262cc8d2feced2456f048f929f73475ab9010dea146d6d3180f85a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_22_9d6a20c1b7",
+          "skills": [
+            "auth",
+            "OAuth"
+          ],
+          "source_context": "Secure dashboard implementation for ASU email restrictions",
+          "text": "Better Auth, Google OAuth.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "1cb7918fdb6e6a56ac48c073a7d4f52a54ce670c7a896d6719fe12c8671b9a4d",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_23_1cb7918fdb",
+          "skills": [
+            "AWS",
+            "Docker",
+            "Kubernetes"
+          ],
+          "source_context": "Technical competencies memory; Engagement OS notes needing AWS hosting assistance",
+          "text": "AWS EC2/RDS, Docker, Kubernetes.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "5d45349cbc21992350c6bd82b3db702ea580f317b70ac276867ae7ed777d277f",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_24_5d45349cbc",
+          "skills": [
+            "Pub/Sub"
+          ],
+          "source_context": "Technical competencies memory",
+          "text": "Google Pub/Sub.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "c58be050a3468c7d6b1aad54f567d7a4ec25fbfe113d8125bdabefbc248fecd7",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_25_c58be050a3",
+          "skills": [
+            "Agile",
+            "Scrum"
+          ],
+          "source_context": "Technical competencies memory",
+          "text": "Agile/Scrum.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "afbefdbd2ab61498cafadd98c792c1c34f73d55a616bbbbecde34bfc81ee472e",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_26_afbefdbd2a",
+          "skills": [
+            "financial modeling",
+            "pricing analysis"
+          ],
+          "source_context": "Competencies list; pricing/ROI strategy bullets under EECPLL-related work",
+          "text": "Financial modeling.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "f1ad04a83d853f10737fab9c8b892125620459bec0f2efdb4466de022d383540",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_27_f1ad04a83d",
+          "skills": [
+            "testing",
+            "fuzzy matching"
+          ],
+          "source_context": "ASU for Life platform tech stack",
+          "text": "unittest, fuzzy matching, API streaming (project-specific).",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "24e5f03d163c63d544f8745bbfb99255b9fb1440145e37207948c2a3931001ac",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_28_24e5f03d16",
+          "resume_usage": "skill",
+          "skill_category": "Languages",
+          "skills": [
+            "Go",
+            "Cobra",
+            "YAML",
+            "JSON",
+            "JSONL"
+          ],
+          "source_context": "Devtize repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Go, Cobra, YAML, JSON, and JSONL.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "3212c2455e0299489f69b126300d0a88407b5047041ed8a85dbe61ef378685ac",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_29_3212c2455e",
+          "resume_usage": "skill",
+          "skill_category": "Languages",
+          "skills": [
+            "Swift",
+            "SwiftUI",
+            "AppKit",
+            "ScreenCaptureKit",
+            "Accessibility APIs",
+            "Core Graphics",
+            "IOKit",
+            "XCTest"
+          ],
+          "source_context": "WindowLens repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Swift, SwiftUI, AppKit, ScreenCaptureKit, Accessibility APIs, Core Graphics, IOKit, and XCTest.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "902711822d715bf8ba6e7463c25da34a68d91cfda579db02a6736bebe32a827b",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_30_902711822d",
+          "resume_usage": "skill",
+          "skill_category": "Tools & Platforms",
+          "skills": [
+            "Cloudflare Workers",
+            "Cloudflare D1",
+            "Cloudflare R2",
+            "OpenNext",
+            "Wrangler",
+            "Upstash Redis"
+          ],
+          "source_context": "chakshu.dev repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Cloudflare Workers, D1, R2, OpenNext, Wrangler, and Upstash Redis.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "90e5df51b278160d433642d97b7616f794583c56bcbfd619cd270b8614fa9e15",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_31_90e5df51b2",
+          "resume_usage": "skill",
+          "skill_category": "AI & Data",
+          "skills": [
+            "Streamlit",
+            "DuckDB",
+            "httpx",
+            "Typer",
+            "Plotly",
+            "XlsxWriter",
+            "pytest"
+          ],
+          "source_context": "Executive Education dashboard dossier supplied and approved by the user on 2026-09-14",
+          "text": "Streamlit, DuckDB, httpx, Typer, Plotly, XlsxWriter, and pytest.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "2d1361ab0cd04d21970a49a769625ccbd437b3eb2fb2d7715600fca6a2fd1d60",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_32_2d1361ab0c",
+          "resume_usage": "skill",
+          "skill_category": "AI & Data",
+          "skills": [
+            "quantile regression",
+            "pinball loss",
+            "calibration",
+            "time-series forecasting",
+            "bibliometrics",
+            "scikit-learn"
+          ],
+          "source_context": "QuantileLedger and Data Science Capstone dossiers supplied and approved by the user on 2026-09-14",
+          "text": "Quantile regression, pinball loss, calibration, time-series forecasting, bibliometrics, and scikit-learn.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "8e11994cf2568fa79d0adb16010b6e7017a21e67894a8215afa113fa35cc4ce4",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "technical-skills_33_8e11994cf2",
+          "resume_usage": "skill",
+          "skill_category": "AI & Data",
+          "skills": [
+            "SQLite",
+            "Pydantic",
+            "Hugging Face",
+            "Transformers",
+            "FinBERT",
+            "Ollama",
+            "Sparkle"
+          ],
+          "source_context": "QuantileLedger and WindowLens dossiers supplied and approved by the user on 2026-09-14",
+          "text": "SQLite, Pydantic, Hugging Face, Transformers, FinBERT, Ollama, and Sparkle.",
+          "verified": true
+        }
+      ],
+      "id": "technical-skills",
+      "kind": "skills",
+      "label": "Technical Skills",
+      "location": "",
+      "organization": "",
+      "status": "historical",
+      "title": ""
+    },
+    {
+      "dates": "April 2025–Present",
+      "eligible_sections": [
+        "Professional Experience"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "cec58aa6f1c6f471c8d6f32ef0fee79b78f2d6fe35efac0450aeb44001a0f8eb",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_01_ef987d273c",
+          "skills": [
+            "AI automation",
+            "Python",
+            "APIs",
+            "CRM",
+            "web dashboards"
+          ],
+          "source_context": "User-confirmed Executive Education role, organizational unit, and dates; title clarified on 2026-09-14",
+          "text": "AI Automation Developer, Executive Education, W. P. Carey School of Business, Arizona State University — April 2025–Present.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "04e6b12963928b51f21bd40ed6527a20357be0d3cc4aaab959ef5b6da388a067",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_02_04e6b12963",
+          "skills": [
+            "Python",
+            "API integration",
+            "QA automation",
+            "evaluation metrics"
+          ],
+          "source_context": "ASU for Life AI Recommender QA Automation Platform document; intro post metric",
+          "text": "Built automated weekly QA evaluation for ASU for Life’s AI recommender by integrating with its API, reducing a 26-prompt, 78-run manual validation workflow from ~3 hours to ~15 minutes of exception review (May 2026).",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "c7ff7f30276729f4d1a9f75434e9675249ba91a199f9bb211afaaa5be27c20d5",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_03_c7ff7f3027",
+          "skills": [
+            "Python",
+            "parsing",
+            "scoring",
+            "reporting"
+          ],
+          "source_context": "ASU for Life platform document",
+          "text": "Built a Python evaluation engine that tests recommender prompts across certificates, parses structured pathway responses, scores W. P. Carey visibility, tracks ranking consistency, detects missing recommendations, and exports leadership-ready reports.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "4d57cfe1900292ecc5e0a234048384df24264f7ec9fdcfba23d70cf3a817c4e1",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_04_4d57cfe190",
+          "skills": [
+            "Next.js",
+            "React",
+            "Vercel",
+            "OAuth",
+            "Better Auth"
+          ],
+          "source_context": "ASU for Life platform document",
+          "text": "Designed and deployed a secure ASU-themed Next.js dashboard on Vercel with Google OAuth, ASU email restrictions, run controls, prompt/certificate visibility views, highlighted W. P. Carey matches, and Excel export.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "3708e1825a26f47b478d2713d003778bef6131d2d6a55d82c9bd3b66c721ba93",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_05_3708e1825a",
+          "skills": [
+            "GitHub Actions",
+            "CI/CD",
+            "secrets management",
+            "Git"
+          ],
+          "source_context": "ASU for Life platform document",
+          "text": "Implemented GitHub Actions automation with private prompt data handling, environment-based secrets, and a separate dashboard data branch for recurring evaluations.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "76a7e3092abdb176926f5a688317af7302558bbef2af74bd702f2203c5c68a95",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_06_76a7e3092a",
+          "skills": [
+            "ETL",
+            "CRM",
+            "PDF/unstructured data",
+            "data reconciliation"
+          ],
+          "source_context": "Senior Data & Product Strategy Engineer document bullets attributed to Chakshu",
+          "text": "Engineered an ETL workflow mapping CRM lead submissions against 10+ unstructured PDF reports to establish a ~1-month data reconciliation pipeline.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "0c9233a2f36642a1d5c1155fb3f649151e8a8f3ab1bd4f37a1f224cf8ff6128a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_07_0c9233a2f3",
+          "skills": [
+            "data validation",
+            "automation",
+            "reporting"
+          ],
+          "source_context": "Same data/product strategy document",
+          "text": "Automated cross-platform data validation for a premium product line, eliminating manual tracking and resolving downstream reporting discrepancies.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "4ca8f1113421eb2a0b0fa2bcafc7700057502056f4a6bda14a181e82c9ee5356",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_08_4ca8f11134",
+          "skills": [
+            "analytics infrastructure",
+            "CRM",
+            "ROI measurement"
+          ],
+          "source_context": "Same data/product strategy document",
+          "text": "Architected tracking infrastructure to capture full-funnel marketing data and engineered ~1-month sales tracking bridging CRM leads and final enrollments to measure marketing ROI.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "87ef7d73b21bcebf43db400b91d8bc3bbc8fef4ba441d2fafe3a15417f3445a3",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_09_87ef7d73b2",
+          "skills": [
+            "pricing analytics",
+            "competitive benchmarking",
+            "financial modeling"
+          ],
+          "source_context": "Same data/product strategy document",
+          "text": "Developed quantitative pricing models by benchmarking 9 Tier I/II competitors; projected volume impacts for ~25% baseline price increase; analyzed premium offerings ~$4,500+ vs legacy sub-$2,500 positioning.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "9df0676b8ee621f788cdf335f995cc1ba4585d33ab5175cf038504c89e7bb641",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_10_9df0676b8e",
+          "skills": [
+            "competitive analysis",
+            "pricing strategy",
+            "executive communication"
+          ],
+          "source_context": "Same data/product strategy document",
+          "text": "Aggregated promotional discount structures across 9 peers (≈30% statistical mode); modeled volume strategy pairing ~$100 price increase with 50% subsidy targeting ~$250 net margin per user; presented executive discount/positioning recommendations.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "db9696cefa83770f14a9340e14d2802055a222c8eb653afaeff2128b7cc91cf4",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_11_a0bd8bb6de",
+          "skills": [
+            "AI agents",
+            "stakeholder communication",
+            "product demo"
+          ],
+          "source_context": "User-confirmed Executive Education project timeline",
+          "text": "Delivered a live demo pitch of an AI-powered outreach agent to Executive Education leadership in April 2026.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "295b750864d616ae1835208bcfb83d0abc079bf049ffdac0f30071da9eebb69a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_12_295b750864",
+          "resume_usage": "bullet",
+          "skills": [
+            "technical ownership",
+            "automation",
+            "analytics engineering",
+            "API integration",
+            "internal tools",
+            "human-in-the-loop AI"
+          ],
+          "source_context": "Two Executive Education repository career dossiers supplied and approved by the user on 2026-09-14",
+          "text": "Owned end-to-end technical delivery of privacy-conscious automation and analytics systems for Executive Education, translating stakeholder workflows into API integrations, data pipelines, internal dashboards, and human-reviewed AI tools.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "94c2db1b8f6529e7a25dc670ae1328fa2b2122c75206dc4b1791808885b6d330",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-eecpll_13_94c2db1b8f",
+          "resume_usage": "bullet",
+          "skills": [
+            "deterministic validation",
+            "privacy",
+            "auditability",
+            "responsible AI",
+            "stakeholder collaboration"
+          ],
+          "source_context": "Two Executive Education repository career dossiers supplied and approved by the user on 2026-09-14",
+          "text": "Designed deterministic validation, scoped data access, auditability, and human approval boundaries across sensitive operational data and AI-assisted communication workflows.",
+          "verified": true
+        }
+      ],
+      "id": "asu-eecpll",
+      "kind": "experience",
+      "label": "ASU Executive Education",
+      "location": "Tempe, AZ",
+      "organization": "Executive Education, W. P. Carey School of Business, Arizona State University",
+      "status": "current",
+      "title": "AI Automation Developer"
+    },
+    {
+      "dates": "March 2025–April 2025",
+      "eligible_sections": [
+        "Professional Experience"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "474aa01bb259509c460b5546cf0f21ece80f8257ecdee5c99d284f163120fedc",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-aznext_01_59126e32ea",
+          "skills": [
+            "program coordination",
+            "data engineering",
+            "software engineering"
+          ],
+          "source_context": "User context role listing; short tenure Mar–Apr 2025",
+          "text": "Program Coordinator Assistant, AZNext, W. P. Carey — March 2025–April 2025.",
+          "verified": true
+        },
+        {
+          "confidence": "medium",
+          "content_sha256": "344a77dcc7fcfe8e034ae2b3018c8ff6edfdc120490739212cd99e8bd6d6c98d",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-aznext_02_344a77dcc7",
+          "skills": [
+            "agentic AI",
+            "workflow automation",
+            "state machines"
+          ],
+          "source_context": "Projects list chunk in user context summary",
+          "text": "Built AZNext Workflow Engine: agentic AI state-machine automation reducing repetitive manual work (reported saving 15+ hours/week).",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "ddf54ffde8123815478372db7d03c6e7b06daa6e9e4824806d52ff6193f3f766",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-aznext_03_ddf54ffde8",
+          "resume_usage": "bullet",
+          "skills": [
+            "Python",
+            "Selenium",
+            "Pandas",
+            "ETL",
+            "Salesforce",
+            "data extraction"
+          ],
+          "source_context": "User-supplied and explicitly verified AZNext work achievement on 2026-09-14",
+          "text": "Engineered a scalable ETL pipeline using Python, Selenium, and Pandas to automate data extraction from multiple sources into Salesforce, increasing processing efficiency by 90%.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "7bd25df07d01bf72054d930b86bba723f78aae49e3d247aad8b07f299ec5bae4",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "asu-aznext_04_7bd25df07d",
+          "resume_usage": "bullet",
+          "skills": [
+            "data validation",
+            "data transformation",
+            "data cleansing",
+            "data quality",
+            "Salesforce"
+          ],
+          "source_context": "User-supplied and explicitly verified AZNext work achievement on 2026-09-14",
+          "text": "Developed data validation and transformation logic to cleanse inconsistent source data, ensuring high data integrity and reliability for 500+ daily records.",
+          "verified": true
+        }
+      ],
+      "id": "asu-aznext",
+      "kind": "experience",
+      "label": "AZNext",
+      "location": "Tempe, AZ",
+      "organization": "W. P. Carey School of Business, Arizona State University",
+      "status": "historical",
+      "title": "Program Coordinator Assistant"
+    },
+    {
+      "dates": "May 2026",
+      "technologies": [
+        "Python",
+        "Next.js",
+        "GitHub Actions",
+        "OAuth"
+      ],
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "2d078882b487dafd6e557dbc845220e43920327a15df6a882a510a99457a000a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-asu-for-life-recommender-evaluation-platform_01_2d078882b4",
+          "skills": [
+            "Python",
+            "Next.js",
+            "Vercel",
+            "GitHub Actions",
+            "OAuth",
+            "API evaluation"
+          ],
+          "source_context": "Dedicated project document ZRNJc1M1L31mexJpAdti4t",
+          "text": "ASU for Life Recommender Evaluation Platform (May 2026) — end-to-end Python evaluation + Next.js ops dashboard + GitHub Actions for weekly AI recommender QA (see professional experience for detailed bullets; can be listed as project or experience achievement).",
+          "verified": true
+        }
+      ],
+      "id": "project-asu-for-life-recommender-evaluation-platform",
+      "kind": "project",
+      "label": "ASU for Life Recommender Evaluation Platform",
+      "location": "",
+      "organization": "",
+      "status": "historical",
+      "title": ""
+    },
+    {
+      "dates": "September 2026–Present",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "264fd582a40601e3cb8af156ee524b39003f0740d41419d6db1a100178343790",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-executive-education-program-intelligence_01_264fd582a4",
+          "resume_usage": "bullet",
+          "skills": [
+            "Python",
+            "Streamlit",
+            "DuckDB",
+            "data pipelines",
+            "reporting automation",
+            "scheduled jobs"
+          ],
+          "source_context": "Privacy-safe Executive Education repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Executive Education Live Program Intelligence Dashboard — Python pipeline synchronizing approved event, registration, session, and transaction data from a third-party platform into DuckDB; delivered a password-protected Streamlit dashboard; automated sanitized Excel/CSV reporting; operationalized five-minute local background synchronization.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "1159fb0a3223401716e228e482dc284bf62b88d6ed1d272545e6942902421857",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-executive-education-program-intelligence_02_1159fb0a32",
+          "resume_usage": "bullet",
+          "skills": [
+            "API integration",
+            "httpx",
+            "pagination",
+            "retry/backoff",
+            "OAuth",
+            "data privacy"
+          ],
+          "source_context": "Privacy-safe Executive Education repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Implemented authenticated API pagination, throttling, retry/backoff, token renewal, explicit event allowlists, and financial-field minimization for privacy-scoped ingestion.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "327deeaee114d340ddaa1ed2fb121bec68b5cf0781b4efca08bae2516fc05fe5",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-executive-education-program-intelligence_03_327deeaee1",
+          "resume_usage": "bullet",
+          "skills": [
+            "DuckDB",
+            "data modeling",
+            "idempotency",
+            "data reconciliation",
+            "audit logs"
+          ],
+          "source_context": "Privacy-safe Executive Education repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Designed a seven-table DuckDB analytical model with idempotent upserts, full event replacement, sync state, and run history; supported full, incremental, forced, frozen-event, and monthly reconciliation modes.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "27da4d804ea0923f2365b2d91717d311f7e908fa6db839099362b88085db4818",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-executive-education-program-intelligence_04_27da4d804e",
+          "resume_usage": "bullet",
+          "skills": [
+            "Streamlit",
+            "Plotly",
+            "analytics",
+            "data visualization",
+            "stakeholder reporting"
+          ],
+          "source_context": "Privacy-safe Executive Education repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Built nine stakeholder-oriented dashboard pages for registration trends, audience composition, repeat engagement, seat mix, session demand, transaction signals, data quality, attendee exploration, and administration.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "54aaf9ad454e9c25e0efb0609e32f4cc309aa825102830bfb8ef45b72b2b414f",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-executive-education-program-intelligence_05_54aaf9ad45",
+          "resume_usage": "bullet",
+          "skills": [
+            "pytest",
+            "API testing",
+            "data validation",
+            "integration testing"
+          ],
+          "source_context": "Privacy-safe Executive Education repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Added 17 automated tests across API privacy boundaries, token renewal, synchronization policy, storage idempotency, identity matching, and transaction classification.",
+          "verified": true
+        }
+      ],
+      "id": "project-executive-education-program-intelligence",
+      "kind": "project",
+      "label": "Executive Education Live Program Intelligence Dashboard",
+      "location": "Tempe, AZ",
+      "organization": "W. P. Carey School of Business, Arizona State University",
+      "status": "current",
+      "technologies": [
+        "Python",
+        "Streamlit",
+        "DuckDB",
+        "pandas",
+        "httpx",
+        "Typer",
+        "Plotly",
+        "XlsxWriter",
+        "pytest"
+      ],
+      "title": ""
+    },
+    {
+      "dates": "July 2026–Present",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "9a1f421bf192d3e617a28c9bbc173adfd73004203bf5a611ce2da9c43918a13c",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-engagement-os_01_9a1f421bf1",
+          "resume_usage": "bullet",
+          "skills": [
+            "Node.js",
+            "Microsoft Graph",
+            "Outlook",
+            "calendar integration",
+            "human-in-the-loop AI",
+            "audit logging"
+          ],
+          "source_context": "Privacy-safe Executive Education Engagement OS repository dossier supplied and approved by the user on 2026-09-14",
+          "text": "AI-Assisted Corporate Engagement Workspace — Node.js application integrating Microsoft Graph email and calendar metadata into company, contact, thread, action-item, approval, relationship-summary, and audit-log views; implemented human-reviewed scheduling automation; preserved safe-mode defaults that block external side effects without explicit approval.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "9cb4f7e8079a6c713012ccd2570a7e24307afca7c4b8b8a63e72cf1de5e7b52b",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-engagement-os_02_9cb4f7e807",
+          "resume_usage": "bullet",
+          "skills": [
+            "OAuth",
+            "token refresh",
+            "metadata-first processing",
+            "privacy",
+            "Microsoft Graph"
+          ],
+          "source_context": "Privacy-safe Executive Education Engagement OS repository dossier supplied and approved by the user on 2026-09-14",
+          "text": "Implemented OAuth state validation, token refresh, metadata-first synchronization, bounded AI candidate selection, and selected-thread body retrieval to minimize exposure of sensitive communications.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "1488ceda20db17250e064f4a7ee9f3a37f0e1b7c237fefa7b3e89c0b698c2216",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-engagement-os_03_1488ceda20",
+          "resume_usage": "bullet",
+          "skills": [
+            "LLM orchestration",
+            "structured outputs",
+            "deterministic validation",
+            "responsible AI",
+            "scheduling automation"
+          ],
+          "source_context": "Privacy-safe Executive Education Engagement OS repository dossier supplied and approved by the user on 2026-09-14",
+          "text": "Designed schema-constrained LLM workflows for scheduling-intent analysis, reply drafting, and confirmation matching; clamped confidence, validated durations, and rejected event times outside approved slots.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "7f5cb4c8959432adcfe2c0b9ebd33dbaa8d2a74fb9d57151577b7c2788fa7cff",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-engagement-os_04_7f5cb4c895",
+          "resume_usage": "bullet",
+          "skills": [
+            "testing",
+            "AI safety",
+            "integration testing",
+            "workflow validation"
+          ],
+          "source_context": "Privacy-safe Executive Education Engagement OS repository dossier supplied and approved by the user on 2026-09-14",
+          "text": "Validated the prototype with 11 passing tests covering AI contracts, scheduling-confirmation safety, metadata-only sync, selected-body fetch, company inference, action classification, and candidate limits.",
+          "verified": true
+        }
+      ],
+      "id": "project-engagement-os",
+      "kind": "project",
+      "label": "Engagement OS",
+      "location": "",
+      "organization": "W. P. Carey School of Business, Arizona State University",
+      "status": "current",
+      "technologies": [
+        "Node.js",
+        "Microsoft Graph",
+        "OAuth",
+        "structured LLM outputs"
+      ],
+      "title": ""
+    },
+    {
+      "dates": "February 2026–Present",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "58a809defb60e376081319309a536b47ec0de2160970f3f96b6276335a1bb82d",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-chakshu-dev_01_58a809defb",
+          "resume_usage": "bullet",
+          "skills": [
+            "Next.js",
+            "Cloudflare Workers",
+            "full-stack development",
+            "AI orchestration",
+            "product engineering"
+          ],
+          "source_context": "chakshu.dev repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "chakshu.dev — production Next.js 15 portfolio deployed through OpenNext to Cloudflare Workers; combines an interactive career dossier with a privacy-gated AI terminal; publishes trail, project, and music experiences; converts recruiter interest through direct contact and Cal.com booking.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "b3ad142d11bf1379d01088cb490cbf1cf48a874a0f30f6239826cbc6665e962d",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-chakshu-dev_02_b3ad142d11",
+          "resume_usage": "bullet",
+          "skills": [
+            "LLM orchestration",
+            "Upstash Redis",
+            "rate limiting",
+            "privacy",
+            "RAG",
+            "provider failover"
+          ],
+          "source_context": "chakshu.dev repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Built a multi-provider AI terminal with Upstash rate limiting, eight deterministic privacy gates, bounded queries, profile grounding, four-provider failover, and offline topic fallbacks.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "62afe71934221858552d556cfa9fe92ba30ac5ca08dde37a018427c9fff3587a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-chakshu-dev_03_62afe71934",
+          "resume_usage": "bullet",
+          "skills": [
+            "Google OAuth",
+            "Cloudflare D1",
+            "Cloudflare R2",
+            "Mapbox",
+            "GPX",
+            "content management"
+          ],
+          "source_context": "chakshu.dev repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Implemented a Google OAuth allowlisted admin CMS that ingests GPX and media through six placement strategies into Cloudflare D1/R2 for Mapbox trail publishing and curated project management.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "723bc24d7bf34dba7edad56c14878bb279b08a0ee5df8a4624d85980e1ea960a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-chakshu-dev_04_723bc24d7b",
+          "resume_usage": "bullet",
+          "skills": [
+            "GitHub API",
+            "Cloudflare D1",
+            "Last.fm",
+            "Mapbox",
+            "Cal.com",
+            "SEO"
+          ],
+          "source_context": "chakshu.dev repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Integrated live GitHub repositories with curated D1 project narratives, Last.fm activity, Mapbox, Cal.com, and SEO metadata across a single edge-deployed application.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "4548e31075d1ecc47663235045b8feccfb404cb335e4b91b1ebbe8369e05f9b7",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-chakshu-dev_05_4548e31075",
+          "resume_usage": "bullet",
+          "skills": [
+            "GitHub Actions",
+            "OpenNext",
+            "Wrangler",
+            "CI/CD",
+            "TypeScript",
+            "Cloudflare Workers"
+          ],
+          "source_context": "chakshu.dev repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Automated production deployment with GitHub Actions, OpenNext, and Wrangler; owned approximately 14,000 lines of TypeScript, JavaScript, CSS, and SQL across the public and administrative product.",
+          "verified": true
+        }
+      ],
+      "id": "project-chakshu-dev",
+      "kind": "project",
+      "label": "chakshu.dev",
+      "location": "",
+      "organization": "",
+      "status": "current",
+      "technologies": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Cloudflare Workers",
+        "D1",
+        "R2",
+        "OpenNext",
+        "Upstash Redis"
+      ],
+      "title": ""
+    },
+    {
+      "dates": "September 2026–Present",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "a1c89fc43c68f103cfd280cca6492af6760a89f8e9660d047b0f9cd8bab4fccf",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-quantile-ledger_01_a1c89fc43c",
+          "resume_usage": "bullet",
+          "skills": [
+            "Python",
+            "quantile forecasting",
+            "walk-forward evaluation",
+            "calibration",
+            "paper trading",
+            "SQLite"
+          ],
+          "source_context": "QuantileLedger repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "QuantileLedger — local-first Python research system recording immutable point-in-time quantile forecasts for U.S. equities and ETFs; compares challengers with an empirical baseline through paired walk-forward evaluation; measures calibration, interval sharpness, and sample size; converts validated signals into auditable paper-trading decisions without live order routing.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "695044412d320292ca4a8de4e0221b90ae5b49a7b15cbf1b489a9a27dab7423a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-quantile-ledger_02_695044412d",
+          "resume_usage": "bullet",
+          "skills": [
+            "Pydantic",
+            "SQL",
+            "time-series forecasting",
+            "data integrity",
+            "experiment tracking"
+          ],
+          "source_context": "QuantileLedger repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Designed a shared log-return ForecastContract spanning seven default quantiles and four horizons, with timestamp leakage assertions, SQL constraints, append-oriented outcomes, experiment digests, and immutable recalibration variants.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "ac06a52fd7a9b98775b8d48f45d460eee2008f6db18c291ccb4a46c409514c94",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-quantile-ledger_05_ac06a52fd7",
+          "resume_usage": "bullet",
+          "skills": [
+            "Python",
+            "SQLite",
+            "pytest",
+            "leakage testing",
+            "financial metrics"
+          ],
+          "source_context": "QuantileLedger repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Developed approximately 33 Python modules, 22 SQLite tables, and 71 offline tests covering forecast contracts, leakage prevention, metrics, calibration, paper accounting, and failure behavior.",
+          "verified": true
+        }
+      ],
+      "id": "project-quantile-ledger",
+      "kind": "project",
+      "label": "QuantileLedger",
+      "location": "",
+      "organization": "",
+      "status": "current",
+      "technologies": [
+        "Python",
+        "SQLite",
+        "Pydantic",
+        "NumPy",
+        "PyTorch",
+        "Hugging Face",
+        "Transformers",
+        "FinBERT",
+        "Streamlit"
+      ],
+      "title": ""
+    },
+    {
+      "dates": "2026–Present",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "6de8800a7b8bcd076f6c52a2b6f9b52f6668ef339c284b93dbabf177b2b86641",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-window-lens_01_6de8800a7b",
+          "resume_usage": "bullet",
+          "skills": [
+            "Swift",
+            "macOS",
+            "ScreenCaptureKit",
+            "Accessibility APIs",
+            "SwiftUI",
+            "local AI"
+          ],
+          "source_context": "WindowLens repository career dossier supplied and approved by the user on 2026-09-14; BetterTabbing upstream acknowledged",
+          "text": "WindowLens — open-source macOS 26 menu-bar utility, forked from BetterTabbing and substantially re-architected; augments Dock-owned Cmd-Tab with ScreenCaptureKit previews; provides an Option-Tab workspace for fuzzy window search and navigation; keeps processing and optional AI insights local.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "83705e5482d8a8eefe8363a914770186b317e6c8e0805b0bcd6721d58952cb5d",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-window-lens_02_83705e5482",
+          "resume_usage": "bullet",
+          "skills": [
+            "CGEventTap",
+            "Accessibility APIs",
+            "SwiftUI",
+            "AppKit",
+            "systems programming"
+          ],
+          "source_context": "WindowLens repository career dossier supplied and approved by the user on 2026-09-14; BetterTabbing upstream acknowledged",
+          "text": "Implemented a dual-path input architecture using CGEventTap pass-through, Dock Accessibility observation, shared window enumeration/cache services, SwiftUI overlays, and AppKit panels without consuming native Cmd-Tab navigation.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "06090b99ba4dbc3ba19388f833a452e40159f026049759d00f6351f4d9e65483",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-window-lens_03_06090b99ba",
+          "resume_usage": "bullet",
+          "skills": [
+            "ScreenCaptureKit",
+            "fuzzy search",
+            "analytics",
+            "process monitoring",
+            "IOKit",
+            "automation"
+          ],
+          "source_context": "WindowLens repository career dossier supplied and approved by the user on 2026-09-14; BetterTabbing upstream acknowledged",
+          "text": "Built cache-first window previews, global search, window slots, visit history, usage heatmaps, stale-window tools, resource monitoring, and agent-aware Stay Awake across six AI and IDE hosts.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "ebb62f76823ff6c5b9581fe043220a34cb0e7987e7efce2e970b11cc03397cd9",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-window-lens_04_ebb62f7682",
+          "resume_usage": "bullet",
+          "skills": [
+            "Sparkle",
+            "GitHub Releases",
+            "release engineering",
+            "code signing",
+            "crash diagnostics"
+          ],
+          "source_context": "WindowLens repository career dossier supplied and approved by the user on 2026-09-14; BetterTabbing upstream acknowledged",
+          "text": "Automated macOS distribution with Sparkle 2 EdDSA updates, DMG and dSYM packaging, GitHub Releases appcasts, local crash diagnostics, and documented signing/notarization paths.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "6deda81c93f580a562791b0c2c1bdc86e1e5137b8eea5b5c318f99d7486b1c73",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-window-lens_05_6deda81c93",
+          "resume_usage": "bullet",
+          "skills": [
+            "Swift",
+            "XCTest",
+            "testing",
+            "fuzzy matching",
+            "persistence",
+            "window management"
+          ],
+          "source_context": "WindowLens repository career dossier supplied and approved by the user on 2026-09-14; BetterTabbing upstream acknowledged",
+          "text": "Maintained approximately 67 Swift source files and 65 XCTest cases covering fuzzy matching, shortcut validation, usage persistence, stale-window grouping, and preview identity.",
+          "verified": true
+        }
+      ],
+      "id": "project-window-lens",
+      "kind": "project",
+      "label": "WindowLens",
+      "location": "",
+      "organization": "",
+      "status": "current",
+      "technologies": [
+        "Swift",
+        "SwiftUI",
+        "AppKit",
+        "ScreenCaptureKit",
+        "Accessibility APIs",
+        "Core Graphics",
+        "IOKit",
+        "Sparkle",
+        "Ollama",
+        "XCTest"
+      ],
+      "title": ""
+    },
+    {
+      "dates": "September 2026–Present",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "f47e6ec5dc036d40d157fe0f0113af6931c4cada559317d0fe42e01612e43b36",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-devtize_01_f47e6ec5dc",
+          "resume_usage": "bullet",
+          "skills": [
+            "Go",
+            "Cobra",
+            "developer tools",
+            "workflow automation",
+            "security",
+            "CLI"
+          ],
+          "source_context": "Devtize repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Devtize — local-first Go command layer that turns developer intent into safe, typed, auditable CLI workflows; separates read-only discovery from execution; validates immutable operation plans through risk policy and digest-bound confirmation; runs reviewed adapters through a no-shell process boundary.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "b4c60dae8dc9e497241ff386d6dcc6cc197f77f68cef28c205b8d673cea1cf02",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-devtize_02_b4c60dae8d",
+          "resume_usage": "bullet",
+          "skills": [
+            "trust boundaries",
+            "AI safety",
+            "schema validation",
+            "capability resolution",
+            "human review"
+          ],
+          "source_context": "Devtize repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Architected trust boundaries that prevent dynamic command knowledge and optional AI output from becoming executable authority without schema validation, capability resolution, and human review.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "aa72e015a1d647cf34a6362405b01f787f221ad99de241bddc36c206e311c6b0",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-devtize_03_aa72e015a1",
+          "resume_usage": "bullet",
+          "skills": [
+            "Git",
+            "GitHub",
+            "CLI automation",
+            "redaction",
+            "audit logging",
+            "process isolation"
+          ],
+          "source_context": "Devtize repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Implemented Git and GitHub workflows for repository initialization, disclosed staging, commits, remote creation, push, verification, narrow repair, and redacted audit history using literal argument execution.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "6f6331f662988ff365e62d290dd5616f5f36f3301ca93429221044e54fd22b23",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-devtize_04_6f6331f662",
+          "resume_usage": "bullet",
+          "skills": [
+            "YAML",
+            "JSON",
+            "dry-run",
+            "postconditions",
+            "idempotency",
+            "local-first architecture"
+          ],
+          "source_context": "Devtize repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Built strict YAML configuration, stable JSON output and error codes, dry-run, postcondition checks, idempotent recovery, and local-first state with AI disabled by default.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "9e6dd95c8deed87161e0250bb1623439fb4c2acef6dd62c199da6e9b9c8e37bb",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-devtize_05_9e6dd95c8d",
+          "resume_usage": "bullet",
+          "skills": [
+            "Go testing",
+            "fuzz testing",
+            "golden tests",
+            "integration testing",
+            "security testing"
+          ],
+          "source_context": "Devtize repository career dossier supplied and approved by the user on 2026-09-14",
+          "text": "Developed 81 named tests and two fuzz targets across search, configuration, process isolation, adapters, safety policy, temporary Git repositories, and CLI behavior.",
+          "verified": true
+        }
+      ],
+      "id": "project-devtize",
+      "kind": "project",
+      "label": "Devtize",
+      "location": "",
+      "organization": "",
+      "status": "current",
+      "technologies": [
+        "Go",
+        "Cobra",
+        "YAML",
+        "JSON",
+        "JSONL",
+        "Git",
+        "GitHub CLI",
+        "SHA-256"
+      ],
+      "title": ""
+    },
+    {
+      "dates": "August 2026–Present",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "6897907335b5b67cce039eea9fda4175a0813d99bf37bb62b2267d639b759f08",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-citation-impact-predictor_01_6897907335",
+          "resume_usage": "bullet",
+          "skills": [
+            "Python",
+            "OpenAlex",
+            "machine learning",
+            "bibliometrics",
+            "data pipelines",
+            "research methods"
+          ],
+          "source_context": "Data Science Capstone dossier supplied and approved by the user on 2026-09-14",
+          "text": "AI/ML Citation Impact Predictor — data science capstone and research paper building an end-to-end Python pipeline over OpenAlex scholarly metadata; targets 100,000+ recent AI/ML publications from a 300-million-record source; models citation impact from publication-time and early-stage signals; studies visibility bias and the Matthew Effect.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "467e1a76039955279770c0693c8b133c9404fb27a38acf08e9e8df756ee1ed2b",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-citation-impact-predictor_02_467e1a7603",
+          "resume_usage": "bullet",
+          "skills": [
+            "feature engineering",
+            "OpenAlex",
+            "data cleaning",
+            "bias analysis",
+            "bibliometrics"
+          ],
+          "source_context": "Data Science Capstone dossier supplied and approved by the user on 2026-09-14",
+          "text": "Engineered features for publication topic, year, open-access status, venue, institutional prestige, and early citation velocity, with peer-relative outcome definitions intended to control for publication age.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "de502c529030501ca24d81b60b503f30b59616ef253f6091df3028143135011a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-citation-impact-predictor_03_de502c5290",
+          "resume_usage": "bullet",
+          "skills": [
+            "classification",
+            "regression",
+            "EDA",
+            "model validation",
+            "statistical bias analysis"
+          ],
+          "source_context": "Data Science Capstone dossier supplied and approved by the user on 2026-09-14",
+          "text": "Designed classification and regression experiments with baseline comparison, exploratory analysis, validation, and bias analysis to separate intrinsic research signals from prestige, access, and topical momentum.",
+          "verified": true
+        }
+      ],
+      "id": "project-citation-impact-predictor",
+      "kind": "project",
+      "label": "AI/ML Citation Impact Predictor",
+      "location": "",
+      "organization": "Arizona State University",
+      "status": "current",
+      "technologies": [
+        "Python",
+        "OpenAlex API",
+        "pandas",
+        "scikit-learn",
+        "Matplotlib"
+      ],
+      "title": "Data Science Capstone"
+    },
+    {
+      "dates": "",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "medium",
+          "content_sha256": "2cb5fdbda47ceb35370eb550d946dacbd11ccc9f1e57945e058d8bd6454a0a3a",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-sage_01_2cb5fdbda4",
+          "skills": [
+            "GenAI",
+            "analytics",
+            "full-stack"
+          ],
+          "source_context": "Projects list chunk in user context summary",
+          "text": "Sage — full-stack, AI-native analytics platform using GenAI for unstructured-to-structured insights.",
+          "verified": true
+        }
+      ],
+      "id": "project-sage",
+      "kind": "project",
+      "label": "Sage",
+      "location": "",
+      "organization": "",
+      "status": "historical",
+      "title": ""
+    },
+    {
+      "dates": "",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "medium",
+          "content_sha256": "bf8ced4c1a5638c43d437879b621bebca37c713f7263db522349af0f2bce9c27",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-aznext-workflow-engine_01_bf8ced4c1a",
+          "skills": [
+            "agentic AI",
+            "automation"
+          ],
+          "source_context": "Projects chunk",
+          "text": "AZNext Workflow Engine — agentic AI state-machine automation (see experience).",
+          "verified": true
+        }
+      ],
+      "id": "project-aznext-workflow-engine",
+      "kind": "project",
+      "label": "AZNext Workflow Engine",
+      "location": "",
+      "organization": "",
+      "status": "historical",
+      "title": ""
+    },
+    {
+      "dates": "2024",
+      "eligible_sections": [
+        "Projects"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "f2d8ffbe7e4974c7199261c5590bb4471e29a07a6fde5cf79dbefeed519fac75",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "project-hackai-dell-and-nvidia-challenge_01_f2d8ffbe7e",
+          "skills": [
+            "hackathon",
+            "AI"
+          ],
+          "source_context": "Timeline chunk in user context summary",
+          "text": "Participated in HackAI — Dell and NVIDIA Challenge (2024).",
+          "verified": true
+        }
+      ],
+      "id": "project-hackai-dell-and-nvidia-challenge",
+      "kind": "project",
+      "label": "HackAI — Dell and NVIDIA Challenge",
+      "location": "",
+      "organization": "",
+      "status": "historical",
+      "title": ""
+    },
+    {
+      "dates": "May 2024–Present",
+      "eligible_sections": [
+        "Leadership & Volunteering"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "08c3a4a4b5ea944c6c0f15e99c77677970e95924ae116d13388b7590c3edb66b",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "leadership-devlabs_01_08c3a4a4b5",
+          "skills": [
+            "finance",
+            "student org leadership",
+            "operations"
+          ],
+          "source_context": "User context summary role listing",
+          "text": "VP of Finance / Treasurer, DevLabs ASU (≈500-member non-profit student organization) — May 2024–Present.",
+          "verified": true
+        },
+        {
+          "confidence": "high",
+          "content_sha256": "9394da839a324ba50efb991b89716d892c8436a8b6b0d73cd1137780fd3c6878",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "leadership-devlabs_02_9394da839a",
+          "skills": [
+            "event logistics",
+            "fundraising",
+            "stakeholder management"
+          ],
+          "source_context": "Timeline chunk in user context summary",
+          "text": "Organized DevHacks twice and DevSpace once (2024–2025); handled logistics and finances; engaged USG Tempe and Fulton Student Organizations for documentation, fund requests, presentations, and approvals.",
+          "verified": true
+        }
+      ],
+      "id": "leadership-devlabs",
+      "kind": "leadership",
+      "label": "DevLabs ASU",
+      "location": "",
+      "organization": "DevLabs ASU",
+      "status": "current",
+      "title": "VP of Finance / Treasurer"
+    },
+    {
+      "dates": "September 2024–September 2025",
+      "eligible_sections": [
+        "Leadership & Volunteering"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "30bac0e62bac6e6478dc97b75833355aa57124a16ec4490528ad18a5ba31caf6",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "leadership-arc_01_30bac0e62b",
+          "resume_usage": "bullet",
+          "skills": [
+            "ambassador",
+            "community",
+            "product testing",
+            "UX research",
+            "data-driven feedback",
+            "Dia"
+          ],
+          "source_context": "User-supplied and explicitly verified The Browser Company / Arc leadership detail on 2026-09-14",
+          "text": "Selected as 1 of 50 students from 875 applicants for the School of Browser Class of '24 and joined Dia's first student test cohort, analyzing UI interaction patterns and delivering data-driven UX feedback to senior product teams.",
+          "verified": true
+        }
+      ],
+      "id": "leadership-arc",
+      "kind": "leadership",
+      "label": "The Browser Company",
+      "location": "",
+      "organization": "The Browser Company",
+      "status": "historical",
+      "title": "Arc Student Ambassador"
+    },
+    {
+      "dates": "Fall 2023 - Spring 2026",
+      "eligible_sections": [
+        "Honors & Awards"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "5e4ce27bcba2bb8c1529ee4b2cab241eed8d0a1a7c91850d1a07b36912e8f446",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "honors-deans-list_01_5e4ce27bcb",
+          "resume_usage": "header",
+          "skills": [
+            "academic achievement",
+            "4.0 GPA"
+          ],
+          "source_context": "User-supplied and explicitly verified academic honor on 2026-09-14",
+          "text": "Dean's List: Fall 2023 - Spring 2026 (4.0 GPA).",
+          "verified": true
+        }
+      ],
+      "id": "honors-deans-list",
+      "kind": "honors",
+      "label": "Dean's List",
+      "location": "",
+      "organization": "Arizona State University",
+      "status": "historical",
+      "title": "4.0 GPA"
+    },
+    {
+      "dates": "",
+      "eligible_sections": [
+        "Honors & Awards"
+      ],
+      "facts": [
+        {
+          "confidence": "high",
+          "content_sha256": "80875d36eeccac8a98b092521849c1f91d85603d0785688f307239a0da6ad990",
+          "eligible": true,
+          "external_source_ids": [],
+          "id": "honors-provost-award_01_80875d36ee",
+          "resume_usage": "header",
+          "skills": [
+            "academic achievement",
+            "merit scholarship"
+          ],
+          "source_context": "User-supplied and explicitly verified academic honor on 2026-09-14",
+          "text": "Provost's Award: $13,500 annual merit scholarship.",
+          "verified": true
+        }
+      ],
+      "id": "honors-provost-award",
+      "kind": "honors",
+      "label": "Provost's Award",
+      "location": "",
+      "organization": "Arizona State University",
+      "status": "historical",
+      "title": "$13,500 annual merit scholarship"
+    }
+  ],
+  "schema_version": "2.1",
+  "uncertain_claims": [
+    "Exact depth/production proficiency for every item on the long competencies list (e.g., Kubernetes, TensorFlow, Citrus, Google Pub/Sub) beyond listing and partial project evidence",
+    "Whether CRM ETL, pricing, and ROI bullets should be titled under a separate internal role name vs folded only under AI Automation Developer / EECPLL",
+    "Sage project scope, stack, and outcomes beyond one-line description",
+    "Engagement OS production status, sole ownership, and AWS/Entra work split with TSO",
+    "AZNext Workflow Engine 15+ hours/week savings methodology and sole ownership",
+    "Completed vs in-progress status for each course in the verified primary course list",
+    "International student / F1 and personal background details for resume (born Beawar, raised Mumbai, DOB) — factual in profile but usually not resume content",
+    "Completed-state dossiers intentionally include roadmap work; production use should re-confirm final shipment of roadmap-only capabilities before those claims are promoted",
+    "QuantileLedger real-market forward results, realized paper performance, and any economic-value conclusions remain unverified",
+    "WindowLens download counts, active users, performance improvements, and final Developer ID notarization status remain unverified",
+    "chakshu.dev traffic, conversion, uptime, and recruiter outcomes remain unverified",
+    "Executive Education dashboard adoption, supported program count, time savings, and measured reporting-quality improvement remain unverified",
+    "Engagement OS user adoption, cloud deployment, managed database, and measured workflow improvement remain unverified",
+    "Data Science Capstone algorithms, final dataset size, evaluation metrics, model performance, and publication status remain unverified"
+  ],
+  "updated_at": "2026-09-15T16:52:21Z",
+  "verified_narrative_themes": [
+    {
+      "confidence": "high",
+      "content_sha256": "3e8079ffc564825fcc4d1510a08a092c23667e9346a5d648c3b5ea14d20d5760",
+      "eligible": true,
+      "external_source_ids": [],
+      "id": "narrative-theme_01_3e8079ffc5",
+      "resume_usage": "context",
+      "skills": [
+        "end-to-end ownership",
+        "privacy",
+        "deterministic validation",
+        "AI automation"
+      ],
+      "source_context": "Cross-project synthesis approved by the user from seven repository career dossiers on 2026-09-14",
+      "text": "Builds end-to-end, privacy-conscious software products that combine deterministic validation with carefully bounded AI automation.",
+      "verified": true
+    },
+    {
+      "confidence": "high",
+      "content_sha256": "94eab6a750317f9840e4f714780b0ad7c2ecc816c0a885723cbbe571500cef81",
+      "eligible": true,
+      "external_source_ids": [],
+      "id": "narrative-theme_02_94eab6a750",
+      "resume_usage": "context",
+      "skills": [
+        "system architecture",
+        "testing",
+        "deployment",
+        "developer tools",
+        "data engineering",
+        "full-stack development"
+      ],
+      "source_context": "Cross-project synthesis approved by the user from seven repository career dossiers on 2026-09-14",
+      "text": "Owns systems from problem framing and architecture through implementation, testing, deployment, and operational tooling across data, AI, developer tools, and full-stack applications.",
+      "verified": true
+    },
+    {
+      "confidence": "high",
+      "content_sha256": "7b17eb395656266676c829d8603208a7a0c59d9ac28e0f2a8377edf94927f580",
+      "eligible": true,
+      "external_source_ids": [],
+      "id": "narrative-theme_03_7b17eb3956",
+      "resume_usage": "context",
+      "skills": [
+        "problem framing",
+        "workflow automation",
+        "stakeholder communication",
+        "research",
+        "auditability"
+      ],
+      "source_context": "Cross-project synthesis approved by the user from seven repository career dossiers on 2026-09-14",
+      "text": "Translates ambiguous operational and research problems into auditable workflows, stakeholder-facing interfaces, and measurable engineering systems.",
+      "verified": true
+    }
+  ]
+}

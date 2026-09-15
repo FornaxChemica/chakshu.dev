@@ -38,7 +38,7 @@ flowchart LR
 
   subgraph Services["External"]
     Upstash[("Upstash<br/>rate limits")]
-    Memory["Supermemory"]
+    Profile["terminal-profile.json<br/>verified facts"]
     LLM["LLMs<br/>Anthropic · OpenAI · Groq · Gemini"]
     GH["GitHub API"]
     Map["Mapbox"]
@@ -53,7 +53,7 @@ flowchart LR
   APIs --> R2
   APIs --> Static
   APIs --> Upstash
-  APIs --> Memory
+  APIs --> Profile
   APIs --> LLM
   APIs --> GH
   Web --> Map
@@ -62,13 +62,17 @@ flowchart LR
   Web --> CDN
 ```
 
-**How it fits together:** OpenNext runs the Next.js 15 app on a Cloudflare Worker. Trails/projects read D1 (JSON fallback locally); admin writes to D1 + R2 behind Better Auth. The homepage terminal hits `/api/terminal` → Upstash rate limit → privacy gates → Supermemory → LLM waterfall. Mapbox and Last.fm are called from the browser. Deploy is `main` → GitHub Actions → Worker; runtime secrets live on Cloudflare (`NEXT_PUBLIC_MAPBOX_TOKEN` is build-time only).
+**How it fits together:** OpenNext runs the Next.js 15 app on a Cloudflare Worker. Trails/projects read D1 (JSON fallback locally); admin writes to D1 + R2 behind Better Auth. The homepage terminal hits `/api/terminal` → Upstash rate limit → privacy gates → verified `data/terminal-profile.json` → LLM waterfall (Supermemory paused). Mapbox and Last.fm are called from the browser. Deploy is `main` → GitHub Actions → Worker; runtime secrets live on Cloudflare (`NEXT_PUBLIC_MAPBOX_TOKEN` is build-time only).
 
 ---
 
 ## Terminal API Setup
 
 The portfolio terminal calls `POST /api/terminal` (`src/app/api/terminal/route.ts`).
+
+### Knowledge source
+
+Answers are grounded on [`data/terminal-profile.json`](data/terminal-profile.json) (sanitized master profile, phone stripped), [`data/terminal-courses.json`](data/terminal-courses.json) (semester coursework), and [`data/hikes.json`](data/hikes.json) for trail questions. **Supermemory is paused** and not called.
 
 ### 1. Configure environment variables
 
@@ -88,7 +92,6 @@ Local: `.env.local`. Production: Cloudflare Worker secrets / vars.
 - If using Gemini:
 	- `GEMINI_API_KEY`
 	- Optional: `GEMINI_MODEL` (default: `gemini-1.5-flash`)
-- Optional: `SUPERMEMORY_API_KEY` for grounded answers (classes, profile facts)
 
 Groq fallback behavior:
 

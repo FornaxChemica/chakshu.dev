@@ -9,16 +9,20 @@ let lastSubmitAt = 0;
 // Keep in sync with FALLBACKS in src/app/api/terminal/route.ts
 const terminalFallbacks = [
   {
+    match: /(job|title|role|work at|where do you work|employer)/i,
+    reply: "I'm an AI Automation Developer at Executive Education, W. P. Carey School of Business (ASU). Previously Program Coordinator Assistant on AZNext."
+  },
+  {
     match: /(skill|stack|tech|language)/i,
-    reply: "Core stack: Python, TypeScript, Java, SQL, React, Node, Docker, AWS. I spend most of my time building AI workflows that survive production."
+    reply: "Core stack: Python, TypeScript, Java, SQL, React, Node, Docker, AWS. Most of my time goes into AI automation, data pipelines, and production web apps."
   },
   {
     match: /(project|build|working on|made)/i,
-    reply: "Sage is my AI analytics platform, AeroDocs is my Java secure backend, and AZNext was the agentic workflow engine that cut 15+ hrs/week of manual work. Browse everything public on /projects."
+    reply: "Current builds include Engagement OS, the Executive Education live program intelligence dashboard, QuantileLedger, WindowLens, Devtize, and chakshu.dev. Older work includes Sage and the AZNext workflow engine. Full public archive is on /projects."
   },
   {
     match: /(automate|automation|ai|agent)/i,
-    reply: "I automate high-friction operations - prospect research, personalization, routing, human-in-the-loop review. Less busywork, better decisions."
+    reply: "I build AI automation for high-friction operations - outreach workflows, program intelligence dashboards, evaluation platforms, and human-in-the-loop review. Less busywork, better decisions."
   },
   {
     match: /(where|from|location|based|city)/i,
@@ -29,8 +33,12 @@ const terminalFallbacks = [
     reply: "Email: chakshuvinayjain@gmail.com - or use the Book a Call link on this page."
   },
   {
-    match: /(study|university|college|degree|asu|major)/i,
+    match: /(study|university|college|degree|asu|major|gpa)/i,
     reply: "BS in Computer Science + Data Science at Arizona State University. GPA 4.00. Graduating May 2027."
+  },
+  {
+    match: /(devlabs|leadership|finance|treasurer)/i,
+    reply: "I'm VP of Finance / Treasurer at DevLabs ASU, managing a ~$50k budget for a 500-member org."
   },
   {
     match: /(music|listen|song|artist|spotify)/i,
@@ -38,7 +46,7 @@ const terminalFallbacks = [
   },
   {
     match: /(hike|trail|outdoor|nature)/i,
-    reply: "I hike whenever I can. Bryce Canyon was the last big one - Navajo Loop + Peekaboo. Check /trails for the full log."
+    reply: "I log hikes on this site — Navajo Loop + Peekaboo, Bell Trail, Zion Narrows, Camelback, plus more. Highlight: Navajo Loop + Peekaboo in Bryce Canyon NP. Full map + photos on /trails."
   }
 ];
 
